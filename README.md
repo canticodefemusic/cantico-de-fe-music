@@ -1,14 +1,11 @@
-# Cántico V8.0 - Migration Patch
+# Cántico V8.0 - Build Patch 02 Unified Application
 
-Parche de migración para unificar la estructura del proyecto Cántico de Fe Music.
+Este parche conecta la aplicación pública en una sola estructura funcional.
 
 Objetivo:
-- Detectar carpetas antiguas en la raíz.
-- Proponer migración hacia `src/`.
-- Evitar duplicados.
-- Generar reporte antes de mover archivos.
-- Preparar el proyecto para Build Patch 02.
-
-IMPORTANTE:
-Este parche NO borra archivos automáticamente.
-Primero genera reportes para revisar antes de hacer cambios.
+- Crear una aplicación unificada.
+- Conectar navegación pública.
+- Conectar vistas principales.
+- Conectar SEO básico.
+- Conectar reproductor básico.
+- Preparar Cántico de Fe Music para pruebas reales de lanzamiento.

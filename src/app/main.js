@@ -1,5 +1,5 @@
-import { launchReadyApp } from '../core/launch/launchReady.js';
+import { startUnifiedCanticoApp } from './unifiedApp.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  launchReadyApp('#app');
+  startUnifiedCanticoApp('#app');
 });
