@@ -1,4 +1,4 @@
 # Changelog
 
 ## V8.0
-- Initial Media Library Module.
+- Initial Music Player Module.

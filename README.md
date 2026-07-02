@@ -1,3 +1,3 @@
-# Cántico V8.0 - Media Library Module
+# Cántico V8.0 - Music Player Module
 
-Administración centralizada de archivos multimedia.
+Reproductor principal para himnos, álbumes y listas de reproducción.
