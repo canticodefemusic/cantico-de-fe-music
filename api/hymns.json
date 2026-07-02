@@ -52,7 +52,9 @@
         "música cristiana",
         "Mateo 17:20",
         "Cántico de Fe Music"
-      ]
+      ],
+      "canonical": "/?page=hymn&id=fe-que-mueve-montanas",
+      "ogType": "music.song"
     }
   },
   {
@@ -109,7 +111,9 @@
         "2 Reyes 20",
         "himno cristiano",
         "música cristiana"
-      ]
+      ],
+      "canonical": "/?page=hymn&id=quince-anos-mas",
+      "ogType": "music.song"
     }
   }
 ]

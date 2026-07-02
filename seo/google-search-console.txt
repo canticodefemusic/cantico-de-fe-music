@@ -1,0 +1,1 @@
+Cuando Google Search Console te dé un código, colócalo aquí y agrégalo en index.html.
