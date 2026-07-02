@@ -1,0 +1,10 @@
+{
+  "name": "Cántico de Fe Music",
+  "short_name": "Cántico de Fe",
+  "description": "Himnos, alabanzas y música cristiana original.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#d4a017",
+  "icons": []
+}
