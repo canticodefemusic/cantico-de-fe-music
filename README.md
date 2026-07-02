@@ -1,3 +1,4 @@
-# Cántico V8.0 - Albums Module
+# Cántico V8.0 - Hymns Module
 
-Módulo para administrar álbumes musicales, artistas y pistas.
+Módulo para administrar himnos, letras, acordes, partituras,
+audios, videos y referencias bíblicas.
