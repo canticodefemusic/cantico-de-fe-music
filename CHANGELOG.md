@@ -1,7 +1,9 @@
 # Changelog
 
-## Integration Patch 01
-- Added app bootstrap.
-- Added public navigation.
-- Added launch initialization guide.
-- Added fallback CSS.
+## V8.0 Build Patch 01
+- Added application bootstrap.
+- Added core registry.
+- Added module registry.
+- Added startup manager.
+- Added integration checklist.
+- Added build test guide.
