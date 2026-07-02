@@ -1,0 +1,24 @@
+
+export function renderAlbums(data){
+  return `
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>Álbumes</h2>
+          <p>Colecciones organizadas de himnos.</p>
+        </div>
+        <div class="album-grid">
+          ${data.albums.map(a => `
+            <article class="card">
+              <div class="cover">▣</div>
+              <span class="badge">${a.year}</span>
+              <h3>${a.title}</h3>
+              <p class="muted">${a.description}</p>
+              <button class="btn primary" data-album="${a.id}">▶ Escuchar álbum</button>
+            </article>
+          `).join("")}
+        </div>
+      </div>
+    </section>
+  `;
+}

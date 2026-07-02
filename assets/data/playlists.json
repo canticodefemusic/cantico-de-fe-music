@@ -5,9 +5,7 @@
     "description": "Himnos para levantar el ánimo y fortalecer el corazón.",
     "items": [
       "fe-que-mueve-montanas",
-      "quince-anos-mas",
-      "camino-de-fe",
-      "mi-esperanza"
+      "quince-anos-mas"
     ]
   },
   {
@@ -16,14 +14,6 @@
     "description": "Cantos de entrega, reverencia y oración.",
     "items": [
       "en-tu-presencia"
-    ]
-  },
-  {
-    "id": "historias-biblicas",
-    "title": "Historias Bíblicas",
-    "description": "Himnos inspirados en pasajes de la Biblia.",
-    "items": [
-      "quince-anos-mas"
     ]
   },
   {

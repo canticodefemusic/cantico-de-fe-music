@@ -6,8 +6,7 @@
     "description": "Colección inicial de Cántico de Fe Music.",
     "items": [
       "fe-que-mueve-montanas",
-      "camino-de-fe",
-      "mi-esperanza"
+      "dios-esta-aqui"
     ]
   },
   {
@@ -17,24 +16,6 @@
     "description": "Canciones basadas en relatos bíblicos.",
     "items": [
       "quince-anos-mas"
-    ]
-  },
-  {
-    "id": "adoracion-intima",
-    "title": "Adoración Íntima",
-    "year": "2026",
-    "description": "Cantos suaves de adoración.",
-    "items": [
-      "en-tu-presencia"
-    ]
-  },
-  {
-    "id": "congregacionales",
-    "title": "Congregacionales",
-    "year": "2026",
-    "description": "Cánticos para la iglesia.",
-    "items": [
-      "dios-esta-aqui"
     ]
   }
 ]

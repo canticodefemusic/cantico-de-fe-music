@@ -1,32 +1,95 @@
 
-const $=(s,r=document)=>r.querySelector(s);const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-let HY=[], PLAYLISTS=[], ALBUMS=[], queue=[], current=0, playing=false;
-async function loadJSON(p){const r=await fetch(p);return await r.json()}
-async function initData(){HY=await loadJSON('/assets/data/hymns.json'); try{PLAYLISTS=await loadJSON('/assets/data/playlists.json'); ALBUMS=await loadJSON('/assets/data/albums.json')}catch(e){}}
-function setActiveNav(){const p=location.pathname.replace(/\/index\.html$/,'/');$$('.menu a').forEach(a=>{const u=new URL(a.href).pathname;if(p===u||(p==='/'&&u==='/'))a.classList.add('active')})}
-function setupMobile(){const b=$('.mobile-toggle'),m=$('.menu');if(b&&m)b.addEventListener('click',()=>m.classList.toggle('open'))}
-function setupTheme(){const b=$('#themeToggle');if(!b)return;if(localStorage.theme==='dark')document.body.classList.add('dark');b.addEventListener('click',()=>{document.body.classList.toggle('dark');localStorage.theme=document.body.classList.contains('dark')?'dark':'light'})}
-function getH(id){return HY.find(h=>h.id===id)||HY[0]}
-function setQueue(ids, start=0){queue=ids.map(getH);current=start;showPlayer(queue[current].title)}
-function showPlayer(title){const p=$("#miniPlayer");if(!p)return;p.classList.add("show");$("#miniTitle").textContent=title;playing=true;$("#miniPlay").textContent="⏸";renderQueue()}
-function nextSong(){if(!queue.length)queue=[...HY];current=(current+1)%queue.length;showPlayer(queue[current].title)}
-function prevSong(){if(!queue.length)queue=[...HY];current=(current-1+queue.length)%queue.length;showPlayer(queue[current].title)}
-function togglePlay(){playing=!playing;$("#miniPlay").textContent=playing?"⏸":"▶"}
-function renderQueue(){const w=$("#queueList");if(!w)return;const list=queue.length?queue:HY;w.innerHTML=list.map((h,i)=>`<div class="queue-item"><div class="thumb" style="height:44px;font-size:18px">♫</div><div><strong>${h.title}</strong><br><small>${h.theme}</small></div><button class="btn" onclick="current=${i};showPlayer('${h.title.replaceAll("'","")}')">▶</button></div>`).join("")}
-async function featured(){const w=$('#featuredHymn');if(!w)return;const h=HY.find(x=>x.featured);w.innerHTML=`<div class="panel"><p class="eyebrow">Himno destacado</p><h3 style="font-size:34px">${h.title}</h3><p class="muted">${h.description}</p><div class="player"><button class="play" onclick="setQueue(HY.map(h=>h.id),0)">▶</button><div class="progress"><span></span></div><strong>${h.duration}</strong></div><a class="btn primary" href="/himnos/himno.html?id=${h.id}">Escuchar ahora</a></div><div class="panel"><p class="eyebrow">V5.2 Music</p><h3 style="font-size:34px">Playlists, álbumes y cola</h3><p class="muted">Experiencia tipo YouTube Music con reproductor, cola y modo teatro.</p><a class="btn" href="/playlists/">Ver playlists</a></div>`}
-function favBtn(id){const favs=JSON.parse(localStorage.favorites||"[]");return `<button class="favorite" data-fav="${id}">${favs.includes(id)?"♥":"♡"}</button>`}
-function row(h){return `<article class="hymn-row"><div class="thumb">▶</div><div><h3 style="font-size:22px;margin:0">${h.title}</h3><p class="muted" style="margin:5px 0 0">${h.subtitle}</p><div class="badges"><span class="badge">${h.theme}</span><span class="badge">${h.reference}</span><span class="badge">${h.album}</span><span class="badge">${h.year}</span></div></div><div class="btns" style="display:flex;gap:8px;align-items:center">${favBtn(h.id)}<button class="btn" data-play="${h.id}">▶</button><a class="btn" href="/himnos/himno.html?id=${h.id}">Ver</a></div></article>`}
-function wireButtons(){ $$("[data-play]").forEach(b=>b.onclick=()=>{const id=b.dataset.play;setQueue(HY.map(h=>h.id), HY.findIndex(h=>h.id===id))}); $$("[data-fav]").forEach(b=>b.onclick=()=>{let f=JSON.parse(localStorage.favorites||"[]");const id=b.dataset.fav;if(f.includes(id)){f=f.filter(x=>x!==id);b.textContent="♡"}else{f.push(id);b.textContent="♥"}localStorage.favorites=JSON.stringify(f)})}
-function renderStats(data){const w=$("#libraryStats");if(!w)return;w.innerHTML=`<div class="stat"><strong>${data.length}</strong><p>Himnos</p></div><div class="stat"><strong>${new Set(data.map(h=>h.theme)).size}</strong><p>Temas</p></div><div class="stat"><strong>${PLAYLISTS.length}</strong><p>Playlists</p></div><div class="stat"><strong>${ALBUMS.length}</strong><p>Álbumes</p></div>`}
-function renderThemes(data){const w=$("#themeGrid");if(!w)return;const themes=[...new Set(data.map(h=>h.theme))];w.innerHTML=themes.map(t=>`<button class="theme-pill" onclick="document.getElementById('themeFilter').value='${t}';document.getElementById('themeFilter').dispatchEvent(new Event('input'))"><span>${t}</span><span>${data.filter(h=>h.theme===t).length}</span></button>`).join("")}
-async function hymns(){const w=$('#hymnList');if(!w)return;const data=HY;const s=$('#hymnSearch'),t=$('#themeFilter'),o=$('#sortFilter'),y=$('#yearFilter');if(t)t.innerHTML='<option value="">Todos los temas</option>'+[...new Set(data.map(h=>h.theme))].map(x=>`<option>${x}</option>`).join('');if(y)y.innerHTML='<option value="">Todos los años</option>'+[...new Set(data.map(h=>h.year))].map(x=>`<option>${x}</option>`).join('');function draw(){let it=[...data],q=(s?.value||'').toLowerCase(),tv=t?.value||'',yv=y?.value||'';if(q)it=it.filter(h=>[h.title,h.subtitle,h.theme,h.reference,h.author,h.year,h.album,h.tags.join(" "),h.lyrics.join(" ")].join(" ").toLowerCase().includes(q));if(tv)it=it.filter(h=>h.theme===tv);if(yv)it=it.filter(h=>h.year===yv);if(o?.value==='title')it.sort((a,b)=>a.title.localeCompare(b.title));if(o?.value==='popular')it.sort((a,b)=>(b.popular?1:0)-(a.popular?1:0));w.innerHTML=it.map(row).join('')||'<div class="panel">No se encontraron himnos.</div>';wireButtons()}[s,t,o,y].forEach(e=>e&&e.addEventListener('input',draw));draw();renderStats(data);renderThemes(data)}
-function renderPlaylists(){const w=$("#playlistGrid");if(!w)return;w.innerHTML=PLAYLISTS.map(p=>`<article class="card"><div class="cover">♫</div><span class="badge">${p.items.length} himnos</span><h3>${p.title}</h3><p class="muted">${p.description}</p><button class="btn primary" onclick='setQueue(${JSON.stringify(p.items)},0)'>▶ Reproducir</button></article>`).join("")}
-function renderAlbums(){const w=$("#albumGrid");if(!w)return;w.innerHTML=ALBUMS.map(a=>`<article class="card"><div class="cover">▣</div><span class="badge">${a.year}</span><h3>${a.title}</h3><p class="muted">${a.description}</p><button class="btn primary" onclick='setQueue(${JSON.stringify(a.items)},0)'>▶ Escuchar álbum</button></article>`).join("")}
-async function singleHymn(){const w=$('#singleHymn');if(!w)return;const id=new URLSearchParams(location.search).get('id')||'fe-que-mueve-montanas';const h=getH(id);const related=HY.filter(x=>x.theme===h.theme&&x.id!==h.id).slice(0,3);w.innerHTML=`<a class="muted" href="/himnos/">← Volver a Himnos</a><div class="section-head" style="margin-top:20px"><h2>${h.title}</h2><p>${h.subtitle}</p></div><div class="featured"><div class="panel"><p class="eyebrow">Audio</p><div class="player"><button class="play" onclick="setQueue(['${h.id}'],0)">▶</button><div class="progress"><span></span></div><strong>${h.duration}</strong></div><p class="eyebrow">Modo teatro</p><div class="video-thumb" onclick="openTheater('${h.title}')">▶</div><p><strong>Referencia:</strong> ${h.reference}</p><p><strong>Álbum:</strong> ${h.album}</p><div class="hero-buttons"><button class="btn primary">Descargar audio</button><button class="btn" onclick="navigator.share?navigator.share({title:'${h.title}',url:location.href}):alert(location.href)">Compartir</button></div></div><div class="panel"><p class="eyebrow">Letra</p>${h.lyrics.map(l=>l?`<p>${l}</p>`:'<br>').join('')}</div></div><section class="section"><h3 style="font-size:34px;margin-bottom:16px">Himnos relacionados</h3><div class="list">${related.map(row).join("")}</div></section>`;wireButtons()}
-function openTheater(title){$("#theater").classList.add("show");$("#theaterTitle").textContent=title}
-function closeTheater(){$("#theater").classList.remove("show")}
-async function devotionals(){const w=$('#devotionalList');if(!w)return;const data=await loadJSON('/assets/data/devotionals.json');w.innerHTML=data.map(d=>`<article class="card"><div class="video-thumb" style="height:130px;font-size:32px">♡</div><span class="badge">${d.category}</span><h3>${d.title}</h3><p class="muted">${d.excerpt}</p><p><strong>${d.verse}</strong> · ${d.minutes} min</p><a class="btn" href="/devocionales/devocional.html?id=${d.id}">Leer más</a></article>`).join('')}
-async function videos(){const w=$('#videoList');if(!w)return;const data=await loadJSON('/assets/data/videos.json');w.innerHTML=data.map(v=>`<article class="card"><div class="video-thumb" onclick="openTheater('${v.title}')">▶</div><span class="badge">${v.category}</span><h3>${v.title}</h3><p class="muted">${v.description}</p></article>`).join('')}
-async function admin(){const w=$('#adminTable');if(!w)return;w.innerHTML=HY.map(h=>`<tr><td>${h.title}</td><td>${h.theme}</td><td>${h.reference}</td><td>${h.duration}</td></tr>`).join('')}
-async function init(){await initData();setActiveNav();setupMobile();setupTheme();featured();hymns();singleHymn();devotionals();videos();admin();renderPlaylists();renderAlbums();renderQueue()}
-init();
+import { renderHeader } from "/components/header.js";
+import { renderFooter } from "/components/footer.js";
+import { renderPlayer, playerState, setQueue, nextSong, prevSong, togglePlay } from "/components/player.js";
+import { renderHome } from "/pages/home.js";
+import { renderHymns, renderHymnDetail } from "/pages/hymns.js";
+import { renderPlaylists } from "/pages/playlists.js";
+import { renderAlbums } from "/pages/albums.js";
+import { renderVideos } from "/pages/videos.js";
+import { renderDevotionals } from "/pages/devotionals.js";
+import { renderAdmin } from "/pages/admin.js";
+
+export const App = {
+  data: {
+    hymns: [],
+    devotionals: [],
+    playlists: [],
+    albums: [],
+    settings: {}
+  },
+  async loadData(){
+    const [hymns, devotionals, playlists, albums, settings] = await Promise.all([
+      fetch("/assets/data/hymns.json").then(r=>r.json()),
+      fetch("/assets/data/devotionals.json").then(r=>r.json()),
+      fetch("/assets/data/playlists.json").then(r=>r.json()),
+      fetch("/assets/data/albums.json").then(r=>r.json()),
+      fetch("/assets/data/settings.json").then(r=>r.json())
+    ]);
+    this.data = { hymns, devotionals, playlists, albums, settings };
+  },
+  route(){
+    const params = new URLSearchParams(location.search);
+    const page = params.get("page") || "home";
+    const id = params.get("id");
+    const routes = {
+      home: () => renderHome(this.data),
+      hymns: () => renderHymns(this.data),
+      hymn: () => renderHymnDetail(this.data, id),
+      playlists: () => renderPlaylists(this.data),
+      albums: () => renderAlbums(this.data),
+      videos: () => renderVideos(this.data),
+      devotionals: () => renderDevotionals(this.data),
+      admin: () => renderAdmin(this.data)
+    };
+    return (routes[page] || routes.home)();
+  },
+  async start(){
+    await this.loadData();
+    document.querySelector("#app").innerHTML = `
+      ${renderHeader(this.data.settings)}
+      <main id="main"></main>
+      ${renderFooter(this.data.settings)}
+      ${renderPlayer()}
+    `;
+    document.querySelector("#main").innerHTML = this.route();
+    this.bindGlobalEvents();
+  },
+  bindGlobalEvents(){
+    document.querySelector(".mobile-toggle")?.addEventListener("click", () => {
+      document.querySelector(".menu")?.classList.toggle("open");
+    });
+    document.querySelector("#themeToggle")?.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      localStorage.theme = document.body.classList.contains("dark") ? "dark" : "light";
+    });
+    if(localStorage.theme === "dark") document.body.classList.add("dark");
+
+    document.addEventListener("click", (event) => {
+      const play = event.target.closest("[data-play]");
+      if(play){
+        const id = play.dataset.play;
+        const start = this.data.hymns.findIndex(h => h.id === id);
+        setQueue(this.data.hymns, start < 0 ? 0 : start);
+      }
+      if(event.target.closest("[data-next]")) nextSong();
+      if(event.target.closest("[data-prev]")) prevSong();
+      if(event.target.closest("[data-toggle]")) togglePlay();
+      const playlist = event.target.closest("[data-playlist]");
+      if(playlist){
+        const list = this.data.playlists.find(p => p.id === playlist.dataset.playlist);
+        const hymns = list.items.map(id => this.data.hymns.find(h => h.id === id)).filter(Boolean);
+        setQueue(hymns, 0);
+      }
+      const album = event.target.closest("[data-album]");
+      if(album){
+        const list = this.data.albums.find(a => a.id === album.dataset.album);
+        const hymns = list.items.map(id => this.data.hymns.find(h => h.id === id)).filter(Boolean);
+        setQueue(hymns, 0);
+      }
+    });
+  }
+};
+
+window.App = App;
+App.start();

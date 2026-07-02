@@ -8,19 +8,19 @@
     "year": "2026",
     "duration": "4:32",
     "reference": "Mateo 17:20",
+    "album": "Primeros Himnos",
+    "playlists": [
+      "Fe y Esperanza",
+      "Más escuchados"
+    ],
     "tags": [
       "fe",
       "montañas",
       "confianza",
       "esperanza"
     ],
-    "popular": true,
     "featured": true,
-    "album": "Primeros Himnos",
-    "playlist": [
-      "Fe y Esperanza",
-      "Más escuchados"
-    ],
+    "popular": true,
     "description": "Un himno de confianza para recordar que Dios obra cuando creemos.",
     "lyrics": [
       "Fe, la llama que Dios encendió,",
@@ -32,7 +32,10 @@
       "fe, que hace los cielos obrar,",
       "cuando todo parece perdido,",
       "Dios responde al que ha creído."
-    ]
+    ],
+    "audioUrl": "",
+    "youtubeUrl": "",
+    "cover": ""
   },
   {
     "id": "quince-anos-mas",
@@ -43,19 +46,19 @@
     "year": "2026",
     "duration": "3:58",
     "reference": "2 Reyes 20:1-6",
-    "tags": [
-      "ezequias",
-      "oracion",
-      "milagro",
-      "vida"
-    ],
-    "popular": true,
-    "featured": true,
     "album": "Historias Bíblicas",
-    "playlist": [
+    "playlists": [
       "Fe y Esperanza",
       "Historias Bíblicas"
     ],
+    "tags": [
+      "ezequías",
+      "oración",
+      "milagro",
+      "vida"
+    ],
+    "featured": true,
+    "popular": true,
     "description": "Inspirado en el clamor de Ezequías y la misericordia de Dios.",
     "lyrics": [
       "En días de angustia y dolor sin igual,",
@@ -67,7 +70,10 @@
       "clamó con llanto en profunda fe;",
       "Dios escuchó su oración,",
       "y vida nueva le concedió."
-    ]
+    ],
+    "audioUrl": "",
+    "youtubeUrl": "",
+    "cover": ""
   },
   {
     "id": "en-tu-presencia",
@@ -78,25 +84,28 @@
     "year": "2026",
     "duration": "4:10",
     "reference": "Salmo 16:11",
-    "tags": [
-      "adoracion",
-      "presencia",
-      "paz"
-    ],
-    "popular": false,
-    "featured": false,
     "album": "Adoración Íntima",
-    "playlist": [
+    "playlists": [
       "Adoración",
       "Oración"
     ],
+    "tags": [
+      "adoración",
+      "presencia",
+      "paz"
+    ],
+    "featured": false,
+    "popular": false,
     "description": "Una canción de reverencia y paz espiritual.",
     "lyrics": [
       "En tu presencia encuentro paz,",
       "mi alma descansa en tu verdad;",
       "cuando mi fuerza se agotó,",
       "tu mano fiel me levantó."
-    ]
+    ],
+    "audioUrl": "",
+    "youtubeUrl": "",
+    "cover": ""
   },
   {
     "id": "dios-esta-aqui",
@@ -107,75 +116,26 @@
     "year": "2026",
     "duration": "3:44",
     "reference": "Salmo 46:1",
-    "tags": [
-      "gratitud",
-      "congregacion",
-      "presencia"
-    ],
-    "popular": false,
-    "featured": false,
     "album": "Congregacionales",
-    "playlist": [
+    "playlists": [
       "Congregacionales"
     ],
+    "tags": [
+      "gratitud",
+      "congregación",
+      "presencia"
+    ],
+    "featured": false,
+    "popular": false,
     "description": "Himno breve para recordar la presencia de Dios en la congregación.",
     "lyrics": [
       "Dios está aquí, mi alma lo siente,",
       "su amor me cubre eternamente;",
       "en cada prueba y tempestad,",
       "su luz me guía en la verdad."
-    ]
-  },
-  {
-    "id": "camino-de-fe",
-    "title": "Camino de Fe",
-    "subtitle": "Para seguir confiando",
-    "theme": "Confianza",
-    "author": "Cántico de Fe Music",
-    "year": "2026",
-    "duration": "3:51",
-    "reference": "2 Corintios 5:7",
-    "tags": [
-      "camino",
-      "fe",
-      "confianza"
     ],
-    "popular": false,
-    "featured": false,
-    "album": "Primeros Himnos",
-    "playlist": [
-      "Fe y Esperanza"
-    ],
-    "description": "Himno de ánimo para caminar por fe.",
-    "lyrics": [
-      "Camino por fe, no por lo que veo,",
-      "mi Dios va conmigo, en Él yo creo."
-    ]
-  },
-  {
-    "id": "mi-esperanza",
-    "title": "Mi Esperanza",
-    "subtitle": "Esperanza viva en Dios",
-    "theme": "Esperanza",
-    "author": "Cántico de Fe Music",
-    "year": "2026",
-    "duration": "4:05",
-    "reference": "Salmo 39:7",
-    "tags": [
-      "esperanza",
-      "promesa",
-      "fortaleza"
-    ],
-    "popular": false,
-    "featured": false,
-    "album": "Primeros Himnos",
-    "playlist": [
-      "Fe y Esperanza"
-    ],
-    "description": "Canto de esperanza para tiempos difíciles.",
-    "lyrics": [
-      "Mi esperanza está en Jehová,",
-      "su promesa me sostendrá."
-    ]
+    "audioUrl": "",
+    "youtubeUrl": "",
+    "cover": ""
   }
 ]

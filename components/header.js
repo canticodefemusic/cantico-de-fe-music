@@ -1,0 +1,31 @@
+
+export function renderHeader(settings){
+  const items = [
+    ["Inicio", "/"],
+    ["Himnos", "/?page=hymns"],
+    ["Playlists", "/?page=playlists"],
+    ["Álbumes", "/?page=albums"],
+    ["Videos", "/?page=videos"],
+    ["Devocionales", "/?page=devotionals"],
+    ["Admin", "/?page=admin"]
+  ];
+  return `
+    <div class="topline"></div>
+    <header class="header">
+      <div class="container nav">
+        <a class="brand" href="/">
+          <span class="logo">♪</span>
+          <span>${settings.siteName || "Cántico de Fe"}<small>MUSIC</small></span>
+        </a>
+        <nav class="menu">
+          ${items.map(([label, href]) => `<a href="${href}">${label}</a>`).join("")}
+        </nav>
+        <div class="actions">
+          <button class="icon-btn" id="themeToggle">◐</button>
+          <a class="btn primary" href="/?page=hymns">▶ Escuchar</a>
+          <button class="icon-btn mobile-toggle">☰</button>
+        </div>
+      </div>
+    </header>
+  `;
+}
