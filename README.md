@@ -1,11 +1,11 @@
-# Cántico Core V8.0 State Engine
+# Cántico Core V8.0 Event Bus Engine
 
-Tercer módulo del Core.
+Cuarto módulo del Core.
 
 Incluye:
-- Store global
-- Acciones
-- Selectores
-- Persistencia LocalStorage
-- Estado inicial
+- Event Bus
+- Canales
+- Suscripción y cancelación
+- Eventos con once()
+- Logger opcional
 - Documentación

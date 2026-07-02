@@ -1,1 +1,3 @@
-export class EventBus{constructor(){this.e={}}on(n,f){(this.e[n]??=[]).push(f)}emit(n,d){(this.e[n]||[]).forEach(f=>f(d))}}
+import {EventBus} from './core/EventBus.js';
+export const eventBus=new EventBus();
+export * from './channels/system.js';
