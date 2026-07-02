@@ -1,3 +1,3 @@
-# Cántico Core V8.0 - Layout Engine
+# Cántico V8.0 Authentication Module
 
-Motor encargado de administrar layouts, regiones y composición de la interfaz.
+Módulo base de autenticación.
