@@ -1,25 +1,15 @@
-import { ConfigurationEngine } from "../src/core/index.js";
+import { LoggerEngine } from "../src/core/index.js";
 
-const config = ConfigurationEngine.create({
-  config: {
-    app: {
-      name: "Cántico de Fe Music",
-      environment: "production",
-      debug: false
-    },
-    ui: {
-      theme: "dark",
-      accentColor: "gold"
-    }
-  }
+const logger = LoggerEngine.create({
+  level: "debug",
+  namespace: "cantico:app"
 });
 
-config.on("config:changed", ({ path, value }) => {
-  console.log(`Configuración actualizada: ${path} = ${value}`);
-});
+logger.info("Cántico Logger Engine iniciado");
+logger.debug("Cargando configuración", { version: "8.0.0" });
+logger.warn("Ejemplo de advertencia");
 
-console.log("App:", config.get("app.name"));
-console.log("Theme:", config.get("ui.theme"));
+const moduleLogger = logger.child("player");
+moduleLogger.info("Módulo Player listo", { module: "player" });
 
-config.set("ui.theme", "light");
-console.log("Export:", config.export());
+console.log("Entradas guardadas en memoria:", logger.getMemoryEntries().length);

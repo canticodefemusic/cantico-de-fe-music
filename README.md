@@ -1,27 +1,25 @@
-# Cántico Core V8.0 – Configuration Engine
+# Cántico Core V8.0 – Logger Engine
 
-ZIP funcional del motor de configuración para Cántico Core V8.0.
+ZIP funcional del motor de logs para Cántico Core V8.0.
 
 ## Estructura
 
 ```txt
 src/
-  config/
-    ConfigurationEngine.js
-    ConfigValidator.js
-    configSchema.js
-    defaultConfig.js
+  logger/
+    LoggerEngine.js
+    LogFormatter.js
+    ConsoleTransport.js
+    MemoryTransport.js
+    logLevels.js
   core/
     index.js
-  utils/
-    deepMerge.js
-    deepFreeze.js
 examples/
   basic-usage.js
 tests/
-  configuration-engine.test.js
+  logger-engine.test.js
 docs/
-  CONFIGURATION_ENGINE.md
+  LOGGER_ENGINE.md
 ```
 
 ## Comandos
@@ -34,9 +32,10 @@ npm start
 
 ## Qué incluye
 
-- Motor `ConfigurationEngine`.
-- Configuración predeterminada.
-- Validador de configuración.
-- Sistema simple de eventos internos.
+- Motor `LoggerEngine`.
+- Niveles de log configurables.
+- Transportes de consola y memoria.
+- Logger hijo por módulo.
+- Formateador estándar.
 - Ejemplo funcional.
 - Prueba básica con Node.js.
