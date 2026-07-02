@@ -1,2 +1,4 @@
-# V8.0 Core Foundation
-- Arquitectura inicial
+# Changelog
+
+## V8.0
+- Initial Service Container module.
