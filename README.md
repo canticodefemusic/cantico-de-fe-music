@@ -1,3 +1,3 @@
-# Cántico Core V8.0 - Service Container
+# Cántico Core V8.0 - Dependency Injection Engine
 
-Service Container para registrar y resolver servicios del Core.
+Motor de inyección de dependencias construido sobre el Service Container.
