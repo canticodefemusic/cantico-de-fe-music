@@ -1,3 +1,3 @@
-# Cántico V8.0 - Music Player Module
+# Cántico V8.0 - Playlists Module
 
-Reproductor principal para himnos, álbumes y listas de reproducción.
+Administración de listas de reproducción.
