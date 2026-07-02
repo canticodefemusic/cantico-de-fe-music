@@ -1,4 +1,4 @@
 # Changelog
 
 ## V8.0
-- Initial CMS Module.
+- Initial Media Library Module.

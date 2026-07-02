@@ -1,3 +1,3 @@
-# Cántico V8.0 - CMS Module
+# Cántico V8.0 - Media Library Module
 
-Sistema de gestión de contenidos para Cántico de Fe Music.
+Administración centralizada de archivos multimedia.
