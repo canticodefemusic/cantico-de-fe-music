@@ -1,11 +1,10 @@
-# Cántico Core V8.0 Event Bus Engine
+# Cántico Core V8.0 Module Loader Engine
 
-Cuarto módulo del Core.
+Quinto módulo del Core.
 
 Incluye:
-- Event Bus
-- Canales
-- Suscripción y cancelación
-- Eventos con once()
-- Logger opcional
-- Documentación
+- ModuleManager
+- Registro de módulos
+- Carga/descarga
+- Ciclo de vida
+- Contrato base
