@@ -1,0 +1,11 @@
+{
+  "name": "cantico-core",
+  "version": "8.0.0-foundation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "echo Dev",
+    "build": "echo Build",
+    "test": "echo Test"
+  }
+}
