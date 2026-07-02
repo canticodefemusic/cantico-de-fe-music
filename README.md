@@ -1,3 +1,3 @@
-# Cántico V8.0 - User Management Module
+# Cántico V8.0 - Dashboard Module
 
-Módulo para la administración de usuarios, perfiles, roles y permisos.
+Panel principal de administración para Cántico de Fe Music.
