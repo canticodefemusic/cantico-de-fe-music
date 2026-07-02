@@ -1,11 +1,14 @@
 {
-  "name": "cantico-core",
-  "version": "8.0.0-foundation",
-  "private": true,
+  "name": "cantico-core-v8-configuration-engine",
+  "version": "8.0.0",
+  "description": "Cántico Core V8.0 - Configuration Engine for modular web apps.",
   "type": "module",
+  "main": "src/config/ConfigurationEngine.js",
   "scripts": {
-    "dev": "echo Dev",
-    "build": "echo Build",
-    "test": "echo Test"
-  }
+    "start": "node examples/basic-usage.js",
+    "test": "node tests/configuration-engine.test.js"
+  },
+  "keywords": ["cantico", "core", "v8", "configuration", "engine"],
+  "author": "Cántico Core",
+  "license": "MIT"
 }

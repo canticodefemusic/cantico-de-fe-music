@@ -1,10 +1,42 @@
-# Cántico Core V8.0 Module Loader Engine
+# Cántico Core V8.0 – Configuration Engine
 
-Quinto módulo del Core.
+ZIP funcional del motor de configuración para Cántico Core V8.0.
 
-Incluye:
-- ModuleManager
-- Registro de módulos
-- Carga/descarga
-- Ciclo de vida
-- Contrato base
+## Estructura
+
+```txt
+src/
+  config/
+    ConfigurationEngine.js
+    ConfigValidator.js
+    configSchema.js
+    defaultConfig.js
+  core/
+    index.js
+  utils/
+    deepMerge.js
+    deepFreeze.js
+examples/
+  basic-usage.js
+tests/
+  configuration-engine.test.js
+docs/
+  CONFIGURATION_ENGINE.md
+```
+
+## Comandos
+
+```bash
+npm install
+npm test
+npm start
+```
+
+## Qué incluye
+
+- Motor `ConfigurationEngine`.
+- Configuración predeterminada.
+- Validador de configuración.
+- Sistema simple de eventos internos.
+- Ejemplo funcional.
+- Prueba básica con Node.js.
