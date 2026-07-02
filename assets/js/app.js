@@ -29,26 +29,13 @@ const App={
  },
  renderRoute(data){
   const page=Router.page(), id=Router.id();
-  const routes={
-    home:()=>renderHome(data),
-    hymns:()=>renderHymns(data),
-    hymn:()=>renderHymnDetail(data,id),
-    lyrics:()=>renderLyrics(data),
-    playlists:()=>renderPlaylists(data),
-    albums:()=>renderAlbums(data),
-    videos:()=>renderVideos(data),
-    devotionals:()=>renderDevotionals(data),
-    modules:()=>renderModules(data),
-    player:()=>renderPlayerPage(data),
-    admin:()=>renderAdmin(data)
-  };
+  const routes={home:()=>renderHome(data),hymns:()=>renderHymns(data),hymn:()=>renderHymnDetail(data,id),lyrics:()=>renderLyrics(data),playlists:()=>renderPlaylists(data),albums:()=>renderAlbums(data),videos:()=>renderVideos(data),devotionals:()=>renderDevotionals(data),modules:()=>renderModules(data),player:()=>renderPlayerPage(data),admin:()=>renderAdmin(data)};
   return (routes[page]||routes.home)();
  },
  bind(data){
   document.querySelector(".mobile-toggle")?.addEventListener("click",()=>document.querySelector(".menu")?.classList.toggle("open"));
   document.querySelector("#themeToggle")?.addEventListener("click",()=>{document.body.classList.toggle("dark");localStorage.theme=document.body.classList.contains("dark")?"dark":"light"});
   if(localStorage.theme==="dark")document.body.classList.add("dark");
-
   document.addEventListener("click",event=>{
     const play=event.target.closest("[data-play]");
     if(play){const id=play.dataset.play,start=data.hymns.findIndex(h=>h.id===id);PlayerService.setQueue(data.hymns,start<0?0:start)}
@@ -57,17 +44,12 @@ const App={
     if(event.target.closest("[data-player-prev]"))PlayerService.prev();
     if(event.target.closest("[data-player-repeat]"))PlayerService.toggleRepeat();
     if(event.target.closest("[data-player-shuffle]"))PlayerService.toggleShuffle();
-
     const playlist=event.target.closest("[data-playlist]");
     if(playlist){const list=data.playlists.find(p=>p.id===playlist.dataset.playlist);const hymns=mapItems(list.items,data.hymns);PlayerService.setQueue(hymns,0)}
     const album=event.target.closest("[data-album]");
     if(album){const list=data.albums.find(a=>a.id===album.dataset.album);const hymns=mapItems(list.items,data.hymns);PlayerService.setQueue(hymns,0)}
   });
-
-  document.addEventListener("input",event=>{
-    if(event.target.matches("[data-player-seek]")) PlayerService.seek(event.target.value);
-    if(event.target.matches("[data-player-volume]")) PlayerService.setVolume(event.target.value);
-  });
+  document.addEventListener("input",event=>{if(event.target.matches("[data-player-seek]"))PlayerService.seek(event.target.value);if(event.target.matches("[data-player-volume]"))PlayerService.setVolume(event.target.value)});
  }
 };
 window.App=App;
