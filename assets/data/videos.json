@@ -6,6 +6,7 @@
     "type": "Lyric Video",
     "duration": "4:32",
     "youtubeUrl": "",
+    "videoPath": "/assets/video/fe-que-mueve-montanas.mp4",
     "description": "Video oficial del himno Fe que Mueve Montañas."
   },
   {
@@ -15,6 +16,7 @@
     "type": "Lyric Video",
     "duration": "3:58",
     "youtubeUrl": "",
+    "videoPath": "/assets/video/quince-anos-mas.mp4",
     "description": "Video oficial del himno Quince Años Más."
   }
 ]
