@@ -6,6 +6,8 @@
     "theme": "Fe",
     "duration": "4:32",
     "reference": "Mateo 17:20",
+    "youtube": "https://www.youtube.com/embed/",
+    "featured": true,
     "description": "Un himno de confianza para recordar que Dios obra cuando creemos.",
     "lyrics": [
       "Fe, la llama que Dios encendió,",
@@ -17,24 +19,29 @@
       "fe, que hace los cielos obrar,",
       "cuando todo parece perdido,",
       "Dios responde al que ha creído."
-    ],
-    "featured": true
+    ]
   },
   {
     "id": "quince-anos-mas",
     "title": "Quince Años Más",
-    "subtitle": "Basado en 2 Reyes 20 e Isaías 38",
+    "subtitle": "Dios escuchó su clamor",
     "theme": "Esperanza",
     "duration": "3:58",
     "reference": "2 Reyes 20:1-6",
+    "youtube": "https://www.youtube.com/embed/",
+    "featured": true,
     "description": "Inspirado en el clamor de Ezequías y la misericordia de Dios.",
     "lyrics": [
       "En días de angustia y dolor sin igual,",
       "cuando la vida parecía terminar,",
       "vino palabra del cielo a anunciar:",
-      "Ordena tu casa, no vivirás."
-    ],
-    "featured": false
+      "Ordena tu casa, no vivirás.",
+      "",
+      "Mas volvió su rostro hacia la pared,",
+      "clamó con llanto en profunda fe;",
+      "Dios escuchó su oración,",
+      "y vida nueva le concedió."
+    ]
   },
   {
     "id": "en-tu-presencia",
@@ -43,11 +50,31 @@
     "theme": "Adoración",
     "duration": "4:10",
     "reference": "Salmo 16:11",
+    "youtube": "https://www.youtube.com/embed/",
+    "featured": false,
     "description": "Una canción de reverencia y paz espiritual.",
     "lyrics": [
       "En tu presencia encuentro paz,",
-      "mi alma descansa en tu verdad."
-    ],
-    "featured": false
+      "mi alma descansa en tu verdad;",
+      "cuando mi fuerza se agotó,",
+      "tu mano fiel me levantó."
+    ]
+  },
+  {
+    "id": "dios-esta-aqui",
+    "title": "Dios Está Aquí",
+    "subtitle": "Cántico congregacional",
+    "theme": "Gratitud",
+    "duration": "3:44",
+    "reference": "Salmo 46:1",
+    "youtube": "https://www.youtube.com/embed/",
+    "featured": false,
+    "description": "Himno breve para recordar la presencia de Dios en la congregación.",
+    "lyrics": [
+      "Dios está aquí, mi alma lo siente,",
+      "su amor me cubre eternamente;",
+      "en cada prueba y tempestad,",
+      "su luz me guía en la verdad."
+    ]
   }
 ]
