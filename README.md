@@ -1,3 +1,3 @@
-# Cántico Core V8.0 - Theme Engine
+# Cántico Core V8.0 - Component Engine
 
-Motor para administrar temas, colores, tipografías y variables globales.
+Motor base para componentes reutilizables de la interfaz.
