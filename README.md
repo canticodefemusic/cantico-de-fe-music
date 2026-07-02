@@ -1,3 +1,3 @@
-# Cántico Core V8.0 - Dependency Injection Engine
+# Cántico Core V8.0 - API Engine
 
-Motor de inyección de dependencias construido sobre el Service Container.
+Motor central para comunicación HTTP y APIs.
