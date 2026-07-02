@@ -1,11 +1,14 @@
-# Cántico V8.0 - Build Patch 01
+# Cántico V8.0 - Migration Patch
 
-Primer parche de construcción para unir el Core V8.0, los módulos funcionales
-y el Launch Ready Patch en una sola aplicación inicializable.
+Parche de migración para unificar la estructura del proyecto Cántico de Fe Music.
 
 Objetivo:
-- Crear un punto de arranque unificado.
-- Registrar Core Engines.
-- Registrar módulos funcionales.
-- Inicializar servicios básicos.
-- Preparar la aplicación para pruebas reales de lanzamiento.
+- Detectar carpetas antiguas en la raíz.
+- Proponer migración hacia `src/`.
+- Evitar duplicados.
+- Generar reporte antes de mover archivos.
+- Preparar el proyecto para Build Patch 02.
+
+IMPORTANTE:
+Este parche NO borra archivos automáticamente.
+Primero genera reportes para revisar antes de hacer cambios.
