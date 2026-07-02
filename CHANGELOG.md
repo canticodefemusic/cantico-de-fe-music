@@ -1,4 +1,4 @@
 # Changelog
 
 ## V8.0
-- Initial Authentication Module.
+- Initial User Management Module.

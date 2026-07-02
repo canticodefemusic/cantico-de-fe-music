@@ -1,3 +1,3 @@
-# Cántico V8.0 Authentication Module
+# Cántico V8.0 - User Management Module
 
-Módulo base de autenticación.
+Módulo para la administración de usuarios, perfiles, roles y permisos.
