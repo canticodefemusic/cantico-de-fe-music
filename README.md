@@ -1,3 +1,3 @@
-# Cántico Core V8.0 - Component Engine
+# Cántico Core V8.0 - Layout Engine
 
-Motor base para componentes reutilizables de la interfaz.
+Motor encargado de administrar layouts, regiones y composición de la interfaz.
