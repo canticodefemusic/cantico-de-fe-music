@@ -1,16 +1,14 @@
-# Cántico de Fe Music V5.4
-
-Versión enfocada en Admin mejorado.
+# Cántico de Fe Music V5.5 SEO
 
 ## Nuevo
-- Formulario completo para crear himnos.
-- ID automático desde el título.
-- Validación de campos.
-- Contador de líneas.
-- Vista previa visual.
-- JSON generado automáticamente.
-- Botón para copiar JSON.
-- Botón para descargar JSON.
+- Meta tags principales.
+- Open Graph.
+- Twitter Cards.
+- Schema.org.
+- Sitemap XML.
+- Robots.txt.
+- Manifest PWA básico.
+- Admin SEO para generar títulos, descripciones, keywords y schema.
 
 ## Cloudflare Pages
 - Framework preset: None

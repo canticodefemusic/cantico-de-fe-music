@@ -17,7 +17,8 @@
       "fe",
       "montañas",
       "confianza",
-      "esperanza"
+      "esperanza",
+      "himno cristiano"
     ],
     "featured": true,
     "popular": true,
@@ -35,7 +36,18 @@
     ],
     "audioUrl": "",
     "youtubeUrl": "",
-    "cover": ""
+    "cover": "",
+    "seo": {
+      "title": "Fe que Mueve Montañas | Himno Cristiano",
+      "description": "Escucha Fe que Mueve Montañas, un himno cristiano de fe, confianza y esperanza basado en Mateo 17:20.",
+      "keywords": [
+        "Fe que Mueve Montañas",
+        "himno cristiano",
+        "música cristiana",
+        "Mateo 17:20",
+        "Cántico de Fe Music"
+      ]
+    }
   },
   {
     "id": "quince-anos-mas",
@@ -55,7 +67,8 @@
       "ezequías",
       "oración",
       "milagro",
-      "vida"
+      "vida",
+      "esperanza"
     ],
     "featured": true,
     "popular": true,
@@ -73,6 +86,17 @@
     ],
     "audioUrl": "",
     "youtubeUrl": "",
-    "cover": ""
+    "cover": "",
+    "seo": {
+      "title": "Quince Años Más | Himno Cristiano basado en 2 Reyes 20",
+      "description": "Quince Años Más es un himno cristiano inspirado en la oración de Ezequías y la misericordia de Dios.",
+      "keywords": [
+        "Quince Años Más",
+        "Ezequías",
+        "2 Reyes 20",
+        "himno cristiano",
+        "música cristiana"
+      ]
+    }
   }
 ]

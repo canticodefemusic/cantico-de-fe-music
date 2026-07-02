@@ -1,0 +1,15 @@
+{
+  "name": "Cántico de Fe Music",
+  "short_name": "Cántico de Fe",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff8ec",
+  "theme_color": "#06233f",
+  "icons": [
+    {
+      "src": "/assets/icons/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
