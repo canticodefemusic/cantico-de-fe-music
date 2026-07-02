@@ -2,11 +2,13 @@
 import { Store } from "/assets/js/core/store.js";
 import { Router } from "/assets/js/core/router.js";
 import { setSiteSchema } from "/assets/js/utils/seo.js";
+import { mapItems } from "/assets/js/services/contentService.js";
 import { renderHeader } from "/components/header.js";
 import { renderFooter } from "/components/footer.js";
 import { renderPlayer,setQueue,nextSong,prevSong,togglePlay } from "/components/player.js";
 import { renderHome } from "/pages/home.js";
 import { renderHymns,renderHymnDetail } from "/pages/hymns.js";
+import { renderLyrics } from "/pages/lyrics.js";
 import { renderPlaylists } from "/pages/playlists.js";
 import { renderAlbums } from "/pages/albums.js";
 import { renderVideos } from "/pages/videos.js";
@@ -24,7 +26,18 @@ const App={
  },
  renderRoute(data){
   const page=Router.page(), id=Router.id();
-  const routes={home:()=>renderHome(data),hymns:()=>renderHymns(data),hymn:()=>renderHymnDetail(data,id),playlists:()=>renderPlaylists(data),albums:()=>renderAlbums(data),videos:()=>renderVideos(data),devotionals:()=>renderDevotionals(data),modules:()=>renderModules(data),admin:()=>renderAdmin(data)};
+  const routes={
+    home:()=>renderHome(data),
+    hymns:()=>renderHymns(data),
+    hymn:()=>renderHymnDetail(data,id),
+    lyrics:()=>renderLyrics(data),
+    playlists:()=>renderPlaylists(data),
+    albums:()=>renderAlbums(data),
+    videos:()=>renderVideos(data),
+    devotionals:()=>renderDevotionals(data),
+    modules:()=>renderModules(data),
+    admin:()=>renderAdmin(data)
+  };
   return (routes[page]||routes.home)();
  },
  bind(data){
@@ -38,9 +51,9 @@ const App={
     if(event.target.closest("[data-prev]"))prevSong();
     if(event.target.closest("[data-toggle]"))togglePlay();
     const playlist=event.target.closest("[data-playlist]");
-    if(playlist){const list=data.playlists.find(p=>p.id===playlist.dataset.playlist);const hymns=list.items.map(id=>data.hymns.find(h=>h.id===id)).filter(Boolean);setQueue(hymns,0)}
+    if(playlist){const list=data.playlists.find(p=>p.id===playlist.dataset.playlist);const hymns=mapItems(list.items,data.hymns);setQueue(hymns,0)}
     const album=event.target.closest("[data-album]");
-    if(album){const list=data.albums.find(a=>a.id===album.dataset.album);const hymns=list.items.map(id=>data.hymns.find(h=>h.id===id)).filter(Boolean);setQueue(hymns,0)}
+    if(album){const list=data.albums.find(a=>a.id===album.dataset.album);const hymns=mapItems(list.items,data.hymns);setQueue(hymns,0)}
   });
  }
 };

@@ -1,26 +1,36 @@
-# Cántico de Fe Music V6.0 Modular
+# Roadmap V6
 
-Esta es la primera base profesional V6.0 construida por módulos.
+## V6.1
+Infraestructura modular: core, services, components, api json y páginas principales.
 
-## Módulos incluidos
+## V6.2
+Reproductor MP3 real:
+- audio element
+- barra de progreso real
+- volumen
+- cola
+- repetir
+- siguiente/anterior
 
-- Core: store y router.
-- Componentes: header, footer, player.
-- Páginas: inicio, himnos, detalle, playlists, álbumes, videos, devocionales, módulos, admin.
-- SEO: meta tags, Open Graph, Schema.org, sitemap.xml, robots.txt.
-- PWA: manifest y service-worker base.
-- API futura: carpeta preparada para conectar Supabase/Firebase/API propia.
+## V6.3
+Admin avanzado:
+- generar himnos
+- exportar JSON completo
+- importar JSON
+- validar duplicados
 
-## Cloudflare Pages
+## V6.4
+Medios:
+- estructura para portadas
+- estructura para MP3
+- previews
+- carga manual organizada
 
-- Framework preset: None
-- Build command: vacío
-- Build output directory: /
+## V6.5
+SEO avanzado:
+- sitemap dinámico
+- datos estructurados por página
+- Open Graph por himno
 
-## Próximos submódulos V6.x
-
-- V6.1: Admin con guardado real usando GitHub API o base de datos.
-- V6.2: Reproductor real con MP3.
-- V6.3: PWA completa offline.
-- V6.4: Google Search Console + Analytics.
-- V6.5: Autenticación.
+## V7.0
+Plataforma completa.
