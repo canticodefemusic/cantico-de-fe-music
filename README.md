@@ -1,11 +1,11 @@
-# Cántico Core V8.0 Router Engine
+# Cántico Core V8.0 State Engine
 
-Segundo módulo del Core.
+Tercer módulo del Core.
 
-## Incluye
-- Router SPA base
-- Registro de rutas
-- Middleware
-- Layout manager
-- Página 404
-- Navegación programática
+Incluye:
+- Store global
+- Acciones
+- Selectores
+- Persistencia LocalStorage
+- Estado inicial
+- Documentación
