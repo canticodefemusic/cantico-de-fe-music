@@ -7,7 +7,6 @@
     "duration": "4:32",
     "reference": "Mateo 17:20",
     "description": "Un himno de confianza para recordar que Dios obra cuando creemos.",
-    "featured": true,
     "lyrics": [
       "Fe, la llama que Dios encendió,",
       "la promesa que nunca murió,",
@@ -18,7 +17,8 @@
       "fe, que hace los cielos obrar,",
       "cuando todo parece perdido,",
       "Dios responde al que ha creído."
-    ]
+    ],
+    "featured": true
   },
   {
     "id": "quince-anos-mas",
@@ -28,18 +28,13 @@
     "duration": "3:58",
     "reference": "2 Reyes 20:1-6",
     "description": "Inspirado en el clamor de Ezequías y la misericordia de Dios.",
-    "featured": false,
     "lyrics": [
       "En días de angustia y dolor sin igual,",
       "cuando la vida parecía terminar,",
       "vino palabra del cielo a anunciar:",
-      "Ordena tu casa, no vivirás.",
-      "",
-      "Mas volvió su rostro hacia la pared,",
-      "clamó con llanto en profunda fe;",
-      "Dios escuchó su oración,",
-      "y vida nueva le concedió."
-    ]
+      "Ordena tu casa, no vivirás."
+    ],
+    "featured": false
   },
   {
     "id": "en-tu-presencia",
@@ -49,28 +44,10 @@
     "duration": "4:10",
     "reference": "Salmo 16:11",
     "description": "Una canción de reverencia y paz espiritual.",
-    "featured": false,
     "lyrics": [
       "En tu presencia encuentro paz,",
-      "mi alma descansa en tu verdad;",
-      "cuando mi fuerza se agotó,",
-      "tu mano fiel me levantó."
-    ]
-  },
-  {
-    "id": "dios-esta-aqui",
-    "title": "Dios Está Aquí",
-    "subtitle": "Cántico congregacional",
-    "theme": "Gratitud",
-    "duration": "3:44",
-    "reference": "Salmo 46:1",
-    "description": "Himno breve para recordar la presencia de Dios en la congregación.",
-    "featured": false,
-    "lyrics": [
-      "Dios está aquí, mi alma lo siente,",
-      "su amor me cubre eternamente;",
-      "en cada prueba y tempestad,",
-      "su luz me guía en la verdad."
-    ]
+      "mi alma descansa en tu verdad."
+    ],
+    "featured": false
   }
 ]
