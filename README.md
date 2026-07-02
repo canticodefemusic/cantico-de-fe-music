@@ -1,5 +1,4 @@
-# Cántico V8.0 - Architecture Audit
+# Cántico V8.0 - Devotionals Module
 
-Paquete oficial de revisión de arquitectura para Cántico de Fe Music V8.0.
-
-Define estructura, reglas, estándares y checklist de integración para continuar desarrollando los módulos funcionales sobre el Core V8.0.
+Módulo para administrar devocionales, lecturas diarias,
+referencias bíblicas, autores, categorías y planes de lectura.
