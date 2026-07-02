@@ -1,0 +1,56 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #fffaf0;
+  color: #1f2933;
+}
+
+.cantico-page {
+  min-height: 100vh;
+}
+
+.cantico-hero {
+  padding: 48px 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #fff7d6, #f4d06f);
+}
+
+.cantico-hero h1 {
+  margin: 0 0 12px;
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+
+.cantico-hero p {
+  font-size: 1.1rem;
+}
+
+.cantico-hero nav {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.cantico-hero nav a {
+  text-decoration: none;
+  color: #111827;
+  background: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid #e5c55f;
+}
+
+.cantico-content {
+  width: min(960px, calc(100% - 32px));
+  margin: 32px auto;
+}
+
+.cantico-card {
+  background: #ffffff;
+  border: 1px solid #eadca6;
+  border-radius: 16px;
+  padding: 20px;
+  margin: 16px 0;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}

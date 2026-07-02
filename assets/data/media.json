@@ -1,0 +1,38 @@
+[
+  {
+    "id": "fe-que-mueve-montanas-cover",
+    "title": "Fe que Mueve Montañas Cover",
+    "type": "cover",
+    "linkedId": "fe-que-mueve-montanas",
+    "path": "/assets/img/covers/fe-que-mueve-montanas.jpg",
+    "status": "pending",
+    "recommendedSize": "1920x1080"
+  },
+  {
+    "id": "fe-que-mueve-montanas-audio",
+    "title": "Fe que Mueve Montañas Audio",
+    "type": "audio",
+    "linkedId": "fe-que-mueve-montanas",
+    "path": "/assets/audio/fe-que-mueve-montanas.mp3",
+    "status": "pending",
+    "recommendedFormat": "MP3"
+  },
+  {
+    "id": "quince-anos-mas-cover",
+    "title": "Quince Años Más Cover",
+    "type": "cover",
+    "linkedId": "quince-anos-mas",
+    "path": "/assets/img/covers/quince-anos-mas.jpg",
+    "status": "pending",
+    "recommendedSize": "1920x1080"
+  },
+  {
+    "id": "quince-anos-mas-audio",
+    "title": "Quince Años Más Audio",
+    "type": "audio",
+    "linkedId": "quince-anos-mas",
+    "path": "/assets/audio/quince-anos-mas.mp3",
+    "status": "pending",
+    "recommendedFormat": "MP3"
+  }
+]

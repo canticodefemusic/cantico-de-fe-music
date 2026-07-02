@@ -1,0 +1,33 @@
+/* Cántico V8.0 - Integration Patch 01 */
+
+.cantico-content h2 {
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  margin-bottom: 18px;
+}
+
+.cantico-card h3 {
+  margin-top: 0;
+}
+
+.cantico-card p {
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  .cantico-hero {
+    padding: 36px 14px;
+  }
+
+  .cantico-hero nav {
+    gap: 8px;
+  }
+
+  .cantico-hero nav a {
+    padding: 9px 12px;
+    font-size: 0.95rem;
+  }
+
+  .cantico-content {
+    margin: 24px auto;
+  }
+}

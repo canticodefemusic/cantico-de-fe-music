@@ -1,0 +1,17 @@
+{
+  "version": "7.1",
+  "modules": [
+    "Biblioteca",
+    "Player",
+    "Admin Fácil",
+    "Media Library",
+    "SEO",
+    "PWA",
+    "Devocionales",
+    "Videos",
+    "Playlists",
+    "Álbumes"
+  ],
+  "status": "easy-cms",
+  "next": "Probar Admin Fácil, descargar hymns.json y reemplazar el archivo cuando agregues himnos"
+}

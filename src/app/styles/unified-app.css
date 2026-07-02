@@ -1,0 +1,219 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #fffaf0;
+  color: #102a43;
+}
+
+a {
+  color: #0b3558;
+  font-weight: 700;
+}
+
+.cantico-app-shell {
+  min-height: 100vh;
+  padding-bottom: 96px;
+}
+
+.cantico-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid #eadca6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px min(5vw, 48px);
+}
+
+.cantico-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: #102a43;
+}
+
+.cantico-logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #0b3558;
+  color: #f4d06f;
+  display: grid;
+  place-items: center;
+  font-size: 1.4rem;
+}
+
+.cantico-brand small {
+  display: block;
+  color: #c68a00;
+  letter-spacing: .22em;
+  font-weight: 800;
+  font-size: .68rem;
+}
+
+.cantico-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cantico-nav a {
+  text-decoration: none;
+  color: #102a43;
+  padding: 9px 12px;
+  border-radius: 999px;
+}
+
+.cantico-nav a.is-active,
+.cantico-nav a:hover {
+  background: #0b3558;
+  color: #fff;
+}
+
+.cantico-main {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.cantico-hero {
+  padding: clamp(52px, 9vw, 96px) 0;
+  display: grid;
+  gap: 24px;
+}
+
+.cantico-kicker {
+  color: #c68a00;
+  letter-spacing: .22em;
+  font-size: .75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.cantico-hero h1 {
+  margin: 0;
+  font-size: clamp(2.6rem, 7vw, 5.2rem);
+  line-height: .95;
+}
+
+.cantico-hero p {
+  max-width: 720px;
+  font-size: 1.2rem;
+  line-height: 1.7;
+}
+
+.cantico-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cantico-button {
+  border: 1px solid #d9bf63;
+  background: #fff;
+  border-radius: 999px;
+  padding: 12px 18px;
+  text-decoration: none;
+}
+
+.cantico-button.primary {
+  background: #0b3558;
+  color: #fff;
+  border-color: #0b3558;
+}
+
+.cantico-section {
+  padding: 34px 0;
+}
+
+.cantico-section h1,
+.cantico-section h2 {
+  margin-top: 0;
+  font-size: clamp(1.9rem, 5vw, 3rem);
+}
+
+.cantico-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+.cantico-card,
+.cantico-detail {
+  background: #fff;
+  border: 1px solid #eadca6;
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 12px 34px rgba(16, 42, 67, .08);
+}
+
+.cantico-card h3 {
+  margin-top: 0;
+}
+
+.cantico-empty {
+  background: #fff;
+  border: 1px dashed #d9bf63;
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.cantico-mini-player {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  background: #0b3558;
+  color: #fff;
+  border-radius: 22px;
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  box-shadow: 0 18px 40px rgba(0,0,0,.22);
+}
+
+.cantico-mini-player span {
+  display: block;
+  opacity: .85;
+}
+
+.cantico-mini-player button {
+  border: 0;
+  background: #f4d06f;
+  color: #102a43;
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 800;
+}
+
+.cantico-footer {
+  text-align: center;
+  padding: 40px 20px 120px;
+  color: #52606d;
+}
+
+@media (max-width: 800px) {
+  .cantico-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .cantico-nav {
+    width: 100%;
+  }
+
+  .cantico-nav a {
+    font-size: .95rem;
+  }
+
+  .cantico-mini-player {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "cantico-core-v8-logger-engine",
+  "version": "8.0.0",
+  "description": "Cántico Core V8.0 - Logger Engine for modular web apps.",
+  "type": "module",
+  "main": "src/logger/LoggerEngine.js",
+  "scripts": {
+    "start": "node examples/basic-usage.js",
+    "test": "node tests/logger-engine.test.js"
+  },
+  "keywords": ["cantico", "core", "v8", "logger", "engine"],
+  "author": "Cántico Core",
+  "license": "MIT"
+}
