@@ -1,3 +1,3 @@
-# Cántico Core V8.0 - API Engine
+# Cántico Core V8.0 - Theme Engine
 
-Motor central para comunicación HTTP y APIs.
+Motor para administrar temas, colores, tipografías y variables globales.
