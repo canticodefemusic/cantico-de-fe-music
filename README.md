@@ -1,3 +1,3 @@
-# Cántico V8.0 - Dashboard Module
+# Cántico V8.0 - CMS Module
 
-Panel principal de administración para Cántico de Fe Music.
+Sistema de gestión de contenidos para Cántico de Fe Music.

@@ -1,4 +1,4 @@
 # Changelog
 
 ## V8.0
-- Initial Dashboard Module.
+- Initial CMS Module.
