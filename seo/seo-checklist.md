@@ -1,10 +1,8 @@
-# Checklist SEO V6.5
+# Checklist SEO V7.0
 
-- [ ] Conectar dominio principal.
-- [ ] Enviar sitemap.xml a Google Search Console.
-- [ ] Verificar robots.txt.
-- [ ] Agregar código de Google Search Console.
-- [ ] Agregar Google Analytics si se desea.
-- [ ] Agregar portada default-og.jpg.
-- [ ] Revisar títulos SEO de cada himno.
-- [ ] Revisar descripción SEO de cada himno.
+- [ ] Probar sitemap.xml
+- [ ] Probar robots.txt
+- [ ] Verificar Google Search Console
+- [ ] Revisar dominio principal
+- [ ] Revisar Open Graph
+- [ ] Revisar responsive

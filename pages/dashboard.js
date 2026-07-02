@@ -1,0 +1,7 @@
+
+export function renderDashboard(data){
+ const cards=[
+  ["Himnos",data.hymns.length,"/?page=hymns"],["Playlists",data.playlists.length,"/?page=playlists"],["Álbumes",data.albums.length,"/?page=albums"],["Videos",data.videos.length,"/?page=videos"],["Devocionales",data.devotionals.length,"/?page=devotionals"],["Media",data.media.length,"/?page=media"],["SEO","Activo","/?page=seo"],["Admin","Activo","/?page=admin"],["PWA","Activa","/manifest.json"]
+ ];
+ return `<section class="library-hero"><div class="container"><p class="eyebrow">V7.0</p><h1 style="font-size:clamp(50px,6vw,78px)">Dashboard</h1><p class="lead">Panel general de Cántico de Fe Music.</p><div class="library-stats"><div class="stat"><strong>${data.dashboard.version}</strong><p>Versión</p></div><div class="stat"><strong>${data.dashboard.modules.length}</strong><p>Módulos</p></div><div class="stat"><strong>${data.dashboard.status}</strong><p>Estado</p></div><div class="stat"><strong>V6</strong><p>Rama</p></div></div></div></section><section class="section"><div class="container"><div class="dashboard-grid">${cards.map(([t,n,h])=>`<a class="card" href="${h}"><span class="status-pill status-good">Activo</span><h3>${t}</h3><div class="seo-score">${n}</div></a>`).join("")}</div><div class="panel" style="margin-top:24px"><p class="eyebrow">Siguiente paso</p><h3 style="font-size:34px">${data.dashboard.next}</h3></div></div></section>`;
+}

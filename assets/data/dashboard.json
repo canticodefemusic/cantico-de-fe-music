@@ -1,0 +1,17 @@
+{
+  "version": "7.0",
+  "modules": [
+    "Biblioteca",
+    "Player",
+    "Admin",
+    "Media Library",
+    "SEO",
+    "PWA",
+    "Devocionales",
+    "Videos",
+    "Playlists",
+    "Álbumes"
+  ],
+  "status": "release-candidate",
+  "next": "Probar en rama V6 antes de hacer merge a main"
+}
