@@ -1,12 +1,11 @@
-# Cántico Core V8.0 Foundation
+# Cántico Core V8.0 Router Engine
 
-Primera base de arquitectura para la plataforma Cántico de Fe Music.
+Segundo módulo del Core.
 
 ## Incluye
-- Bootstrap Engine
-- Router base
-- State base
-- Event Bus base
-- Logger
-- Config
-- Estructura modular
+- Router SPA base
+- Registro de rutas
+- Middleware
+- Layout manager
+- Página 404
+- Navegación programática

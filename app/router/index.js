@@ -1,1 +1,3 @@
-export class Router{start(){console.log('Router started')}}
+import { Router } from './router.js';
+export const router=new Router();
+export function startRouter(){router.start();}
