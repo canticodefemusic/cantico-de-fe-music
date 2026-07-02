@@ -1,9 +1,9 @@
 {
-  "version": "7.0",
+  "version": "7.1",
   "modules": [
     "Biblioteca",
     "Player",
-    "Admin",
+    "Admin Fácil",
     "Media Library",
     "SEO",
     "PWA",
@@ -12,6 +12,6 @@
     "Playlists",
     "Álbumes"
   ],
-  "status": "release-candidate",
-  "next": "Probar en rama V6 antes de hacer merge a main"
+  "status": "easy-cms",
+  "next": "Probar Admin Fácil, descargar hymns.json y reemplazar el archivo cuando agregues himnos"
 }

@@ -9,7 +9,8 @@ export const Store = {
       fetch("/api/seo.json").then(r=>r.json()), fetch("/api/dashboard.json").then(r=>r.json()),
       fetch("/api/settings.json").then(r=>r.json())
     ]);
-    this.data = { hymns, playlists, albums, videos, devotionals, media, seo, dashboard, settings };
+    const local = JSON.parse(localStorage.getItem("cantico_hymns_drafts") || "[]");
+    this.data = { hymns, playlists, albums, videos, devotionals, media, seo, dashboard, settings, localDrafts: local };
     return this.data;
   }
 };

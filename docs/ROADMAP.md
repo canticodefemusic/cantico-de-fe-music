@@ -1,3 +1,3 @@
 # Roadmap
 
-V7.0 es la versión release candidate. Próximo paso: pruebas finales y merge a main.
+V7.1 agrega CMS Fácil. Siguiente gran paso: integración real con GitHub o base de datos en V8.0.

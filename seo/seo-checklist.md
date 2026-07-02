@@ -1,8 +1,7 @@
-# Checklist SEO V7.0
+# Checklist SEO V7.1
 
+- [ ] Probar CMS Fácil
+- [ ] Descargar hymns.json
+- [ ] Reemplazar api/hymns.json y assets/data/hymns.json
 - [ ] Probar sitemap.xml
 - [ ] Probar robots.txt
-- [ ] Verificar Google Search Console
-- [ ] Revisar dominio principal
-- [ ] Revisar Open Graph
-- [ ] Revisar responsive
