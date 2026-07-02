@@ -1,0 +1,6 @@
+
+export const Router = {
+  params(){ return new URLSearchParams(location.search); },
+  page(){ return this.params().get("page") || "home"; },
+  id(){ return this.params().get("id"); }
+};

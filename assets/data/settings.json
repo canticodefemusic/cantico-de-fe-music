@@ -2,5 +2,7 @@
   "siteName": "Cántico de Fe Music",
   "tagline": "Himnos que tocan el corazón",
   "email": "contacto@canticodefemusic.com",
-  "siteUrl": "https://canticodefemusic.com"
+  "siteUrl": "https://canticodefemusic.com",
+  "language": "es",
+  "version": "6.0"
 }
