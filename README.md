@@ -1,41 +1,78 @@
-# Cántico Core V8.0 – Logger Engine
+# Cántico Core V8.0 – Cache Engine
 
-ZIP funcional del motor de logs para Cántico Core V8.0.
+Motor de caché interno para Cántico Core V8.0.
 
-## Estructura
+## Ubicación recomendada
 
-```txt
+Copia la carpeta `cache` dentro de:
+
+```text
+src/core/cache/
+```
+
+Debe quedar así:
+
+```text
 src/
-  logger/
-    LoggerEngine.js
-    LogFormatter.js
-    ConsoleTransport.js
-    MemoryTransport.js
-    logLevels.js
-  core/
-    index.js
-examples/
-  basic-usage.js
-tests/
-  logger-engine.test.js
-docs/
-  LOGGER_ENGINE.md
+└── core/
+    ├── configuration/
+    ├── logger/
+    └── cache/
 ```
 
-## Comandos
+## Funciones principales
 
-```bash
-npm install
-npm test
-npm start
+- Guardar datos temporales en memoria.
+- Guardar datos persistentes en `localStorage` cuando esté disponible.
+- Soportar expiración por tiempo (`ttl`).
+- Limpiar datos vencidos automáticamente.
+- Trabajar seguro aunque el navegador no permita `localStorage`.
+- Integrarse después con Configuration Engine y Logger Engine.
+
+## Archivos incluidos
+
+```text
+src/core/cache/
+├── cache.engine.js
+├── cache.memory.js
+├── cache.storage.js
+├── cache.constants.js
+└── index.js
 ```
 
-## Qué incluye
+## Uso básico
 
-- Motor `LoggerEngine`.
-- Niveles de log configurables.
-- Transportes de consola y memoria.
-- Logger hijo por módulo.
-- Formateador estándar.
-- Ejemplo funcional.
-- Prueba básica con Node.js.
+```js
+import { cacheEngine } from './src/core/cache/index.js';
+
+cacheEngine.set('site:title', 'Cántico de Fe Music', { ttl: 60000 });
+
+const title = cacheEngine.get('site:title');
+console.log(title);
+```
+
+## Métodos principales
+
+```js
+cacheEngine.set(key, value, options);
+cacheEngine.get(key, fallbackValue);
+cacheEngine.has(key);
+cacheEngine.delete(key);
+cacheEngine.clear();
+cacheEngine.clearExpired();
+cacheEngine.keys();
+cacheEngine.stats();
+```
+
+## Opciones de `set`
+
+```js
+{
+  ttl: 60000,          // tiempo en milisegundos
+  persist: false       // true para usar localStorage
+}
+```
+
+## Nota
+
+Este módulo pertenece al Core V8.0. No hagas Compare & Pull Request todavía hasta completar todo el Core V8.
