@@ -1,4 +1,2 @@
 
-export function renderVideos(data){
- return `<section class="section"><div class="container"><div class="section-head"><h2>Videos</h2><p>Videos oficiales, lyric videos y shorts.</p></div><div class="video-grid">${data.videos.map(v=>`<article class="card"><div class="video-thumb">▶</div><span class="badge">${v.type}</span><h3>${v.title}</h3><p class="muted">${v.description}</p><a class="btn" href="/?page=hymn&id=${v.hymnId}">Ver himno</a></article>`).join("")}</div></div></section>`;
-}
+export function renderVideos(data){return `<section class="section"><div class="container"><div class="section-head"><h2>Videos</h2><p>Videos oficiales, lyric videos y shorts.</p></div><div class="video-grid">${data.videos.map(v=>`<article class="card"><div class="video-thumb">▶</div><span class="badge">${v.type}</span><h3>${v.title}</h3><p class="muted">${v.description}</p><a class="btn" href="/?page=hymn&id=${v.hymnId}">Ver himno</a></article>`).join("")}</div></div></section>`}

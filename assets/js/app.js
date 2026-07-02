@@ -3,9 +3,10 @@ import { Store } from "/assets/js/core/store.js";
 import { Router } from "/assets/js/core/router.js";
 import { setSiteSchema } from "/assets/js/utils/seo.js";
 import { mapItems } from "/assets/js/services/contentService.js";
+import { PlayerService } from "/assets/js/services/playerService.js";
 import { renderHeader } from "/components/header.js";
 import { renderFooter } from "/components/footer.js";
-import { renderPlayer,setQueue,nextSong,prevSong,togglePlay } from "/components/player.js";
+import { renderPlayer } from "/components/player.js";
 import { renderHome } from "/pages/home.js";
 import { renderHymns,renderHymnDetail } from "/pages/hymns.js";
 import { renderLyrics } from "/pages/lyrics.js";
@@ -14,6 +15,7 @@ import { renderAlbums } from "/pages/albums.js";
 import { renderVideos } from "/pages/videos.js";
 import { renderDevotionals } from "/pages/devotionals.js";
 import { renderModules } from "/pages/modules.js";
+import { renderPlayerPage } from "/pages/player.js";
 import { renderAdmin } from "/pages/admin.js";
 
 const App={
@@ -21,6 +23,7 @@ const App={
   const data=await Store.load();
   setSiteSchema(data.settings);
   document.querySelector("#app").innerHTML=`${renderHeader(data.settings)}<main id="main"></main>${renderFooter(data.settings)}${renderPlayer()}`;
+  PlayerService.init();
   document.querySelector("#main").innerHTML=this.renderRoute(data);
   this.bind(data);
  },
@@ -36,6 +39,7 @@ const App={
     videos:()=>renderVideos(data),
     devotionals:()=>renderDevotionals(data),
     modules:()=>renderModules(data),
+    player:()=>renderPlayerPage(data),
     admin:()=>renderAdmin(data)
   };
   return (routes[page]||routes.home)();
@@ -44,16 +48,25 @@ const App={
   document.querySelector(".mobile-toggle")?.addEventListener("click",()=>document.querySelector(".menu")?.classList.toggle("open"));
   document.querySelector("#themeToggle")?.addEventListener("click",()=>{document.body.classList.toggle("dark");localStorage.theme=document.body.classList.contains("dark")?"dark":"light"});
   if(localStorage.theme==="dark")document.body.classList.add("dark");
+
   document.addEventListener("click",event=>{
     const play=event.target.closest("[data-play]");
-    if(play){const id=play.dataset.play,start=data.hymns.findIndex(h=>h.id===id);setQueue(data.hymns,start<0?0:start)}
-    if(event.target.closest("[data-next]"))nextSong();
-    if(event.target.closest("[data-prev]"))prevSong();
-    if(event.target.closest("[data-toggle]"))togglePlay();
+    if(play){const id=play.dataset.play,start=data.hymns.findIndex(h=>h.id===id);PlayerService.setQueue(data.hymns,start<0?0:start)}
+    if(event.target.closest("[data-player-toggle]"))PlayerService.playPause();
+    if(event.target.closest("[data-player-next]"))PlayerService.next();
+    if(event.target.closest("[data-player-prev]"))PlayerService.prev();
+    if(event.target.closest("[data-player-repeat]"))PlayerService.toggleRepeat();
+    if(event.target.closest("[data-player-shuffle]"))PlayerService.toggleShuffle();
+
     const playlist=event.target.closest("[data-playlist]");
-    if(playlist){const list=data.playlists.find(p=>p.id===playlist.dataset.playlist);const hymns=mapItems(list.items,data.hymns);setQueue(hymns,0)}
+    if(playlist){const list=data.playlists.find(p=>p.id===playlist.dataset.playlist);const hymns=mapItems(list.items,data.hymns);PlayerService.setQueue(hymns,0)}
     const album=event.target.closest("[data-album]");
-    if(album){const list=data.albums.find(a=>a.id===album.dataset.album);const hymns=mapItems(list.items,data.hymns);setQueue(hymns,0)}
+    if(album){const list=data.albums.find(a=>a.id===album.dataset.album);const hymns=mapItems(list.items,data.hymns);PlayerService.setQueue(hymns,0)}
+  });
+
+  document.addEventListener("input",event=>{
+    if(event.target.matches("[data-player-seek]")) PlayerService.seek(event.target.value);
+    if(event.target.matches("[data-player-volume]")) PlayerService.setVolume(event.target.value);
   });
  }
 };

@@ -1,36 +1,31 @@
 # Roadmap V6
 
-## V6.1
-Infraestructura modular: core, services, components, api json y páginas principales.
-
 ## V6.2
-Reproductor MP3 real:
+Player avanzado:
 - audio element
 - barra de progreso real
 - volumen
 - cola
 - repetir
+- aleatorio
 - siguiente/anterior
 
 ## V6.3
 Admin avanzado:
-- generar himnos
-- exportar JSON completo
-- importar JSON
+- importar/exportar JSON
 - validar duplicados
+- generar playlists y álbumes
+- vista previa completa
 
 ## V6.4
-Medios:
-- estructura para portadas
-- estructura para MP3
+Media Library:
+- estructura de portadas
+- estructura de MP3
 - previews
-- carga manual organizada
+- guía de nombres
 
 ## V6.5
-SEO avanzado:
-- sitemap dinámico
-- datos estructurados por página
-- Open Graph por himno
+SEO avanzado.
 
 ## V7.0
 Plataforma completa.
