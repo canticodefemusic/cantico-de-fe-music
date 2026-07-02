@@ -1,3 +1,3 @@
-# Cántico V8.0 - Playlists Module
+# Cántico V8.0 - Albums Module
 
-Administración de listas de reproducción.
+Módulo para administrar álbumes musicales, artistas y pistas.
