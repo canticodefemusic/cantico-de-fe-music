@@ -1,80 +1,14 @@
 
-const $ = (s, scope=document) => scope.querySelector(s);
-const $$ = (s, scope=document) => Array.from(scope.querySelectorAll(s));
-
-document.addEventListener("DOMContentLoaded", () => {
-  const menu = $(".menu-button");
-  const nav = $(".nav");
-  if(menu && nav){ menu.addEventListener("click", () => nav.classList.toggle("open")); }
-
-  const theme = $(".theme-toggle");
-  if(localStorage.getItem("cfmTheme") === "dark"){ document.body.classList.add("dark"); }
-  if(theme){
-    theme.addEventListener("click", () => {
-      document.body.classList.toggle("dark");
-      localStorage.setItem("cfmTheme", document.body.classList.contains("dark") ? "dark" : "light");
-    });
-  }
-
-  $$("[data-filter]").forEach(button => {
-    button.addEventListener("click", () => {
-      $$("[data-filter]").forEach(b => b.classList.remove("active"));
-      button.classList.add("active");
-      const filter = (button.dataset.filter || "all").toLowerCase();
-      $$("[data-category]").forEach(card => {
-        const category = (card.dataset.category || "").toLowerCase();
-        card.style.display = (filter === "all" || category.includes(filter)) ? "grid" : "none";
-      });
-    });
-  });
-
-  const search = $("#siteSearch");
-  if(search){
-    search.addEventListener("input", () => {
-      const q = search.value.toLowerCase().trim();
-      $$("[data-title]").forEach(card => {
-        const title = (card.dataset.title || "").toLowerCase();
-        card.style.display = title.includes(q) ? "grid" : "none";
-      });
-    });
-  }
-
-  const player = $("#audioPlayer");
-  const playerTitle = $("#playerTitle");
-  const playerMeta = $("#playerMeta");
-  const playPause = $("#playPause");
-  const closePlayer = $("#closePlayer");
-  let playing = false;
-
-  $$("[data-play-title]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      if(player){
-        player.classList.add("show");
-        if(playerTitle) playerTitle.textContent = btn.dataset.playTitle || "Cántico de Fe Music";
-        if(playerMeta) playerMeta.textContent = btn.dataset.playMeta || "Vista previa";
-        playing = true;
-        if(playPause) playPause.textContent = "❚❚";
-      }
-    });
-  });
-
-  if(playPause){
-    playPause.addEventListener("click", () => {
-      playing = !playing;
-      playPause.textContent = playing ? "❚❚" : "▶";
-    });
-  }
-  if(closePlayer){ closePlayer.addEventListener("click", () => player && player.classList.remove("show")); }
-
-  $$("[data-video-open]").forEach(btn => {
-    btn.addEventListener("click", () => alert("Aquí puedes conectar el video real de YouTube: " + (btn.dataset.videoOpen || "Video destacado")));
-  });
-
-  const contact = $("#contactForm");
-  if(contact){
-    contact.addEventListener("submit", e => {
-      e.preventDefault();
-      alert("Formulario listo. Después se puede conectar con Formspree, Cloudflare Workers o correo.");
-    });
-  }
-});
+const $=(s,r=document)=>r.querySelector(s);const $$=(s,r=document)=>[...r.querySelectorAll(s)];const cache={};async function loadJSON(p){if(cache[p])return cache[p];const r=await fetch(p);const d=await r.json();cache[p]=d;return d}
+function navActive(){const p=location.pathname.replace(/\/index\.html$/,"/");$$(".menu a").forEach(a=>{let u=new URL(a.href,location.origin).pathname;if(p===u||(p==="/"&&u==="/"))a.classList.add("active")})}
+function mobile(){const b=$(".mobile-toggle"),m=$(".menu");if(b&&m)b.onclick=()=>m.classList.toggle("open")}
+function row(h){return `<article class="hymn-row"><div class="thumb">▶</div><div><h3 style="font-size:22px;margin:0">${h.title}</h3><p class="muted" style="margin:5px 0 0">${h.subtitle}</p><div class="badges"><span class="badge">🎵 Audio</span><span class="badge">🎬 Video</span><span class="badge">📖 Letra</span><span class="badge">${h.theme}</span></div></div><a class="btn" href="/himnos/himno.html?id=${h.id}">Ver himno</a></article>`}
+async function hymns(){const w=$("#hymnList");if(!w)return;const data=await loadJSON("/assets/data/hymns.json"),s=$("#hymnSearch"),t=$("#themeFilter"),o=$("#sortFilter");if(t)t.innerHTML='<option value="">Todos los temas</option>'+[...new Set(data.map(x=>x.theme))].map(x=>`<option>${x}</option>`).join("");function draw(){let a=[...data],q=(s?.value||"").toLowerCase().trim();if(q)a=a.filter(h=>[h.title,h.subtitle,h.theme,h.reference].join(" ").toLowerCase().includes(q));if(t?.value)a=a.filter(h=>h.theme===t.value);if(o?.value==="title")a.sort((x,y)=>x.title.localeCompare(y.title));w.innerHTML=a.map(row).join("")||'<div class="panel">No se encontraron himnos.</div>'}[s,t,o].forEach(e=>e&&e.addEventListener("input",draw));draw()}
+async function featured(){const w=$("#featuredHymn");if(!w)return;const data=await loadJSON("/assets/data/hymns.json"),h=data.find(x=>x.featured)||data[0];w.innerHTML=`<div class="panel"><p class="eyebrow">Himno destacado</p><h3 style="font-size:34px">${h.title}</h3><p class="muted">${h.description}</p><div class="player"><div class="play">▶</div><div class="progress"><span></span></div><strong>${h.duration}</strong></div><a class="btn primary" href="/himnos/himno.html?id=${h.id}">Escuchar ahora</a></div><div class="panel"><p class="eyebrow">Canal oficial</p><h3 style="font-size:34px">Suscríbete en YouTube</h3><p class="muted">Nuevos himnos, devocionales y videos cada semana.</p><a class="btn" href="/videos/">Ver videos</a></div>`}
+async function singleHymn(){const w=$("#singleHymn");if(!w)return;const id=new URLSearchParams(location.search).get("id")||"fe-que-mueve-montanas",data=await loadJSON("/assets/data/hymns.json"),h=data.find(x=>x.id===id)||data[0];document.title=h.title+" | Cántico de Fe Music";w.innerHTML=`<a class="muted" href="/himnos/">← Volver a Himnos</a><div class="section-head" style="margin-top:20px"><h2>${h.title}</h2><p>${h.subtitle}</p></div><div class="featured"><div class="panel"><p class="eyebrow">Audio</p><div class="player"><div class="play">▶</div><div class="progress"><span></span></div><strong>${h.duration}</strong></div><p class="eyebrow">Video</p><div class="video-thumb">▶</div><p class="eyebrow">Referencia bíblica</p><p>${h.reference}</p><div class="hero-buttons"><a class="btn primary" href="#">Descargar audio</a><a class="btn" href="#">Descargar letra</a></div></div><div class="panel"><p class="eyebrow">Letra</p>${h.lyrics.map(l=>l?`<p>${l}</p>`:"<br>").join("")}</div></div>`}
+async function devotionals(){const w=$("#devotionalList");if(!w)return;const d=await loadJSON("/assets/data/devotionals.json");w.innerHTML=d.map(x=>`<article class="card"><div class="video-thumb" style="height:130px;font-size:32px">♡</div><span class="badge">${x.category}</span><h3>${x.title}</h3><p class="muted">${x.excerpt}</p><p><strong>${x.verse}</strong> · ${x.minutes} min</p><a class="btn" href="/devocionales/devocional.html?id=${x.id}">Leer más</a></article>`).join("")}
+async function singleDev(){const w=$("#singleDevotional");if(!w)return;const id=new URLSearchParams(location.search).get("id")||"confia-en-el-plan-de-dios",d=await loadJSON("/assets/data/devotionals.json"),x=d.find(v=>v.id===id)||d[0];w.innerHTML=`<a class="muted" href="/devocionales/">← Volver a Devocionales</a><div class="panel" style="margin-top:24px"><p class="eyebrow">${x.category} · ${x.minutes} min</p><h2 style="text-align:left">${x.title}</h2><p class="lead"><strong>${x.verse}</strong></p><p style="font-size:20px;line-height:1.8;color:var(--muted)">${x.body}</p></div>`}
+async function videos(){const w=$("#videoList");if(!w)return;const v=await loadJSON("/assets/data/videos.json");w.innerHTML=v.map(x=>`<article class="card"><div class="video-thumb">▶</div><span class="badge">${x.category}</span><h3>${x.title}</h3><p class="muted">${x.description}</p></article>`).join("")}
+async function search(){const i=$("#globalSearch"),r=$("#searchResults");if(!i||!r)return;const h=await loadJSON("/assets/data/hymns.json");function draw(){let q=i.value.toLowerCase().trim(),a=q?h.filter(x=>[x.title,x.subtitle,x.lyrics.join(" ")].join(" ").toLowerCase().includes(q)):h;r.innerHTML=a.map(x=>`<a class="hymn-row" href="/himnos/himno.html?id=${x.id}"><div class="thumb">♫</div><div><h3 style="font-size:22px;margin:0">${x.title}</h3><p class="muted">${x.subtitle}</p></div><span>›</span></a>`).join("")}i.addEventListener("input",draw);draw()}
+async function admin(){const t=$("#adminTable");if(!t)return;const h=await loadJSON("/assets/data/hymns.json");t.innerHTML=h.map(x=>`<tr><td>${x.title}</td><td>${x.theme}</td><td>${x.reference}</td><td>${x.duration}</td></tr>`).join("");$("#adminForm")?.addEventListener("submit",e=>{e.preventDefault();alert("Demo visual: para guardar himnos reales podemos conectar un CMS o editar hymns.json.")})}
+navActive();mobile();featured();hymns();singleHymn();devotionals();singleDev();videos();search();admin();

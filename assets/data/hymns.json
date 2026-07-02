@@ -2,55 +2,75 @@
   {
     "id": "fe-que-mueve-montanas",
     "title": "Fe que Mueve Montañas",
-    "category": "Fe",
-    "duration": "4:35",
-    "summary": "Un himno sobre confiar cuando todo parece imposible.",
-    "theme": "fe confianza montañas prueba esperanza",
-    "lyrics": "Fe, la llama que Dios encendió,\nla promesa que nunca murió,\nes la fuerza que impulsa al creyente\na seguir caminando valientemente.\n\nFe que mueve montañas y el mar,\nfe que hace los cielos obrar,\ncuando todo parece perdido,\nDios responde al que ha creído."
+    "subtitle": "De fe, confianza y esperanza",
+    "theme": "Fe",
+    "duration": "4:32",
+    "reference": "Mateo 17:20",
+    "description": "Un himno de confianza para recordar que Dios obra cuando creemos.",
+    "featured": true,
+    "lyrics": [
+      "Fe, la llama que Dios encendió,",
+      "la promesa que nunca murió,",
+      "es la fuerza que impulsa al creyente,",
+      "a seguir caminando valientemente.",
+      "",
+      "Fe, que mueve montañas y el mar,",
+      "fe, que hace los cielos obrar,",
+      "cuando todo parece perdido,",
+      "Dios responde al que ha creído."
+    ]
   },
   {
     "id": "quince-anos-mas",
     "title": "Quince Años Más",
-    "category": "Esperanza",
-    "duration": "4:12",
-    "summary": "Inspirado en oración, misericordia y una nueva oportunidad.",
-    "theme": "esperanza oración misericordia vida",
-    "lyrics": "En días de angustia y dolor sin igual,\ncuando la vida parecía terminar,\nvino palabra del cielo a anunciar:\nOrdena tu casa, no vivirás.\n\nMas vuelto el rostro hacia la pared,\nclamó con llanto en profunda fe."
-  },
-  {
-    "id": "cuando-vayas-a-orar",
-    "title": "Cuando Vayas a Orar",
-    "category": "Oración",
+    "subtitle": "Basado en 2 Reyes 20 e Isaías 38",
+    "theme": "Esperanza",
     "duration": "3:58",
-    "summary": "Una canción sobre interceder unos por otros con amor.",
-    "theme": "oración intercesión amor fe",
-    "lyrics": "Cuando vayas a orar, ora por mí,\nque yo también elevaré mi voz por ti.\nEn la prueba y en la calma,\nDios escucha el clamor del alma."
+    "reference": "2 Reyes 20:1-6",
+    "description": "Inspirado en el clamor de Ezequías y la misericordia de Dios.",
+    "featured": false,
+    "lyrics": [
+      "En días de angustia y dolor sin igual,",
+      "cuando la vida parecía terminar,",
+      "vino palabra del cielo a anunciar:",
+      "Ordena tu casa, no vivirás.",
+      "",
+      "Mas volvió su rostro hacia la pared,",
+      "clamó con llanto en profunda fe;",
+      "Dios escuchó su oración,",
+      "y vida nueva le concedió."
+    ]
   },
   {
-    "id": "el-hijo-prodigo",
-    "title": "El Hijo Pródigo",
-    "category": "Restauración",
-    "duration": "4:28",
-    "summary": "Un mensaje de regreso, perdón y amor.",
-    "theme": "restauración perdón regreso amor",
-    "lyrics": "Lejos de casa caminó sin dirección,\nbuscando vida perdió su corazón.\nMas al volver cansado y sin valor,\nhalló los brazos llenos de amor."
+    "id": "en-tu-presencia",
+    "title": "En Tu Presencia",
+    "subtitle": "De adoración y entrega",
+    "theme": "Adoración",
+    "duration": "4:10",
+    "reference": "Salmo 16:11",
+    "description": "Una canción de reverencia y paz espiritual.",
+    "featured": false,
+    "lyrics": [
+      "En tu presencia encuentro paz,",
+      "mi alma descansa en tu verdad;",
+      "cuando mi fuerza se agotó,",
+      "tu mano fiel me levantó."
+    ]
   },
   {
-    "id": "mi-consuelo",
-    "title": "Mi Consuelo",
-    "category": "Consuelo",
-    "duration": "3:49",
-    "summary": "Una alabanza de paz para momentos de aflicción.",
-    "theme": "consuelo paz esperanza",
-    "lyrics": "Cuando la noche parece vencer,\nmi alma recuerda que Dios es fiel.\nÉl es mi abrigo, mi paz y canción,\nmi fortaleza en la tribulación."
-  },
-  {
-    "id": "despedida-a-mi-pastor",
-    "title": "Despedida a mi Pastor",
-    "category": "Gratitud",
-    "duration": "4:06",
-    "summary": "Un himno de gratitud y despedida con sentimiento.",
-    "theme": "gratitud pastor despedida amor",
-    "lyrics": "Gracias por sembrar palabra y amor,\npor guiarnos con paciencia y oración.\nSu ejemplo queda en cada corazón,\ncomo una antorcha de fe y bendición."
+    "id": "dios-esta-aqui",
+    "title": "Dios Está Aquí",
+    "subtitle": "Cántico congregacional",
+    "theme": "Gratitud",
+    "duration": "3:44",
+    "reference": "Salmo 46:1",
+    "description": "Himno breve para recordar la presencia de Dios en la congregación.",
+    "featured": false,
+    "lyrics": [
+      "Dios está aquí, mi alma lo siente,",
+      "su amor me cubre eternamente;",
+      "en cada prueba y tempestad,",
+      "su luz me guía en la verdad."
+    ]
   }
 ]

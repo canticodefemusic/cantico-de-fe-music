@@ -1,23 +1,29 @@
 [
   {
-    "title": "La fe en medio de la prueba",
-    "topic": "Fe",
-    "time": "3 min",
-    "verse": "Hebreos 11:1",
-    "text": "La fe no niega la dificultad; nos ayuda a caminar confiando en la fidelidad de Dios."
+    "id": "confia-en-el-plan-de-dios",
+    "title": "Confía en el Plan de Dios",
+    "category": "Fe",
+    "minutes": 5,
+    "verse": "Romanos 8:28",
+    "excerpt": "Aunque hoy no entiendas el camino, Dios sigue obrando con propósito.",
+    "body": "Hay momentos en que el corazón no comprende el proceso, pero la fe descansa en la fidelidad de Dios."
   },
   {
-    "title": "Cuando vayas a orar",
-    "topic": "Oración",
-    "time": "4 min",
-    "verse": "Santiago 5:16",
-    "text": "Orar por otros nos recuerda que nadie camina solo cuando hay amor y fe."
-  },
-  {
-    "title": "Un nuevo día de misericordia",
-    "topic": "Esperanza",
-    "time": "3 min",
+    "id": "dios-nunca-falla",
+    "title": "Dios Nunca Falla",
+    "category": "Esperanza",
+    "minutes": 4,
     "verse": "Lamentaciones 3:22-23",
-    "text": "Cada amanecer es una invitación a comenzar de nuevo bajo la misericordia de Dios."
+    "excerpt": "Su fidelidad permanece cada mañana, aun en los días difíciles.",
+    "body": "La misericordia de Dios no se agota. Cada día trae una nueva oportunidad para confiar."
+  },
+  {
+    "id": "camina-por-fe",
+    "title": "Camina por Fe",
+    "category": "Confianza",
+    "minutes": 5,
+    "verse": "2 Corintios 5:7",
+    "excerpt": "La fe no siempre ve todo el camino, pero sí conoce al que guía.",
+    "body": "Caminar por fe significa avanzar aunque no tengas todas las respuestas."
   }
 ]
