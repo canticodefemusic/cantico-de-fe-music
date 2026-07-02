@@ -1,13 +1,10 @@
-# Cántico V8.0 - Launch Ready Patch
+# Cántico V8.0 - Integration Patch 01
 
-Parche rápido para dejar Cántico de Fe Music listo para lanzamiento inicial.
+Primer parche de integración para preparar el lanzamiento inicial.
 
 Objetivo:
-- Activar páginas públicas principales.
-- Agregar SEO básico.
-- Agregar reproductor básico.
-- Agregar datos iniciales de himnos, álbumes, videos, playlists y devocionales.
-- Reducir trabajo pendiente para publicar antes del 4 de julio.
-
-Ubicación recomendada:
-Subir este contenido a la rama V6.
+- Conectar la aplicación pública.
+- Montar navegación básica.
+- Activar SEO básico.
+- Preparar estilos principales.
+- Usar datos iniciales del Launch Ready Patch.

@@ -1,8 +1,7 @@
 # Changelog
 
-## V8.0 Launch Ready Patch
-- Public pages scaffold.
-- Basic SEO metadata.
-- Basic player scaffold.
-- Initial site data.
-- Launch checklist.
+## Integration Patch 01
+- Added app bootstrap.
+- Added public navigation.
+- Added launch initialization guide.
+- Added fallback CSS.
