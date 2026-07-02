@@ -3,19 +3,9 @@
     "id": "primeros-himnos",
     "title": "Primeros Himnos",
     "year": "2026",
-    "description": "Colección inicial de Cántico de Fe Music.",
+    "description": "Colección inicial.",
     "items": [
-      "fe-que-mueve-montanas",
-      "dios-esta-aqui"
-    ]
-  },
-  {
-    "id": "historias-biblicas",
-    "title": "Historias Bíblicas",
-    "year": "2026",
-    "description": "Canciones basadas en relatos bíblicos.",
-    "items": [
-      "quince-anos-mas"
+      "fe-que-mueve-montanas"
     ]
   }
 ]

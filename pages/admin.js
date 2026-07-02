@@ -1,67 +1,13 @@
 
+const slugify=text=>text.toString().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+function buildHymn(){
+ const v=id=>document.querySelector(id)?.value?.trim()||"";
+ return {id:v("#hymnId")||slugify(v("#title")||"nuevo-himno"),title:v("#title")||"Nuevo Himno",subtitle:v("#subtitle"),theme:v("#theme")||"Fe",author:v("#author")||"Cántico de Fe Music",year:v("#year")||"2026",duration:v("#duration")||"4:00",reference:v("#reference"),album:v("#album"),playlists:v("#playlists").split(",").map(x=>x.trim()).filter(Boolean),tags:v("#tags").split(",").map(x=>x.trim()).filter(Boolean),featured:document.querySelector("#featured").checked,popular:document.querySelector("#popular").checked,description:v("#description"),lyrics:v("#lyrics").split("\\n"),audioUrl:v("#audioUrl"),youtubeUrl:v("#youtubeUrl"),cover:v("#cover")};
+}
+function validate(h){const e=[];if(!h.id)e.push("Falta ID.");if(!h.title)e.push("Falta título.");if(!h.theme)e.push("Falta tema.");if(!h.reference)e.push("Falta referencia bíblica.");if(!h.lyrics.filter(Boolean).length)e.push("Falta letra.");return e}
+function hymnPreview(h){return `<div class="preview-card"><span class="badge">${h.theme}</span><h3 style="font-size:34px;margin-top:12px">${h.title}</h3><p class="muted">${h.subtitle}</p><p><strong>Referencia:</strong> ${h.reference}</p><p><strong>Álbum:</strong> ${h.album||"Sin álbum"}</p><div class="player"><button class="play">▶</button><div class="progress"><span></span></div><strong>${h.duration}</strong></div><p class="eyebrow">Letra</p>${h.lyrics.slice(0,8).map(l=>l?`<p>${l}</p>`:"<br>").join("")}</div>`}
+function download(filename,text){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type:"application/json"}));a.download=filename;a.click();URL.revokeObjectURL(a.href)}
 export function renderAdmin(data){
-  const template = {
-    id: "nuevo-himno",
-    title: "Nuevo Himno",
-    subtitle: "Subtítulo del himno",
-    theme: "Fe",
-    author: "Cántico de Fe Music",
-    year: "2026",
-    duration: "4:00",
-    reference: "Salmo 96:1",
-    album: "Nuevo Álbum",
-    playlists: ["Fe y Esperanza"],
-    tags: ["fe", "esperanza"],
-    featured: false,
-    popular: false,
-    description: "Descripción breve del himno.",
-    lyrics: ["Primera línea", "Segunda línea"],
-    audioUrl: "",
-    youtubeUrl: "",
-    cover: ""
-  };
-
-  setTimeout(() => {
-    const form = document.querySelector("#adminForm");
-    const preview = document.querySelector("#jsonPreview");
-    const update = () => {
-      const obj = {
-        ...template,
-        id: document.querySelector("#newId").value || "nuevo-himno",
-        title: document.querySelector("#newTitle").value || "Nuevo Himno",
-        theme: document.querySelector("#newTheme").value || "Fe",
-        reference: document.querySelector("#newReference").value || "Salmo 96:1",
-        lyrics: (document.querySelector("#newLyrics").value || "Primera línea").split("\\n")
-      };
-      preview.textContent = JSON.stringify(obj, null, 2);
-    };
-    form.querySelectorAll("input,textarea,select").forEach(el => el.addEventListener("input", update));
-    update();
-  });
-
-  return `
-    <section class="section">
-      <div class="container">
-        <div class="section-head">
-          <h2>Admin V5.3</h2>
-          <p>Generador visual para crear datos limpios y pegarlos en assets/data/hymns.json.</p>
-        </div>
-        <div class="featured">
-          <div class="panel">
-            <form id="adminForm" class="admin-form">
-              <input class="input" id="newId" placeholder="id-del-himno">
-              <input class="input" id="newTitle" placeholder="Título del himno">
-              <input class="input" id="newTheme" placeholder="Tema">
-              <input class="input" id="newReference" placeholder="Referencia bíblica">
-              <textarea class="full" id="newLyrics" rows="9" placeholder="Letra del himno, línea por línea"></textarea>
-            </form>
-          </div>
-          <div class="panel">
-            <p class="eyebrow">JSON generado</p>
-            <pre id="jsonPreview" class="admin-preview"></pre>
-          </div>
-        </div>
-      </div>
-    </section>
-  `;
+ setTimeout(()=>{const form=document.querySelector("#adminForm"),jsonPreview=document.querySelector("#jsonPreview"),visualPreview=document.querySelector("#visualPreview"),status=document.querySelector("#status"),lineCount=document.querySelector("#lineCount"),idInput=document.querySelector("#hymnId"),titleInput=document.querySelector("#title");const update=()=>{if(!idInput.value&&titleInput.value)idInput.value=slugify(titleInput.value);const h=buildHymn(),errors=validate(h);jsonPreview.textContent=JSON.stringify(h,null,2);visualPreview.innerHTML=hymnPreview(h);lineCount.textContent=`${h.lyrics.length} líneas`;status.innerHTML=errors.length?`<span class="invalid">⚠ ${errors.join(" ")}</span>`:`<span class="valid">✓ Listo para copiar</span>`};form.querySelectorAll("input,textarea,select").forEach(el=>el.addEventListener("input",update));form.querySelectorAll("input[type=checkbox]").forEach(el=>el.addEventListener("change",update));document.querySelector("#copyJson").addEventListener("click",async()=>{await navigator.clipboard.writeText(jsonPreview.textContent);const toast=document.querySelector("#toast");toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1800)});document.querySelector("#downloadJson").addEventListener("click",()=>{const h=buildHymn();download(`${h.id}.json`,JSON.stringify(h,null,2))});document.querySelector("#resetForm").addEventListener("click",()=>{form.reset();update()});update()});
+ return `<section class="section"><div class="container"><div class="section-head"><h2>Admin V5.4</h2><p>Generador de himnos con validación, vista previa y JSON listo para pegar en <strong>assets/data/hymns.json</strong>.</p></div><div class="admin-shell"><aside class="admin-nav panel"><p class="eyebrow">Panel</p><button class="btn primary">Nuevo Himno</button><a class="btn" href="/?page=hymns">Ver Biblioteca</a><a class="btn" href="/docs/GUIA.md">Guía</a><div style="margin-top:18px" id="status"></div><p class="muted" id="lineCount">0 líneas</p></aside><div><div class="panel"><form id="adminForm" class="admin-form"><div class="field"><label>Título</label><input class="input" id="title" placeholder="Fe que Mueve Montañas"></div><div class="field"><label>ID automático</label><input class="input" id="hymnId" placeholder="fe-que-mueve-montanas"><div class="help">Se genera desde el título.</div></div><div class="field"><label>Subtítulo</label><input class="input" id="subtitle" placeholder="De fe, confianza y esperanza"></div><div class="field"><label>Tema</label><select id="theme"><option>Fe</option><option>Esperanza</option><option>Adoración</option><option>Gratitud</option><option>Oración</option><option>Consuelo</option><option>Evangelismo</option></select></div><div class="field"><label>Autor</label><input class="input" id="author" value="Cántico de Fe Music"></div><div class="field"><label>Año</label><input class="input" id="year" value="2026"></div><div class="field"><label>Duración</label><input class="input" id="duration" placeholder="4:32"></div><div class="field"><label>Referencia bíblica</label><input class="input" id="reference" placeholder="Mateo 17:20"></div><div class="field"><label>Álbum</label><input class="input" id="album" placeholder="Primeros Himnos"></div><div class="field"><label>Playlists</label><input class="input" id="playlists" placeholder="Fe y Esperanza, Más escuchados"></div><div class="field"><label>Tags</label><input class="input" id="tags" placeholder="fe, esperanza, oración"></div><div class="field"><label>Portada</label><input class="input" id="cover" placeholder="/assets/img/portada.jpg"></div><div class="field"><label>Audio MP3</label><input class="input" id="audioUrl" placeholder="/assets/audio/himno.mp3"></div><div class="field"><label>YouTube</label><input class="input" id="youtubeUrl" placeholder="https://youtube.com/..."></div><div class="field full"><label>Descripción</label><textarea id="description" rows="3" placeholder="Descripción breve del himno."></textarea></div><div class="field full"><label>Letra</label><textarea id="lyrics" rows="12" placeholder="Escribe la letra línea por línea..."></textarea></div><label><input type="checkbox" id="featured"> Himno destacado</label><label><input type="checkbox" id="popular"> Himno popular</label></form></div><div class="featured" style="margin-top:24px"><div class="panel"><p class="eyebrow">Vista previa</p><div id="visualPreview"></div></div><div class="panel"><p class="eyebrow">JSON generado</p><pre id="jsonPreview" class="admin-preview"></pre><div class="hero-buttons"><button class="btn primary" id="copyJson">Copiar JSON</button><button class="btn" id="downloadJson">Descargar JSON</button><button class="btn" id="resetForm">Limpiar</button></div></div></div></div></div><div id="toast" class="copy-toast">JSON copiado ✓</div></div></section>`;
 }

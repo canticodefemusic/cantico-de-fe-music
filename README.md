@@ -1,28 +1,18 @@
-# Cántico de Fe Music V5.3 Base Nueva
+# Cántico de Fe Music V5.4
 
-Esta versión reemplaza las versiones anteriores con una base modular más fácil de mantener.
+Versión enfocada en Admin mejorado.
 
-## Estructura
-
-- `index.html`: entrada principal.
-- `assets/css/styles.css`: estilos globales.
-- `assets/js/app.js`: arranque de la aplicación.
-- `assets/data/`: datos editables.
-- `components/`: header, footer y reproductor.
-- `pages/`: páginas del sitio.
-- `admin/`: se conserva la carpeta para futuras mejoras.
-- `docs/`: notas de mantenimiento.
+## Nuevo
+- Formulario completo para crear himnos.
+- ID automático desde el título.
+- Validación de campos.
+- Contador de líneas.
+- Vista previa visual.
+- JSON generado automáticamente.
+- Botón para copiar JSON.
+- Botón para descargar JSON.
 
 ## Cloudflare Pages
-
-- Framework preset: `None`
+- Framework preset: None
 - Build command: vacío
-- Build output directory: `/`
-
-## Cómo agregar un himno
-
-Edita:
-
-`assets/data/hymns.json`
-
-Agrega un objeto con el mismo formato que los himnos existentes.
+- Build output directory: /

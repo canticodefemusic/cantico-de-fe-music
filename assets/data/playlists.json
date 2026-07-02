@@ -2,26 +2,10 @@
   {
     "id": "fe-y-esperanza",
     "title": "Fe y Esperanza",
-    "description": "Himnos para levantar el ánimo y fortalecer el corazón.",
+    "description": "Himnos para levantar el ánimo.",
     "items": [
       "fe-que-mueve-montanas",
       "quince-anos-mas"
-    ]
-  },
-  {
-    "id": "adoracion",
-    "title": "Adoración",
-    "description": "Cantos de entrega, reverencia y oración.",
-    "items": [
-      "en-tu-presencia"
-    ]
-  },
-  {
-    "id": "congregacionales",
-    "title": "Congregacionales",
-    "description": "Himnos para cantar en comunidad.",
-    "items": [
-      "dios-esta-aqui"
     ]
   }
 ]

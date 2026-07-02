@@ -1,16 +1,18 @@
-# Guía rápida V5.3
+# Cántico de Fe Music V5.4
 
-La V5.3 usa una sola entrada: `index.html`.
+Versión enfocada en Admin mejorado.
 
-Las páginas se controlan por URL:
+## Nuevo
+- Formulario completo para crear himnos.
+- ID automático desde el título.
+- Validación de campos.
+- Contador de líneas.
+- Vista previa visual.
+- JSON generado automáticamente.
+- Botón para copiar JSON.
+- Botón para descargar JSON.
 
-- `/` Inicio
-- `/?page=hymns` Himnos
-- `/?page=hymn&id=fe-que-mueve-montanas` Detalle de himno
-- `/?page=playlists` Playlists
-- `/?page=albums` Álbumes
-- `/?page=videos` Videos
-- `/?page=devotionals` Devocionales
-- `/?page=admin` Admin visual
-
-Para agregar contenido, edita los archivos JSON dentro de `assets/data/`.
+## Cloudflare Pages
+- Framework preset: None
+- Build command: vacío
+- Build output directory: /
