@@ -20,7 +20,7 @@ export const playerTracks = [
     artist: 'Cántico de Fe Music',
     album: 'Himnos de Fe Vol. 1',
     scripture: '2 Reyes 20; Isaías 38',
-    src: '',
+    src: '/assets/audio/himnos/quince-años-más.m4a',
     cover: '',
     lyrics: [
       'En días de angustia y dolor sin igual,',
