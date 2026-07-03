@@ -1,7 +1,7 @@
 # Changelog
 
-## V8.1 Integration
-- Integrated Music Player Pro into Unified Application.
-- Replaced basic player with persistent Music Player Pro.
-- Added initialization after render.
-- Added integration guide.
+## V8.2 Integration Patch
+- Connected Hymn Library Engine to Unified Application.
+- Replaced static Hymns page with dynamic library.
+- Added hymn detail rendering.
+- Initialized Hymn Library after render.
