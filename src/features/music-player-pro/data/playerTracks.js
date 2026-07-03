@@ -5,7 +5,7 @@ export const playerTracks = [
     artist: 'Cántico de Fe Music',
     album: 'Himnos de Fe Vol. 1',
     scripture: 'Mateo 17:20',
-    src: '',
+    src: '/assets/audio/himnos/fe-que-mueve-montanas.mp3',
     cover: '',
     lyrics: [
       'Fe, la llama que Dios encendió,',
