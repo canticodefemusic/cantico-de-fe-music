@@ -16,9 +16,18 @@ import {
   initMusicPlayerPro
 } from '../features/music-player-pro/index.js';
 
+import {
+  renderHymnLibrary,
+  renderHymnDetail,
+  initHymnLibrary
+} from '../features/hymn-library-engine/index.js';
+
 const views = {
   home: renderHomeView,
-  himnos: renderHymnsView,
+  himnos: (route) =>
+    route.id
+    ? renderHymnDetail(route.id)
+    : renderHymnLibrary(),
   albumes: renderAlbumsView,
   playlists: renderPlaylistsView,
   devocionales: renderDevotionalsView,
@@ -54,5 +63,6 @@ export function startUnifiedCanticoApp(rootSelector = '#app') {
 
   setTimeout(() => {
     initMusicPlayerPro();
+    initHymnLibrary();
   }, 0);
-}
+
