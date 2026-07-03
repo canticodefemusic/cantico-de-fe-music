@@ -1,12 +1,7 @@
 # Changelog
 
-## V8.0 Build Patch 02 - Unified Application
-- Added unified public app.
-- Added route resolver.
-- Added navigation component.
-- Added public views.
-- Added hymn cards.
-- Added basic player UI.
-- Added SEO runtime.
-- Added app CSS.
-- Added index.html connection guide.
+## V8.1 Integration
+- Integrated Music Player Pro into Unified Application.
+- Replaced basic player with persistent Music Player Pro.
+- Added initialization after render.
+- Added integration guide.

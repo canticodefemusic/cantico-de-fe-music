@@ -1,7 +1,6 @@
 import { appConfig } from './config/appConfig.js';
 import { resolveRoute } from './router/routeResolver.js';
 import { renderNavigation } from './components/navigation/renderNavigation.js';
-import { renderPlayer } from './components/player/renderPlayer.js';
 import { setPageSEO } from './seo/setPageSEO.js';
 
 import { renderHomeView } from './views/home/renderHomeView.js';
@@ -11,6 +10,11 @@ import { renderPlaylistsView } from './views/playlists/renderPlaylistsView.js';
 import { renderDevotionalsView } from './views/devotionals/renderDevotionalsView.js';
 import { renderVideosView } from './views/videos/renderVideosView.js';
 import { renderContactView } from './views/contact/renderContactView.js';
+
+import {
+  renderMusicPlayerPro,
+  initMusicPlayerPro
+} from '../features/music-player-pro/index.js';
 
 const views = {
   home: renderHomeView,
@@ -26,7 +30,7 @@ export function startUnifiedCanticoApp(rootSelector = '#app') {
   const root = document.querySelector(rootSelector);
 
   if (!root) {
-    console.error('[Cántico V8.0] Root element not found:', rootSelector);
+    console.error('[Cántico V8.1] Root element not found:', rootSelector);
     return;
   }
 
@@ -41,10 +45,14 @@ export function startUnifiedCanticoApp(rootSelector = '#app') {
       <main class="cantico-main">
         ${renderView(route)}
       </main>
-      ${renderPlayer()}
+      ${renderMusicPlayerPro()}
       <footer class="cantico-footer">
         <p>© 2026 Cántico de Fe Music. Todos los derechos reservados.</p>
       </footer>
     </div>
   `;
+
+  setTimeout(() => {
+    initMusicPlayerPro();
+  }, 0);
 }

@@ -1,11 +1,8 @@
-# Cántico V8.0 - Build Patch 02 Unified Application
+# Integración Music Player Pro V8.1
 
-Este parche conecta la aplicación pública en una sola estructura funcional.
+Este paquete conecta el Music Player Pro V8.1 con la aplicación pública V8.0.
 
-Objetivo:
-- Crear una aplicación unificada.
-- Conectar navegación pública.
-- Conectar vistas principales.
-- Conectar SEO básico.
-- Conectar reproductor básico.
-- Preparar Cántico de Fe Music para pruebas reales de lanzamiento.
+Incluye:
+- Versión actualizada de `src/app/unifiedApp.js`
+- Guía para actualizar `index.html`
+- Checklist de prueba
