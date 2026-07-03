@@ -22,23 +22,25 @@ export class HymnLibraryService {
   }
 
   search(query) {
-    const value = normalizeText(String(query || '').trim());
-    if (!value) return this.list();
+  const value = normalizeText(String(query || '').trim());
 
+  if (!value) return this.list();
+
+  return this.catalog.filter(hymn => {
     const searchText = [
-  hymn.title,
-  hymn.subtitle,
-  hymn.scripture,
-  hymn.category,
-  hymn.description,
-  ...(hymn.tags || [])
-]
-  .filter(Boolean)
-  .join(' ');
+      hymn.title,
+      hymn.subtitle,
+      hymn.scripture,
+      hymn.category,
+      hymn.description,
+      ...(hymn.tags || [])
+    ]
+      .filter(Boolean)
+      .join(' ');
 
-return normalizeText(searchText).includes(value);
-    });
-  }
+    return normalizeText(searchText).includes(value);
+  });
+}
 
   categories() {
     return [...new Set(this.catalog.map(hymn => hymn.category).filter(Boolean))];
