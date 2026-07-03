@@ -1,12 +1,8 @@
-# Cántico Music Player Pro V8.1
+# Integración Music Player Pro V8.1
 
-Reproductor profesional para Cántico de Fe Music.
+Este paquete conecta el Music Player Pro V8.1 con la aplicación pública V8.0.
 
 Incluye:
-- Barra inferior persistente.
-- Play / Pause.
-- Next / Previous.
-- Progreso.
-- Volumen.
-- Cola básica.
-- Datos iniciales de himnos.
+- Versión actualizada de `src/app/unifiedApp.js`
+- Guía para actualizar `index.html`
+- Checklist de prueba
