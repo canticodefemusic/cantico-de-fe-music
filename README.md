@@ -1,11 +1,12 @@
-# Cántico V8.0 - Build Patch 02 Unified Application
+# Cántico Music Player Pro V8.1
 
-Este parche conecta la aplicación pública en una sola estructura funcional.
+Reproductor profesional para Cántico de Fe Music.
 
-Objetivo:
-- Crear una aplicación unificada.
-- Conectar navegación pública.
-- Conectar vistas principales.
-- Conectar SEO básico.
-- Conectar reproductor básico.
-- Preparar Cántico de Fe Music para pruebas reales de lanzamiento.
+Incluye:
+- Barra inferior persistente.
+- Play / Pause.
+- Next / Previous.
+- Progreso.
+- Volumen.
+- Cola básica.
+- Datos iniciales de himnos.

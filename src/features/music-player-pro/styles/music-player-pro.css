@@ -1,0 +1,99 @@
+.music-player-pro {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000;
+  background: #06233f;
+  color: #ffffff;
+  border-radius: 24px;
+  padding: 14px 18px;
+  display: grid;
+  grid-template-columns: 1.5fr auto 1fr auto;
+  gap: 18px;
+  align-items: center;
+  box-shadow: 0 18px 44px rgba(0,0,0,.28);
+}
+
+.mpp-track {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.mpp-cover {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #d99a00;
+  color: #06233f;
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+.mpp-track strong,
+.mpp-track span {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mpp-track span {
+  opacity: .82;
+  font-size: .9rem;
+}
+
+.mpp-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.mpp-controls button {
+  border: 0;
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  border-radius: 999px;
+  min-width: 40px;
+  min-height: 40px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.mpp-controls .mpp-play {
+  background: #f4d06f;
+  color: #06233f;
+  min-width: 48px;
+  min-height: 48px;
+}
+
+.mpp-progress-wrap input,
+.mpp-volume input {
+  width: 100%;
+}
+
+.mpp-volume {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 130px;
+}
+
+@media (max-width: 850px) {
+  .music-player-pro {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .mpp-controls {
+    justify-content: center;
+  }
+
+  .mpp-volume {
+    width: 100%;
+  }
+}
