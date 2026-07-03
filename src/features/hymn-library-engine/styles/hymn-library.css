@@ -1,0 +1,123 @@
+.hymn-library,
+.hymn-detail {
+  padding: 34px 0 120px;
+}
+
+.hymn-library__kicker,
+.hymn-library-card__category,
+.hymn-detail__category {
+  color: #c68a00;
+  letter-spacing: .18em;
+  font-size: .75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.hymn-library__header h1,
+.hymn-detail h1 {
+  margin: 0;
+  font-size: clamp(2.2rem, 6vw, 4rem);
+}
+
+.hymn-library__tools {
+  margin: 28px 0;
+}
+
+.hymn-library__tools input {
+  width: 100%;
+  padding: 15px 18px;
+  border: 1px solid #eadca6;
+  border-radius: 999px;
+  font: inherit;
+  background: #fff;
+  color: #102a43;
+}
+
+.hymn-library__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.hymn-library-card,
+.hymn-detail__card {
+  background: #fff;
+  border: 1px solid #eadca6;
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: 0 12px 34px rgba(16, 42, 67, .08);
+}
+
+.hymn-library-card {
+  display: flex;
+  gap: 16px;
+}
+
+.hymn-library-card__icon {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  border-radius: 15px;
+  background: #0b3558;
+  color: #f4d06f;
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+}
+
+.hymn-library-card h3 {
+  margin: 0 0 8px;
+}
+
+.hymn-library-card__scripture,
+.hymn-detail__scripture {
+  font-weight: 800;
+  color: #0b3558;
+}
+
+.hymn-library-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.hymn-library-card__actions a,
+.hymn-library-card__actions button,
+.hymn-detail button {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.hymn-library-card__actions a {
+  background: #fffaf0;
+  color: #0b3558;
+  border: 1px solid #eadca6;
+}
+
+.hymn-library-card__actions button,
+.hymn-detail button {
+  background: #0b3558;
+  color: #fff;
+}
+
+.hymn-detail__lyrics {
+  margin-top: 18px;
+  line-height: 1.8;
+  font-size: 1.08rem;
+}
+
+.hymn-detail__lyrics p {
+  margin: .25rem 0;
+}
+
+.hymn-library__empty {
+  background: #fff;
+  border: 1px dashed #eadca6;
+  border-radius: 18px;
+  padding: 20px;
+}
