@@ -1,5 +1,13 @@
 import { hymnCatalog } from '../data/hymnCatalog.js';
 
+function normalizeText(text) {
+  return String(text || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/ñ/g, 'n');
+}
+
 export class HymnLibraryService {
   constructor(catalog = hymnCatalog) {
     this.catalog = catalog;
@@ -14,22 +22,21 @@ export class HymnLibraryService {
   }
 
   search(query) {
-    const value = String(query || '').trim().toLowerCase();
+    const value = normalizeText(String(query || '').trim());
     if (!value) return this.list();
 
-    return this.catalog.filter(hymn => {
-      return [
-        hymn.title,
-        hymn.subtitle,
-        hymn.scripture,
-        hymn.category,
-        hymn.description,
-        ...(hymn.tags || [])
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase()
-        .includes(value);
+    const searchText = [
+  hymn.title,
+  hymn.subtitle,
+  hymn.scripture,
+  hymn.category,
+  hymn.description,
+  ...(hymn.tags || [])
+]
+  .filter(Boolean)
+  .join(' ');
+
+return normalizeText(searchText).includes(value);
     });
   }
 
