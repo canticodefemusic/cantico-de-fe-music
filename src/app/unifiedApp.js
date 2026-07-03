@@ -65,4 +65,4 @@ export function startUnifiedCanticoApp(rootSelector = '#app') {
     initMusicPlayerPro();
     initHymnLibrary();
   }, 0);
-
+}
