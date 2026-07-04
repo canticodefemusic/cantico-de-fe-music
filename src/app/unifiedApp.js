@@ -22,18 +22,12 @@ import {
   initHymnLibrary
 } from '../features/hymn-library-engine/index.js';
 
-import {
-    HymnDetailController
-} from '../features/hymn-detail-engine/index.js';
-
-const hymnDetailController = new HymnDetailController();
-
 const views = {
   home: renderHomeView,
   himnos: (route) =>
-    route.id
-        ? hymnDetailController.render(route.id)
-        : renderHymnLibrary(),
+  route.id
+    ? renderHymnDetail(route.id)
+    : renderHymnLibrary(),
   albumes: renderAlbumsView,
   playlists: renderPlaylistsView,
   devocionales: renderDevotionalsView,
