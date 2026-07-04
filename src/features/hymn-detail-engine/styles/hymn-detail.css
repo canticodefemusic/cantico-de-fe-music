@@ -178,14 +178,15 @@
   border-bottom: 1px solid #ddd;
 }
 
-.hymn-detail__print-meta p {
+.print-row {
+  display: flex;
   margin: 6px 0;
 }
 
-.hymn-detail__print-meta strong {
-  display: inline-block !important;
-  min-width: 140px !important;
-  font-weight: 700 !important;
+.print-row .label {
+  width: 140px;
+  flex-shrink: 0;
+  font-weight: 700;
 }
   
 .hymn-detail {
