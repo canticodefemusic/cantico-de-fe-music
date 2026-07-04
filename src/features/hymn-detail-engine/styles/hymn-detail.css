@@ -100,6 +100,25 @@
   font-size: 1.2rem;
 }
 
+.hymn-detail__meta-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.hymn-detail__meta-table td {
+  padding: 8px 0;
+  vertical-align: top;
+}
+
+.hymn-detail__meta-table .label {
+  width: 140px;
+  font-weight: 700;
+  color: #0b2540;
+}
+
 @media (max-width:768px) {
 
 .hymn-detail {
@@ -126,13 +145,6 @@
   display: none !important;
 }
 
-.hymn-detail__meta-item {
-  display: flex !important;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
   body {
     background: white;
   }
@@ -140,17 +152,22 @@
 .hymn-detail hr {
   display: none;
 }
-  
-.hymn-detail__meta-item .label {
-  display: inline-block;
-  min-width: 130px;
-  font-weight: 700 !important;
+
+.hymn-detail__meta-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
 }
-  
-.hymn-detail__meta-item .value {
-  display: inline-block;
+
+.hymn-detail__meta-table td {
+  padding: 4px 10px 4px 0;
+  vertical-align: top;
 }
-  
+
+.hymn-detail__meta-table .label {
+  width: 130px;
+  font-weight: 700;
+}  
 .hymn-detail {
   max-width: 100%;
   padding: 0;
