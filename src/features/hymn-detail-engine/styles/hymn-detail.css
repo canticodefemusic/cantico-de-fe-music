@@ -153,24 +153,20 @@
   display: none;
 }
 
-.hymn-detail__meta-table {
-  width: 100%;
-  border-collapse: collapse;
+.hymn-detail__print-meta {
   margin: 18px 0;
+  padding: 12px 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
 }
 
-.hymn-detail__meta-table th,
-.hymn-detail__meta-table td {
-  padding: 6px 0;
-  vertical-align: top;
-  text-align: left;
+.hymn-detail__print-meta p {
+  margin: 6px 0;
 }
 
-.hymn-detail__meta-table th {
+.hymn-detail__print-meta strong {
+  display: inline-block;
   width: 140px;
-  padding-right: 16px;
-  font-weight: 700;
-  white-space: nowrap;
 } 
   
 .hymn-detail {
