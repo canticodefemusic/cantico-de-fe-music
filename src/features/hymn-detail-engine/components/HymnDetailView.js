@@ -48,11 +48,22 @@ export function renderHymnDetailView(hymn) {
         </div>
         
 <div class="hymn-detail__print-meta">
-  <p><strong>Artista: </strong>${hymn.artist || 'Cántico de Fe Music'}</p>
 
-<p><strong>Categoría: </strong>${hymn.category}</p>
+  <div class="print-row">
+    <span class="label">Artista:</span>
+    <span>${hymn.artist || 'Cántico de Fe Music'}</span>
+  </div>
 
-<p><strong>Referencia: </strong>${hymn.scripture}</p>
+  <div class="print-row">
+    <span class="label">Categoría:</span>
+    <span>${hymn.category}</span>
+  </div>
+
+  <div class="print-row">
+    <span class="label">Referencia:</span>
+    <span>${hymn.scripture}</span>
+  </div>
+
 </div>
 
         <hr>
