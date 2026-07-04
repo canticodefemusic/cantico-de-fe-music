@@ -117,13 +117,25 @@
 }
 @media print {
 
-  header,
-  nav,
-  footer,
-  .hymn-detail__back,
-  .hymn-detail__actions {
+  .cantico-header,
+.cantico-footer,
+.music-player-pro,
+#musicPlayerPro,
+.hymn-detail__back,
+.hymn-detail__actions {
     display: none !important;
-  }
+}
+
+.hymn-detail__meta-item {
+    display: grid !important;
+    grid-template-columns: 120px 1fr !important;
+    gap: 12px !important;
+    margin-bottom: 6px !important;
+}
+
+.hymn-detail__meta-item .label {
+    font-weight: 700 !important;
+}
 
   body {
     background: white;
