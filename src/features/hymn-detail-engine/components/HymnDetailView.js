@@ -47,24 +47,24 @@ export function renderHymnDetailView(hymn) {
           </button>
         </div>
         
-<div class="hymn-detail__meta">
+<table class="hymn-detail__meta-table">
 
-  <div class="hymn-detail__meta-item">
-    <span class="label">Artista:</span>&nbsp;
-    <span class="value">${hymn.artist || 'Cántico de Fe Music'}</span>
-  </div>
+  <tr>
+    <td class="label">Artista:</td>
+    <td>${hymn.artist || 'Cántico de Fe Music'}</td>
+  </tr>
 
-  <div class="hymn-detail__meta-item">
-    <span class="label">Categoría:</span>&nbsp;
-    <span class="value">${hymn.category}</span>
-  </div>
+  <tr>
+    <td class="label">Categoría:</td>
+    <td>${hymn.category}</td>
+  </tr>
 
-  <div class="hymn-detail__meta-item">
-    <span class="label">Referencia:</span>&nbsp;
-    <span class="value">${hymn.scripture}</span>
-  </div>
+  <tr>
+    <td class="label">Referencia:</td>
+    <td>${hymn.scripture}</td>
+  </tr>
 
-</div>
+</table>
         <hr>
 
         <section class="hymn-detail__lyrics-section">
