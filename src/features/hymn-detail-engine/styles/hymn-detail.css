@@ -48,6 +48,24 @@
   line-height: 1.7;
 }
 
+.hymn-detail__print-meta {
+  margin: 2rem 0;
+  padding: 1.5rem 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.hymn-detail__print-meta p {
+  margin: 6px 0;
+}
+
+.hymn-detail__print-meta strong {
+  display: inline-block;
+  min-width: 140px;
+  font-weight: 700;
+  color: #0b2540;
+}
+
 .hymn-detail__actions {
   display: flex;
   gap: .75rem;
@@ -165,9 +183,10 @@
 }
 
 .hymn-detail__print-meta strong {
-  display: inline-block;
-  width: 140px;
-} 
+  display: inline-block !important;
+  min-width: 140px !important;
+  font-weight: 700 !important;
+}
   
 .hymn-detail {
   max-width: 100%;
