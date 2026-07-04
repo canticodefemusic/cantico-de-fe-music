@@ -1,5 +1,4 @@
 import { HymnDetailService } from './services/HymnDetailService.js';
-import { renderHymnDetailView } from './components/HymnDetailView.js';
 
 export class HymnDetailController {
   constructor(catalog = []) {
@@ -7,7 +6,17 @@ export class HymnDetailController {
   }
 
   render(identifier) {
-    const hymn = this.service.find(identifier);
-    return renderHymnDetailView(hymn);
+    const page = this.service.getHymnPage(identifier);
+
+    if (!page) {
+      return `
+        <section class="hymn-not-found">
+          <h2>Himno no encontrado</h2>
+          <p>El himno solicitado no existe.</p>
+        </section>
+      `;
+    }
+
+    return page;
   }
 }
