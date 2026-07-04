@@ -115,3 +115,38 @@
   }
 
 }
+@media print {
+
+  header,
+  nav,
+  footer,
+  .hymn-detail__back,
+  .hymn-detail__actions {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+  }
+
+  .hymn-detail {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .hymn-detail__card {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .hymn-detail h1 {
+    font-size: 34px;
+  }
+
+  .hymn-detail__lyrics p {
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+}
