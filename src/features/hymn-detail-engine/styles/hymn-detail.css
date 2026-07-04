@@ -159,15 +159,20 @@
   margin: 18px 0;
 }
 
+.hymn-detail__meta-table th,
 .hymn-detail__meta-table td {
-  padding: 4px 10px 4px 0;
+  padding: 6px 0;
   vertical-align: top;
+  text-align: left;
 }
 
-.hymn-detail__meta-table .label {
-  width: 130px;
+.hymn-detail__meta-table th {
+  width: 140px;
+  padding-right: 16px;
   font-weight: 700;
-}  
+  white-space: nowrap;
+} 
+  
 .hymn-detail {
   max-width: 100%;
   padding: 0;
