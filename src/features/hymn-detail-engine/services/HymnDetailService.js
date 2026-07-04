@@ -1,20 +1,31 @@
+import { HymnRepository } from '../data/HymnRepository.js';
+
 export class HymnDetailService {
   constructor(catalog = []) {
-    this.catalog = catalog;
+    this.repository = new HymnRepository(catalog);
   }
 
-  findById(id) {
-    return this.catalog.find(hymn => hymn.id === id) || null;
+  getHymn(identifier) {
+    return this.repository.find(identifier);
   }
 
-  findBySlug(slug) {
-    return this.catalog.find(hymn => hymn.slug === slug) || null;
+  getNavigation(identifier) {
+    return {
+      previous: this.repository.getPrevious(identifier),
+      next: this.repository.getNext(identifier)
+    };
   }
 
-  find(identifier) {
-    return (
-      this.findById(identifier) ||
-      this.findBySlug(identifier)
-    );
+  getHymnPage(identifier) {
+    const hymn = this.getHymn(identifier);
+
+    if (!hymn) {
+      return null;
+    }
+
+    return {
+      hymn,
+      navigation: this.getNavigation(identifier)
+    };
   }
 }
