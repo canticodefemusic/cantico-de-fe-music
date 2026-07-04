@@ -1,7 +1,117 @@
 .hymn-detail {
-  padding: 2rem 0 8rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 8rem;
+}
+
+.hymn-detail__back {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: #0b2540;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.hymn-detail__card {
+  background: #ffffff;
+  border: 1px solid #e7d8a4;
+  border-radius: 22px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,.06);
+}
+
+.hymn-detail__category {
+  color: #c88719;
+  font-size: .85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  margin-bottom: .5rem;
 }
 
 .hymn-detail h1 {
+  margin: 0;
+  font-size: 3.5rem;
   color: #0b2540;
+}
+
+.hymn-detail__scripture {
+  margin-top: 1rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #0b2540;
+}
+
+.hymn-detail__description {
+  margin: 1.5rem 0;
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.hymn-detail__actions {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  margin: 1.5rem 0;
+}
+
+.hymn-detail__actions button {
+  padding: .8rem 1.3rem;
+  border: none;
+  border-radius: 999px;
+  background: #0b2540;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.hymn-detail__meta {
+  display: grid;
+  gap: .75rem;
+  margin: 2rem 0;
+  padding: 1.5rem 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.hymn-detail__meta-item {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.hymn-detail__meta-item .label {
+  font-weight: 700;
+  color: #0b2540;
+}
+
+.hymn-detail__meta-item .value {
+  color: #444;
+}
+
+.hymn-detail__lyrics-section h2 {
+  margin-top: 2rem;
+  color: #0b2540;
+}
+
+.hymn-detail__lyrics p {
+  margin: .9rem 0;
+  line-height: 1.9;
+  font-size: 1.2rem;
+}
+
+@media (max-width:768px) {
+
+  .hymn-detail {
+    padding: 1rem 1rem 7rem;
+  }
+
+  .hymn-detail h1 {
+    font-size: 2.3rem;
+  }
+
+  .hymn-detail__scripture {
+    font-size: 1.1rem;
+  }
+
 }
