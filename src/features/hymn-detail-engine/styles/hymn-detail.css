@@ -143,10 +143,10 @@
   
 .hymn-detail__meta-item .label {
   display: inline-block;
-  min-width: 110px;
+  min-width: 130px;
   font-weight: 700 !important;
 }
-
+  
 .hymn-detail__meta-item .value {
   display: inline-block;
 }
