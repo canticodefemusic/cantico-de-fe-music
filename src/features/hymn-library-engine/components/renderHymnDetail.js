@@ -38,11 +38,24 @@ export function renderHymnDetail(id) {
           <button type="button" onclick="window.print()">Imprimir</button>
         </div>
 
-        <div class="hymn-detail__meta">
-          <div><strong>Artista</strong><span>${hymn.artist || 'Cántico de Fe Music'}</span></div>
-          <div><strong>Categoría</strong><span>${hymn.category || 'Himno'}</span></div>
-          <div><strong>Referencia</strong><span>${hymn.scripture || 'Sin referencia'}</span></div>
-        </div>
+        <div class="hymn-detail__print-meta">
+
+  <div class="print-row">
+    <span class="label">Artista:</span>
+    <span>${hymn.artist || 'Cántico de Fe Music'}</span>
+  </div>
+
+  <div class="print-row">
+    <span class="label">Categoría:</span>
+    <span>${hymn.category || 'Himno'}</span>
+  </div>
+
+  <div class="print-row">
+    <span class="label">Referencia:</span>
+    <span>${hymn.scripture || 'Sin referencia'}</span>
+  </div>
+
+</div>
 
         <hr>
 
