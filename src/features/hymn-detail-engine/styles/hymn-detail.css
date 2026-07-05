@@ -212,5 +212,28 @@
   break-inside: avoid;
   page-break-inside: avoid;
 }
-  
+@page {
+  margin: 0.35in;
+}
+
+html,
+body {
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.cantico-app-shell,
+.cantico-main,
+.hymn-detail,
+.hymn-detail__card {
+  min-height: 0 !important;
+  height: auto !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.hymn-detail__lyrics p {
+  margin: 0 0 10px !important;
+  line-height: 1.55 !important;
+}  
 }
