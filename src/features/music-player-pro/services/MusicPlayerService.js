@@ -30,6 +30,12 @@ export class MusicPlayerService {
     return track;
   }
 
+  loadById(id) {
+   const index = playerState.tracks.findIndex(track => track.id === id);
+   if (index === -1) return null;
+   return this.load(index);
+ }
+  
   async play(index = null) {
     if (index !== null) this.load(index);
     const track = this.getCurrentTrack();
