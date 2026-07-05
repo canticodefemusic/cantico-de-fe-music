@@ -68,7 +68,26 @@ export function initMusicPlayerPro() {
   volume?.addEventListener('input', event => {
     service.setVolume(Number(event.target.value) / 100);
   });
+  
+window.addEventListener('cantico:hymn-play', async event => {
+  const hymn = event.detail;
+  if (!hymn?.id) return;
 
+  const track = service.loadById(hymn.id);
+
+  if (!track) {
+    console.warn('[Music Player Pro] No track found for hymn:', hymn.id);
+    return;
+  }
+
+  updateTrackUI();
+
+  const playing = await service.play();
+  if (playButton) {
+    playButton.textContent = playing ? '⏸' : '▶';
+  }
+});
+  
   setInterval(() => {
     const state = service.getState();
     if (state.audio.duration && progress) {
