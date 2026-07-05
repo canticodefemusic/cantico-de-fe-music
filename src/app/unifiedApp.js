@@ -25,7 +25,7 @@ import {
 const views = {
   home: renderHomeView,
   himnos: (route) =>
-    route.id
+  route.id
     ? renderHymnDetail(route.id)
     : renderHymnLibrary(),
   albumes: renderAlbumsView,
