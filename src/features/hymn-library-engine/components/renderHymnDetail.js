@@ -34,7 +34,7 @@ export function renderHymnDetail(id) {
 
         <div class="hymn-detail__actions">
           <button type="button" data-hymn-play="${hymn.id}">▶ Escuchar</button>
-          <button type="button" onclick="navigator.clipboard.writeText(window.location.href)">Copiar enlace</button>
+          <button type="button" data-hymn-copy-link="${hymn.id}">Copiar enlace</button>
           <button type="button" onclick="window.print()">Imprimir</button>
         </div>
 
