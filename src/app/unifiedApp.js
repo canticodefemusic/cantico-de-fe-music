@@ -19,7 +19,8 @@ import {
 import {
   renderHymnLibrary,
   renderHymnDetail,
-  initHymnLibrary
+  initHymnLibrary,
+  initShareButtons
 } from '../features/hymn-library-engine/index.js';
 
 const views = {
