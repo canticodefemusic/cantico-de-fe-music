@@ -22,4 +22,16 @@ export function initShareButtons() {
       }
     });
   });
+  
+  document.querySelectorAll('[data-share-whatsapp]').forEach(button => {
+    button.addEventListener('click', () => {
+      const url = encodeURIComponent(window.location.href);
+      const text = encodeURIComponent('Mira este himno de Cántico de Fe Music');
+
+      window.open(
+        `https://wa.me/?text=${text}%20${url}`,
+        '_blank'
+      );
+    });
+  });
 }
