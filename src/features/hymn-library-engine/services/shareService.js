@@ -34,4 +34,15 @@ export function initShareButtons() {
       );
     });
   });
+  
+  document.querySelectorAll('[data-share-facebook]').forEach(button => {
+    button.addEventListener('click', () => {
+      const url = encodeURIComponent(window.location.href);
+
+      window.open(
+        `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+        '_blank'
+      );
+    });
+  });
 }
