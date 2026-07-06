@@ -33,10 +33,40 @@ export function renderHymnDetail(id) {
         <p class="hymn-detail__description">${hymn.description || ''}</p>
 
         <div class="hymn-detail__actions">
-          <button type="button" data-hymn-play="${hymn.id}">▶ Escuchar</button>
-          <button type="button" data-hymn-copy-link="${hymn.id}">Copiar enlace</button>
-          <button type="button" onclick="window.print()">Imprimir</button>
-        </div>
+  <button type="button" data-hymn-play="${hymn.id}">▶ Escuchar</button>
+
+  <button type="button" data-hymn-copy-link="${hymn.id}">
+    📋 Copiar enlace
+  </button>
+
+  <button
+    type="button"
+    data-share-whatsapp="${hymn.id}">
+    🟢 WhatsApp
+  </button>
+
+  <button
+    type="button"
+    data-share-facebook="${hymn.id}">
+    🔵 Facebook
+  </button>
+
+  <button
+    type="button"
+    data-share-x="${hymn.id}">
+    ⚫ X
+  </button>
+
+  <button
+    type="button"
+    data-share-email="${hymn.id}">
+    ✉️ Email
+  </button>
+
+  <button type="button" onclick="window.print()">
+    🖨 Imprimir
+  </button>
+</div>
 
         <div class="hymn-detail__print-meta">
 
