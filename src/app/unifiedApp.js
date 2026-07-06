@@ -63,12 +63,14 @@ export function startUnifiedCanticoApp(rootSelector = '#app') {
   `;
 
   setTimeout(() => {
-  const player = initMusicPlayerPro();
+  initMusicPlayerPro();
 
   initHymnLibrary({
     onPlay: (hymn) => {
       window.dispatchEvent(new CustomEvent('cantico:hymn-play', { detail: hymn }));
     }
   });
+
+  initShareButtons();
 }, 0);
 }
