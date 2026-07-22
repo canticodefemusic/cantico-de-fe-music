@@ -28,7 +28,7 @@ export function updateSeo({
   title = 'Cántico de Fe Music',
 description = 'Escucha himnos cristianos inspirados en la Palabra de Dios.',
 url = window.location.href,
-image = '/assets/images/default-cover.jpg',
+image = '/assets/img/covers/default-social-cover.png',
 siteName = 'Cántico de Fe Music'
 }) {
   if (title) {
