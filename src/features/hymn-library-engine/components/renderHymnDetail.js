@@ -63,6 +63,13 @@ export function renderHymnDetail(id) {
     ✉️ Email
   </button>
 
+<button
+  type="button"
+  data-share-native="${hymn.id}"
+  hidden>
+  📤 Compartir
+</button>
+
   <button type="button" onclick="window.print()">
     🖨 Imprimir
   </button>
