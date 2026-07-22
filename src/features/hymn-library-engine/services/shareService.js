@@ -45,4 +45,16 @@ export function initShareButtons() {
       );
     });
   });
+  
+  document.querySelectorAll('[data-share-email]').forEach(button => {
+    button.addEventListener('click', () => {
+      const subject = encodeURIComponent('Cántico de Fe Music');
+      const body = encodeURIComponent(
+        `Quiero compartir este himno contigo:\n\n${window.location.href}`
+      );
+
+      window.location.href =
+        `mailto:?subject=${subject}&body=${body}`;
+    });
+  });
 }
