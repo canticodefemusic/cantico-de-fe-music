@@ -22,4 +22,77 @@ export function initShareButtons() {
       }
     });
   });
+  
+  document.querySelectorAll('[data-share-whatsapp]').forEach(button => {
+    button.addEventListener('click', () => {
+      const url = encodeURIComponent(window.location.href);
+      const text = encodeURIComponent('Mira este himno de Cántico de Fe Music');
+
+      window.open(
+        `https://wa.me/?text=${text}%20${url}`,
+        '_blank'
+      );
+    });
+  });
+  
+  document.querySelectorAll('[data-share-facebook]').forEach(button => {
+    button.addEventListener('click', () => {
+      const url = encodeURIComponent(window.location.href);
+
+      window.open(
+        `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+        '_blank'
+      );
+    });
+  });
+  
+  document.querySelectorAll('[data-share-email]').forEach(button => {
+    button.addEventListener('click', () => {
+      const subject = encodeURIComponent('Cántico de Fe Music');
+      const body = encodeURIComponent(
+        `Quiero compartir este himno contigo:\n\n${window.location.href}`
+      );
+
+      window.location.href =
+        `mailto:?subject=${subject}&body=${body}`;
+    });
+  });
+  
+  document.querySelectorAll('[data-share-native]').forEach(button => {
+    if (!navigator.share) {
+      button.hidden = true;
+      return;
+    }
+
+    button.hidden = false;
+
+    button.addEventListener('click', async () => {
+      const originalText = button.textContent;
+
+      try {
+        button.disabled = true;
+        button.textContent = 'Compartiendo...';
+
+        await navigator.share({
+          title: document.title,
+          text: 'Quiero compartir este himno contigo.',
+          url: window.location.href
+        });
+
+        button.textContent = '✓ Compartido';
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          button.textContent = originalText;
+        } else {
+          console.error('No se pudo compartir:', error);
+          button.textContent = 'No se pudo compartir';
+        }
+      } finally {
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.disabled = false;
+        }, 2000);
+      }
+    });
+  });
 }
