@@ -57,4 +57,42 @@ export function initShareButtons() {
         `mailto:?subject=${subject}&body=${body}`;
     });
   });
+  
+  document.querySelectorAll('[data-share-native]').forEach(button => {
+    if (!navigator.share) {
+      button.hidden = true;
+      return;
+    }
+
+    button.hidden = false;
+
+    button.addEventListener('click', async () => {
+      const originalText = button.textContent;
+
+      try {
+        button.disabled = true;
+        button.textContent = 'Compartiendo...';
+
+        await navigator.share({
+          title: document.title,
+          text: 'Quiero compartir este himno contigo.',
+          url: window.location.href
+        });
+
+        button.textContent = '✓ Compartido';
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          button.textContent = originalText;
+        } else {
+          console.error('No se pudo compartir:', error);
+          button.textContent = 'No se pudo compartir';
+        }
+      } finally {
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.disabled = false;
+        }, 2000);
+      }
+    });
+  });
 }
