@@ -25,11 +25,11 @@ function setCanonical(url) {
 }
 
 export function updateSeo({
-  title,
-  description,
-  url,
-  image,
-  siteName = 'Cántico de Fe Music'
+  title = 'Cántico de Fe Music',
+description = 'Escucha himnos cristianos inspirados en la Palabra de Dios.',
+url = window.location.href,
+image = '/assets/images/default-cover.jpg',
+siteName = 'Cántico de Fe Music'
 }) {
   if (title) {
     document.title = `${title} | ${siteName}`;
