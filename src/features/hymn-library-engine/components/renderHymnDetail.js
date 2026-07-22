@@ -1,10 +1,10 @@
 import { HymnLibraryService } from '../services/HymnLibraryService.js';
-
+import { updateSeo } from '../services/seoService.js';
 const service = new HymnLibraryService();
 
 export function renderHymnDetail(id) {
   const hymn = service.findById(id);
-
+  
   if (!hymn) {
     return `
       <section class="hymn-detail">
@@ -16,7 +16,14 @@ export function renderHymnDetail(id) {
       </section>
     `;
   }
-
+  
+updateSeo({
+  title: hymn.title,
+  description: hymn.description,
+  url: window.location.href,
+  image: hymn.cover
+});
+  
   const lyrics = Array.isArray(hymn.lyrics)
     ? hymn.lyrics.map(line => line ? `<p>${line}</p>` : '<br>').join('')
     : '';
