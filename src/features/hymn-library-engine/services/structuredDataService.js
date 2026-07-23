@@ -13,7 +13,7 @@ export function updateStructuredData({
   language = 'es',
   category = 'Himno cristiano',
   scripture = '',
-  dateModified = new Date().toISOString()
+  dateModified = ''
 } = {}) {
   removeStructuredData();
 
@@ -23,13 +23,14 @@ export function updateStructuredData({
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'MusicComposition',
+    '@id': absolutePageUrl + '#musiccomposition',
+    mainEntityOfPage: absolutePageUrl,
     name: title,
     description,
     url: absolutePageUrl,
     image: absoluteImageUrl,
     inLanguage: language,
     genre: category,
-    dateModified,
     composer: {
       '@type': 'Organization',
       name: artist
@@ -40,7 +41,10 @@ export function updateStructuredData({
       url: window.location.origin
     }
   };
-
+  
+if (dateModified) {
+  schema.dateModified = dateModified;
+}
   if (scripture) {
     schema.about = {
       '@type': 'CreativeWork',
