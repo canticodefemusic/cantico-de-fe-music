@@ -1,15 +1,25 @@
 {
   "name": "Cántico de Fe Music",
   "short_name": "Cántico de Fe",
+  "description": "Himnos cristianos, alabanzas y música de adoración.",
+  "lang": "es",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#fff8ec",
   "theme_color": "#06233f",
+  "categories": [
+    "music",
+    "education",
+    "religion"
+  ],
   "icons": [
     {
       "src": "/assets/icons/favicon.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }
