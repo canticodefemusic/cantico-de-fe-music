@@ -1,5 +1,6 @@
 import { HymnLibraryService } from '../services/HymnLibraryService.js';
 import { updateSeo } from '../services/seoService.js';
+import { updateStructuredData } from '../services/structuredDataService.js';
 const service = new HymnLibraryService();
 
 export function renderHymnDetail(id) {
@@ -22,6 +23,16 @@ updateSeo({
   description: hymn.description,
   url: window.location.href,
   image: hymn.cover
+});
+
+  updateStructuredData({
+  title: hymn.title,
+  description: hymn.description,
+  url: window.location.href,
+  image: hymn.cover,
+  artist: hymn.artist || 'Cántico de Fe Music',
+  category: hymn.category || 'Himno cristiano',
+  scripture: hymn.scripture || ''
 });
   
   const lyrics = Array.isArray(hymn.lyrics)
