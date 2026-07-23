@@ -29,7 +29,10 @@ updateSeo({
   title: hymn.title,
   description: hymn.description,
   url: window.location.href,
-  image: hymn.cover
+  image: hymn.cover,
+  artist: hymn.artist || 'Cántico de Fe Music',
+  category: hymn.category || 'Himno cristiano',
+  scripture: hymn.scripture || ''
 });
   
   const lyrics = Array.isArray(hymn.lyrics)
