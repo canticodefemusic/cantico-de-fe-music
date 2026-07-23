@@ -1,5 +1,6 @@
 import { HymnLibraryService } from '../services/HymnLibraryService.js';
 import { updateSeo } from '../services/seoService.js';
+import { updateStructuredData } from '../services/structuredDataService.js';
 const service = new HymnLibraryService();
 
 export function renderHymnDetail(id) {
@@ -18,6 +19,13 @@ export function renderHymnDetail(id) {
   }
   
 updateSeo({
+  title: hymn.title,
+  description: hymn.description,
+  url: window.location.href,
+  image: hymn.cover
+});
+
+  updateStructuredData({
   title: hymn.title,
   description: hymn.description,
   url: window.location.href,
