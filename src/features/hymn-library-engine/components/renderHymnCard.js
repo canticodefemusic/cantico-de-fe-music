@@ -69,19 +69,27 @@ export function renderHymnCard(hymn, query = '') {
   return `
     <article class="hymn-library-card" data-hymn-id="${safeId}">
       <button
-        type="button"
-        class="hymn-library-card__favorite"
-        data-hymn-favorite="${safeId}"
-        aria-label="${
-          favorite
-            ? `Quitar ${safeTitle} de favoritos`
-            : `Agregar ${safeTitle} a favoritos`
-        }"
-        aria-pressed="${favorite}"
-        title="${favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}"
-      >
-        ${favorite ? '★' : '☆'}
-      </button>
+  type="button"
+  class="hymn-library-card__favorite"
+  data-hymn-favorite="${safeId}"
+  aria-label="${
+    favorite
+      ? `Quitar ${safeTitle} de favoritos`
+      : `Agregar ${safeTitle} a favoritos`
+  }"
+  aria-pressed="${favorite}"
+  title="${favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}"
+>
+  <svg
+    class="favorite-icon"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+  >
+    <path
+      d="M12 2.5l2.94 5.96 6.58.96-4.76 4.64 1.12 6.56L12 17.77 6.12 20.62l1.12-6.56L2.48 9.42l6.58-.96L12 2.5z"
+    />
+  </svg>
+</button>
 
       <div class="hymn-library-card__icon">♪</div>
 
