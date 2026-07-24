@@ -49,14 +49,104 @@
 }
 
 .hymn-library-card {
+  position: relative;
   display: flex;
   gap: 16px;
+}
+
+.hymn-library-card__body {
+  min-width: 0;
+  padding-right: 52px;
+}
+
+.hymn-library-card__favorite {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  left: auto;
+
+  width: 42px;
+  height: 42px;
+  padding: 0;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid #eadca6;
+  border-radius: 12px;
+
+  background: #fffaf0;
+  color: #8a8a8a;
+
+  cursor: pointer;
+
+  box-shadow: 0 4px 12px rgba(16, 42, 67, .08);
+
+  transition:
+    transform .2s ease,
+    color .2s ease,
+    background-color .2s ease,
+    border-color .2s ease,
+    box-shadow .2s ease;
+}
+
+.hymn-library-card__favorite:hover {
+  transform: translateY(-2px) scale(1.06);
+  border-color: #d7b44b;
+  box-shadow: 0 8px 18px rgba(16, 42, 67, .14);
+}
+
+.hymn-library-card__favorite:active {
+  transform: scale(.92);
+}
+
+.hymn-library-card__favorite:focus-visible {
+  outline: 3px solid rgba(198, 138, 0, .28);
+  outline-offset: 3px;
+}
+
+.favorite-icon {
+  width: 24px;
+  height: 24px;
+
+  fill: transparent;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+
+  transition:
+    fill .2s ease,
+    stroke .2s ease,
+    transform .2s ease,
+    filter .2s ease;
+}
+
+.hymn-library-card__favorite[aria-pressed="true"] {
+  color: #c68a00;
+  background: #fff8d9;
+  border-color: #d7b44b;
+  box-shadow:
+    0 6px 18px rgba(198, 138, 0, .20),
+    0 0 0 4px rgba(244, 208, 111, .12);
+}
+
+.hymn-library-card__favorite[aria-pressed="true"] .favorite-icon {
+  fill: currentColor;
+  stroke: currentColor;
+  filter: drop-shadow(0 2px 4px rgba(198, 138, 0, .32));
+  animation: favorite-pop .3s ease;
+}
+
+@keyframes favorite-pop{
+  0%{transform:scale(.8);}
+  50%{transform:scale(1.18);}
+  100%{transform:scale(1);}
 }
 
 .hymn-library-card__icon {
   width: 48px;
   height: 48px;
-  flex: 0 0 48px;
+  flex: 0 0 48px;  
   border-radius: 15px;
   background: #0b3558;
   color: #f4d06f;
