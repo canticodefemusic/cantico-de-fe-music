@@ -1,1 +1,12 @@
-export function renderHeader(settings){const items=[["Inicio","/"],["Dashboard","/?page=dashboard"],["Himnos","/?page=hymns"],["CMS Fácil","/?page=cms"],["Media","/?page=media"],["SEO","/?page=seo"],["Player","/?page=player"],["Admin","/?page=admin"]];return `<div class="topline"></div><header class="header"><div class="container nav"><a class="brand" href="/"><span class="logo">♪</span><span>${settings.siteName||"Cántico de Fe"}<small>MUSIC</small></span></a><nav class="menu">${items.map(([l,h])=>`<a href="${h}">${l}</a>`).join("")}</nav><div class="actions"><button class="icon-btn" id="themeToggle">◐</button><a class="btn primary" href="/?page=hymns">▶ Escuchar</a><button class="icon-btn mobile-toggle">☰</button></div></div></header>`}
+export function renderHeader(settings){const items=[
+  ["Inicio","/"],
+  ["Dashboard","/?page=dashboard"],
+  ["Himnos","/?page=hymns"],
+  ["Favoritos","/?page=favorites"],
+  ["CMS Fácil","/?page=cms"],
+  ["Media","/?page=media"],
+  ["SEO","/?page=seo"],
+  ["Player","/?page=player"],
+  ["Admin","/?page=admin"]
+];
+return `<div class="topline"></div><header class="header"><div class="container nav"><a class="brand" href="/"><span class="logo">♪</span><span>${settings.siteName||"Cántico de Fe"}<small>MUSIC</small></span></a><nav class="menu">${items.map(([l,h])=>`<a href="${h}">${l}</a>`).join("")}</nav><div class="actions"><button class="icon-btn" id="themeToggle">◐</button><a class="btn primary" href="/?page=hymns">▶ Escuchar</a><button class="icon-btn mobile-toggle">☰</button></div></div></header>`}
