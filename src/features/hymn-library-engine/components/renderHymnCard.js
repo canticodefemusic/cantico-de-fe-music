@@ -117,7 +117,13 @@ export function renderHymnCard(hymn, query = '') {
           >
             ▶ Escuchar
           </button>
-        </div>
+        <button
+  type="button"
+  data-hymn-add-playlist="${safeId}"
+>
+  ＋ Agregar a playlist
+</button>
+</div>
       </div>
     </article>
   `;
