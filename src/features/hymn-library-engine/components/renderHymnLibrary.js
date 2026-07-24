@@ -1,5 +1,9 @@
 import { HymnLibraryService } from '../services/HymnLibraryService.js';
 import { renderHymnCard } from './renderHymnCard.js';
+import {
+  isFavorite,
+  toggleFavorite
+} from '../../favorites-engine/services/favoritesService.js';
 
 const service = new HymnLibraryService();
 
@@ -57,13 +61,53 @@ export function initHymnLibrary({ onPlay } = {}) {
             .join('')
         : '<p class="hymn-library__empty">No se encontraron himnos.</p>';
 
-      bindPlayButtons(onPlay);
+      bindCardButtons(onPlay);
     }, 200);
 
     search.addEventListener('input', handleSearch);
   }
 
+  bindCardButtons(onPlay);
+}
+
+function bindCardButtons(onPlay) {
   bindPlayButtons(onPlay);
+  bindFavoriteButtons();
+}
+
+function bindFavoriteButtons() {
+  document.querySelectorAll('[data-hymn-favorite]').forEach(button => {
+    button.addEventListener('click', () => {
+      const hymnId = button.dataset.hymnFavorite;
+      const hymn = service.findById(hymnId);
+
+      toggleFavorite(hymnId);
+
+      const favorite = isFavorite(hymnId);
+      const title = hymn?.title || 'este himno';
+
+      button.textContent = favorite ? '★' : '☆';
+      button.setAttribute('aria-pressed', String(favorite));
+      button.setAttribute(
+        'aria-label',
+        favorite
+          ? `Quitar ${title} de favoritos`
+          : `Agregar ${title} a favoritos`
+      );
+      button.title = favorite
+        ? 'Quitar de favoritos'
+        : 'Agregar a favoritos';
+
+      window.dispatchEvent(
+        new CustomEvent('cantico:favorites-changed', {
+          detail: {
+            hymnId,
+            favorite
+          }
+        })
+      );
+    });
+  });
 }
 
 function bindPlayButtons(onPlay) {
