@@ -1,3 +1,5 @@
+import { isFavorite } from '../../favorites-engine/services/favoritesService.js';
+
 function escapeHtml(value = '') {
   return String(value)
     .replace(/&/g, '&amp;')
@@ -60,8 +62,27 @@ function highlightText(value = '', query = '') {
 }
 
 export function renderHymnCard(hymn, query = '') {
+  const favorite = isFavorite(hymn.id);
+  const safeId = escapeHtml(hymn.id);
+  const safeTitle = escapeHtml(hymn.title);
+
   return `
-    <article class="hymn-library-card" data-hymn-id="${escapeHtml(hymn.id)}">
+    <article class="hymn-library-card" data-hymn-id="${safeId}">
+      <button
+        type="button"
+        class="hymn-library-card__favorite"
+        data-hymn-favorite="${safeId}"
+        aria-label="${
+          favorite
+            ? `Quitar ${safeTitle} de favoritos`
+            : `Agregar ${safeTitle} a favoritos`
+        }"
+        aria-pressed="${favorite}"
+        title="${favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}"
+      >
+        ${favorite ? '★' : '☆'}
+      </button>
+
       <div class="hymn-library-card__icon">♪</div>
 
       <div class="hymn-library-card__body">
@@ -84,7 +105,7 @@ export function renderHymnCard(hymn, query = '') {
 
           <button
             type="button"
-            data-hymn-play="${escapeHtml(hymn.id)}"
+            data-hymn-play="${safeId}"
           >
             ▶ Escuchar
           </button>
