@@ -3,6 +3,18 @@ import { renderHymnCard } from './renderHymnCard.js';
 
 const service = new HymnLibraryService();
 
+function debounce(callback, delay = 200) {
+  let timeoutId;
+
+  return (...args) => {
+    clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => {
+      callback(...args);
+    }, delay);
+  };
+}
+
 export function renderHymnLibrary() {
   const hymns = service.list();
 
@@ -30,13 +42,17 @@ export function initHymnLibrary({ onPlay } = {}) {
   const grid = document.getElementById('hymnLibraryGrid');
 
   if (search && grid) {
-    search.addEventListener('input', event => {
-      const results = service.search(event.target.value);
-      grid.innerHTML = results.length
-        ? results.map(renderHymnCard).join('')
-        : '<p class="hymn-library__empty">No se encontraron himnos.</p>';
-      bindPlayButtons(onPlay);
-    });
+    const handleSearch = debounce(event => {
+  const results = service.search(event.target.value);
+
+  grid.innerHTML = results.length
+    ? results.map(renderHymnCard).join('')
+    : '<p class="hymn-library__empty">No se encontraron himnos.</p>';
+
+  bindPlayButtons(onPlay);
+}, 200);
+
+search.addEventListener('input', handleSearch);
   }
 
   bindPlayButtons(onPlay);
