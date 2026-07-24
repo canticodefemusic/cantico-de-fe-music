@@ -53,49 +53,10 @@
   display: flex;
   gap: 16px;
 }
-.hymn-library-card__favorite {
-  position: absolute;
-  top: 18px;
-  left: 18px;
 
-  width: 42px;
-  height: 42px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0;
-
-  border: 1px solid #eadca6;
-  border-radius: 12px;
-
-  background: #fffaf0;
-  color: #8a8a8a;
-
-  font-size: 22px;
-  line-height: 1;
-
-  cursor: pointer;
-
-  box-shadow: 0 4px 12px rgba(16,42,67,.08);
-
-  transition: all .2s ease;
-}
-
-.hymn-library-card__favorite:hover{
-  transform: scale(1.08);
-  border-color:#d7b44b;
-}
-
-.hymn-library-card__favorite:active{
-  transform:scale(.94);
-}
-
-.hymn-library-card__favorite[aria-pressed="true"]{
-  color:#d4a017;
-  background:#fff8d9;
-  animation:favorite-pop .25s ease;
+.hymn-library-card__body {
+  min-width: 0;
+  padding-right: 52px;
 }
 
 @keyframes favorite-pop{
