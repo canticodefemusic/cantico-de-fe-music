@@ -3,6 +3,18 @@ import { renderHymnCard } from './renderHymnCard.js';
 
 const service = new HymnLibraryService();
 
+function debounce(callback, delay = 200) {
+  let timeoutId;
+
+  return (...args) => {
+    clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => {
+      callback(...args);
+    }, delay);
+  };
+}
+
 export function renderHymnLibrary() {
   const hymns = service.list();
 
@@ -15,11 +27,16 @@ export function renderHymnLibrary() {
       </div>
 
       <div class="hymn-library__tools">
-        <input id="hymnLibrarySearch" type="search" placeholder="Buscar himno, tema o referencia bíblica..." autocomplete="off">
+        <input
+          id="hymnLibrarySearch"
+          type="search"
+          placeholder="Buscar himno, tema o referencia bíblica..."
+          autocomplete="off"
+        >
       </div>
 
       <div class="hymn-library__grid" id="hymnLibraryGrid">
-        ${hymns.map(renderHymnCard).join('')}
+        ${hymns.map(hymn => renderHymnCard(hymn)).join('')}
       </div>
     </section>
   `;
@@ -30,13 +47,20 @@ export function initHymnLibrary({ onPlay } = {}) {
   const grid = document.getElementById('hymnLibraryGrid');
 
   if (search && grid) {
-    search.addEventListener('input', event => {
-      const results = service.search(event.target.value);
+    const handleSearch = debounce(event => {
+      const query = event.target.value;
+      const results = service.search(query);
+
       grid.innerHTML = results.length
-        ? results.map(renderHymnCard).join('')
+        ? results
+            .map(hymn => renderHymnCard(hymn, query))
+            .join('')
         : '<p class="hymn-library__empty">No se encontraron himnos.</p>';
+
       bindPlayButtons(onPlay);
-    });
+    }, 200);
+
+    search.addEventListener('input', handleSearch);
   }
 
   bindPlayButtons(onPlay);
@@ -46,10 +70,15 @@ function bindPlayButtons(onPlay) {
   document.querySelectorAll('[data-hymn-play]').forEach(button => {
     button.addEventListener('click', () => {
       const hymn = service.findById(button.dataset.hymnPlay);
+
       if (typeof onPlay === 'function') {
         onPlay(hymn);
       } else {
-        window.dispatchEvent(new CustomEvent('cantico:hymn-play', { detail: hymn }));
+        window.dispatchEvent(
+          new CustomEvent('cantico:hymn-play', {
+            detail: hymn
+          })
+        );
       }
     });
   });
