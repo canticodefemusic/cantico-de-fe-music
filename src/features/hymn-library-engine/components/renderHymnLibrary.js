@@ -86,8 +86,10 @@ function bindFavoriteButtons() {
       const favorite = isFavorite(hymnId);
       const title = hymn?.title || 'este himno';
 
-      button.textContent = favorite ? '★' : '☆';
-      button.setAttribute('aria-pressed', String(favorite));
+      button.setAttribute(
+  'aria-pressed',
+  String(favorite)
+);
       button.setAttribute(
         'aria-label',
         favorite
