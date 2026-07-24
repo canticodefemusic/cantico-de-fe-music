@@ -9,6 +9,7 @@ export const appConfig = {
   navigation: [
     { id: 'home', label: 'Inicio', href: '/' },
     { id: 'himnos', label: 'Himnos', href: '/?page=himnos' },
+    { id: 'favoritos', label: 'Favoritos', href: '/?page=favoritos' },
     { id: 'playlists', label: 'Playlists', href: '/?page=playlists' },
     { id: 'albumes', label: 'Álbumes', href: '/?page=albumes' },
     { id: 'videos', label: 'Videos', href: '/?page=videos' },
