@@ -5,6 +5,10 @@ import { setPageSEO } from './seo/setPageSEO.js';
 
 import { renderHomeView } from './views/home/renderHomeView.js';
 import { renderHymnsView } from './views/hymns/renderHymnsView.js';
+import {
+  renderFavoritesView,
+  initFavoritesView
+} from './views/favorites/renderFavoritesView.js';
 import { renderAlbumsView } from './views/albums/renderAlbumsView.js';
 import { renderPlaylistsView } from './views/playlists/renderPlaylistsView.js';
 import { renderDevotionalsView } from './views/devotionals/renderDevotionalsView.js';
@@ -29,6 +33,9 @@ const views = {
   route.id
     ? renderHymnDetail(route.id)
     : renderHymnLibrary(),
+  
+  favoritos: renderFavoritesView,
+  
   albumes: renderAlbumsView,
   playlists: renderPlaylistsView,
   devocionales: renderDevotionalsView,
@@ -72,5 +79,16 @@ export function startUnifiedCanticoApp(rootSelector = '#app') {
   });
 
   initShareButtons();
-}, 0);
+if (route.page === 'favoritos') {
+  initFavoritesView({
+    onPlay: (hymn) => {
+      window.dispatchEvent(
+        new CustomEvent('cantico:hymn-play', {
+          detail: hymn
+        })
+      );
+    }
+  });
+}
+  }, 0);
 }
