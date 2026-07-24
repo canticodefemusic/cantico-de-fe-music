@@ -27,11 +27,16 @@ export function renderHymnLibrary() {
       </div>
 
       <div class="hymn-library__tools">
-        <input id="hymnLibrarySearch" type="search" placeholder="Buscar himno, tema o referencia bíblica..." autocomplete="off">
+        <input
+          id="hymnLibrarySearch"
+          type="search"
+          placeholder="Buscar himno, tema o referencia bíblica..."
+          autocomplete="off"
+        >
       </div>
 
       <div class="hymn-library__grid" id="hymnLibraryGrid">
-        ${hymns.map(renderHymnCard).join('')}
+        ${hymns.map(hymn => renderHymnCard(hymn)).join('')}
       </div>
     </section>
   `;
@@ -43,16 +48,19 @@ export function initHymnLibrary({ onPlay } = {}) {
 
   if (search && grid) {
     const handleSearch = debounce(event => {
-  const results = service.search(event.target.value);
+      const query = event.target.value;
+      const results = service.search(query);
 
-  grid.innerHTML = results.length
-    ? results.map(renderHymnCard).join('')
-    : '<p class="hymn-library__empty">No se encontraron himnos.</p>';
+      grid.innerHTML = results.length
+        ? results
+            .map(hymn => renderHymnCard(hymn, query))
+            .join('')
+        : '<p class="hymn-library__empty">No se encontraron himnos.</p>';
 
-  bindPlayButtons(onPlay);
-}, 200);
+      bindPlayButtons(onPlay);
+    }, 200);
 
-search.addEventListener('input', handleSearch);
+    search.addEventListener('input', handleSearch);
   }
 
   bindPlayButtons(onPlay);
@@ -62,10 +70,15 @@ function bindPlayButtons(onPlay) {
   document.querySelectorAll('[data-hymn-play]').forEach(button => {
     button.addEventListener('click', () => {
       const hymn = service.findById(button.dataset.hymnPlay);
+
       if (typeof onPlay === 'function') {
         onPlay(hymn);
       } else {
-        window.dispatchEvent(new CustomEvent('cantico:hymn-play', { detail: hymn }));
+        window.dispatchEvent(
+          new CustomEvent('cantico:hymn-play', {
+            detail: hymn
+          })
+        );
       }
     });
   });
