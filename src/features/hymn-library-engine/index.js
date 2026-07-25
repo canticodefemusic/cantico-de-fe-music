@@ -24,3 +24,21 @@ export {
 export {
   CollectionEngine
 } from './collections/CollectionEngine.js';
+
+// Sort Engine (V9.0.5)
+
+export {
+  SortService
+} from './sorting/SortService.js';
+
+export {
+  SortTemplates
+} from './sorting/SortTemplates.js';
+
+export {
+  SortRenderer
+} from './sorting/SortRenderer.js';
+
+export {
+  SortEngine
+} from './sorting/SortEngine.js';
