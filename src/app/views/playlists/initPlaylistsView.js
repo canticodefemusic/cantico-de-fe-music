@@ -1,11 +1,13 @@
 import {
   createPlaylist,
+  deletePlaylist,
   removeHymnFromPlaylist
 } from '../../../features/playlist-engine/services/playlistService.js';
 
 export function initPlaylistsView() {
   bindCreatePlaylistButton();
   bindRemoveHymnButtons();
+  bindDeletePlaylistButtons();
 }
 
 function bindCreatePlaylistButton() {
@@ -45,6 +47,28 @@ function bindRemoveHymnButtons() {
         }
 
         removeHymnFromPlaylist(playlistId, hymnId);
+
+        window.location.reload();
+      });
+    });
+}
+
+function bindDeletePlaylistButtons() {
+  document
+    .querySelectorAll('[data-playlist-delete]')
+    .forEach(button => {
+      button.addEventListener('click', () => {
+        const playlistId = button.dataset.playlistDelete;
+
+        const confirmed = window.confirm(
+          '¿Deseas eliminar esta playlist? Esta acción no se puede deshacer.'
+        );
+
+        if (!confirmed) {
+          return;
+        }
+
+        deletePlaylist(playlistId);
 
         window.location.reload();
       });
