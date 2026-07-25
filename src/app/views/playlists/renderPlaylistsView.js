@@ -54,7 +54,14 @@ function renderPlaylistDetail(playlist) {
                   >
                     ▶ Escuchar
                   </button>
-                </article>
+                <button
+  type="button"
+  data-playlist-remove-hymn="${escapeHtml(hymn.id)}"
+  data-playlist-id="${escapeHtml(playlist.id)}"
+>
+  Quitar de la playlist
+</button>
+</article>
               `).join('')}
             </div>
           `
