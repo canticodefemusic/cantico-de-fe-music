@@ -11,18 +11,32 @@ function scoreItem(item, term) {
   let score = 0;
 
   const title = normalize(item.title || '');
-  const author = normalize(item.author || '');
+  const subtitle = normalize(item.subtitle || '');
+  const artist = normalize(item.artist || '');
   const category = normalize(item.category || '');
+  const theme = normalize(item.theme || '');
   const description = normalize(item.description || '');
-  const scripture = normalize(item.scripture || '');
-  const tags = normalize((item.tags || []).join(' '));
+
+  const scriptures = normalize(
+    Array.isArray(item.scriptures)
+      ? item.scriptures.join(' ')
+      : item.scripture || ''
+  );
+
+  const tags = normalize(
+    Array.isArray(item.tags)
+      ? item.tags.join(' ')
+      : ''
+  );
 
   if (title.startsWith(term)) score += 100;
   if (title.includes(term)) score += 80;
 
-  if (author.includes(term)) score += 40;
-  if (category.includes(term)) score += 30;
-  if (scripture.includes(term)) score += 25;
+  if (subtitle.includes(term)) score += 50;
+  if (artist.includes(term)) score += 40;
+  if (category.includes(term)) score += 35;
+  if (theme.includes(term)) score += 30;
+  if (scriptures.includes(term)) score += 25;
   if (tags.includes(term)) score += 20;
   if (description.includes(term)) score += 10;
 
