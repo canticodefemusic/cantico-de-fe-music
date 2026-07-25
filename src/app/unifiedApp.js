@@ -10,7 +10,13 @@ import {
   initFavoritesView
 } from './views/favorites/renderFavoritesView.js';
 import { renderAlbumsView } from './views/albums/renderAlbumsView.js';
-import { renderPlaylistsView } from './views/playlists/renderPlaylistsView.js';
+import {
+  renderPlaylistsView
+} from './views/playlists/renderPlaylistsView.js';
+
+import {
+  initPlaylistsView
+} from './views/playlists/initPlaylistsView.js';
 import { renderDevotionalsView } from './views/devotionals/renderDevotionalsView.js';
 import { renderVideosView } from './views/videos/renderVideosView.js';
 import { renderContactView } from './views/contact/renderContactView.js';
@@ -89,6 +95,9 @@ if (route.page === 'favoritos') {
       );
     }
   });
+}
+if (route.page === 'playlists') {
+  initPlaylistsView();
 }
   }, 0);
 }

@@ -5,6 +5,11 @@ import {
   toggleFavorite
 } from '../../favorites-engine/services/favoritesService.js';
 
+import {
+  getPlaylists,
+  addHymnToPlaylist
+} from '../../playlist-engine/services/playlistService.js';
+
 const service = new HymnLibraryService();
 
 function debounce(callback, delay = 200) {
@@ -73,6 +78,61 @@ export function initHymnLibrary({ onPlay } = {}) {
 function bindCardButtons(onPlay) {
   bindPlayButtons(onPlay);
   bindFavoriteButtons();
+  bindPlaylistButtons();
+}
+
+function bindPlaylistButtons() {
+  document
+    .querySelectorAll('[data-hymn-add-playlist]')
+    .forEach(button => {
+      button.addEventListener('click', () => {
+        const hymnId = button.dataset.hymnAddPlaylist;
+        const hymn = service.findById(hymnId);
+        const playlists = getPlaylists();
+
+        if (!playlists.length) {
+          window.alert(
+            'Primero debes crear una playlist desde la página Playlists.'
+          );
+          return;
+        }
+
+        const playlistOptions = playlists
+          .map((playlist, index) => `${index + 1}. ${playlist.name}`)
+          .join('\n');
+
+        const selectedValue = window.prompt(
+          `¿A cuál playlist deseas agregar "${hymn?.title || 'este himno'}"?\n\n${playlistOptions}\n\nEscribe el número de la playlist:`
+        );
+
+        if (!selectedValue) {
+          return;
+        }
+
+        const selectedIndex = Number(selectedValue) - 1;
+        const selectedPlaylist = playlists[selectedIndex];
+
+        if (!selectedPlaylist) {
+          window.alert('La playlist seleccionada no es válida.');
+          return;
+        }
+
+        const alreadyAdded = selectedPlaylist.hymnIds.includes(hymnId);
+
+        if (alreadyAdded) {
+          window.alert(
+            `"${hymn?.title || 'Este himno'}" ya está en "${selectedPlaylist.name}".`
+          );
+          return;
+        }
+
+        addHymnToPlaylist(selectedPlaylist.id, hymnId);
+
+        window.alert(
+          `"${hymn?.title || 'El himno'}" fue agregado a "${selectedPlaylist.name}".`
+        );
+      });
+    });
 }
 
 function bindFavoriteButtons() {
