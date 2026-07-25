@@ -139,7 +139,14 @@ export function renderPlaylistsView(route = {}) {
             <a href="/?page=playlists&id=${encodeURIComponent(playlist.id)}">
               Abrir playlist
             </a>
-          </article>
+          
+          <button
+  type="button"
+  data-playlist-delete="${escapeHtml(playlist.id)}"
+>
+  Eliminar playlist
+</button>
+</article>
         `).join('')}
       </div>
     </section>
