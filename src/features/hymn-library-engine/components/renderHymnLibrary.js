@@ -1,5 +1,7 @@
 import { HymnLibraryService } from '../services/HymnLibraryService.js';
 import { renderHymnCard } from './renderHymnCard.js';
+import { SortEngine } from '../sorting/SortEngine.js';
+
 import {
   isFavorite,
   toggleFavorite
@@ -30,9 +32,16 @@ export function renderHymnLibrary() {
   return `
     <section class="hymn-library">
       <div class="hymn-library__header">
-        <p class="hymn-library__kicker">Biblioteca de himnos</p>
+        <p class="hymn-library__kicker">
+          Biblioteca de himnos
+        </p>
+
         <h1>Himnos</h1>
-        <p>Explora los himnos originales de Cántico de Fe Music.</p>
+
+        <p>
+          Explora los himnos originales de
+          Cántico de Fe Music.
+        </p>
       </div>
 
       <div class="hymn-library__tools">
@@ -42,37 +51,103 @@ export function renderHymnLibrary() {
           placeholder="Buscar himno, tema o referencia bíblica..."
           autocomplete="off"
         >
+
+        <div
+          id="hymnLibrarySort"
+          class="hymn-library__sort"
+        ></div>
       </div>
 
-      <div class="hymn-library__grid" id="hymnLibraryGrid">
-        ${hymns.map(hymn => renderHymnCard(hymn)).join('')}
+      <div
+        class="hymn-library__grid"
+        id="hymnLibraryGrid"
+      >
+        ${hymns
+          .map(hymn => renderHymnCard(hymn))
+          .join('')}
       </div>
     </section>
   `;
 }
 
 export function initHymnLibrary({ onPlay } = {}) {
-  const search = document.getElementById('hymnLibrarySearch');
-  const grid = document.getElementById('hymnLibraryGrid');
+  const search = document.getElementById(
+    'hymnLibrarySearch'
+  );
 
-  if (search && grid) {
-    const handleSearch = debounce(event => {
-      const query = event.target.value;
-      const results = service.search(query);
+  const grid = document.getElementById(
+    'hymnLibraryGrid'
+  );
 
-      grid.innerHTML = results.length
-        ? results
-            .map(hymn => renderHymnCard(hymn, query))
-            .join('')
-        : '<p class="hymn-library__empty">No se encontraron himnos.</p>';
+  const sortContainer = document.getElementById(
+    'hymnLibrarySort'
+  );
 
-      bindCardButtons(onPlay);
-    }, 200);
-
-    search.addEventListener('input', handleSearch);
+  if (!grid) {
+    return;
   }
 
-  bindCardButtons(onPlay);
+  let currentQuery = '';
+
+  function renderResults(hymns = []) {
+    grid.innerHTML = hymns.length
+      ? hymns
+          .map(hymn =>
+            renderHymnCard(
+              hymn,
+              currentQuery
+            )
+          )
+          .join('')
+      : `
+        <p class="hymn-library__empty">
+          No se encontraron himnos.
+        </p>
+      `;
+
+    bindCardButtons(onPlay);
+  }
+
+  if (sortContainer) {
+    SortEngine.init({
+      target: sortContainer,
+      items: service.list(),
+      mode: 'title-asc',
+      persist: true,
+      storageKey:
+        'cantico-de-fe-hymn-library-sort',
+
+      onSort(sortedHymns) {
+        renderResults(sortedHymns);
+      }
+    });
+  } else {
+    renderResults(service.list());
+  }
+
+  if (search) {
+    const handleSearch = debounce(event => {
+      currentQuery = event.target.value.trim();
+
+      const results = currentQuery
+        ? service.search(currentQuery)
+        : service.list();
+
+      if (sortContainer) {
+        SortEngine.setItems(
+          sortContainer,
+          results
+        );
+      } else {
+        renderResults(results);
+      }
+    }, 200);
+
+    search.addEventListener(
+      'input',
+      handleSearch
+    );
+  }
 }
 
 function bindCardButtons(onPlay) {
@@ -83,22 +158,33 @@ function bindCardButtons(onPlay) {
 
 function bindPlaylistButtons() {
   document
-    .querySelectorAll('[data-hymn-add-playlist]')
+    .querySelectorAll(
+      '[data-hymn-add-playlist]'
+    )
     .forEach(button => {
       button.addEventListener('click', () => {
-        const hymnId = button.dataset.hymnAddPlaylist;
-        const hymn = service.findById(hymnId);
-        const playlists = getPlaylists();
+        const hymnId =
+          button.dataset.hymnAddPlaylist;
+
+        const hymn =
+          service.findById(hymnId);
+
+        const playlists =
+          getPlaylists();
 
         if (!playlists.length) {
           window.alert(
             'Primero debes crear una playlist desde la página Playlists.'
           );
+
           return;
         }
 
         const playlistOptions = playlists
-          .map((playlist, index) => `${index + 1}. ${playlist.name}`)
+          .map(
+            (playlist, index) =>
+              `${index + 1}. ${playlist.name}`
+          )
           .join('\n');
 
         const selectedValue = window.prompt(
@@ -109,24 +195,37 @@ function bindPlaylistButtons() {
           return;
         }
 
-        const selectedIndex = Number(selectedValue) - 1;
-        const selectedPlaylist = playlists[selectedIndex];
+        const selectedIndex =
+          Number(selectedValue) - 1;
+
+        const selectedPlaylist =
+          playlists[selectedIndex];
 
         if (!selectedPlaylist) {
-          window.alert('La playlist seleccionada no es válida.');
+          window.alert(
+            'La playlist seleccionada no es válida.'
+          );
+
           return;
         }
 
-        const alreadyAdded = selectedPlaylist.hymnIds.includes(hymnId);
+        const alreadyAdded =
+          selectedPlaylist.hymnIds.includes(
+            hymnId
+          );
 
         if (alreadyAdded) {
           window.alert(
             `"${hymn?.title || 'Este himno'}" ya está en "${selectedPlaylist.name}".`
           );
+
           return;
         }
 
-        addHymnToPlaylist(selectedPlaylist.id, hymnId);
+        addHymnToPlaylist(
+          selectedPlaylist.id,
+          hymnId
+        );
 
         window.alert(
           `"${hymn?.title || 'El himno'}" fue agregado a "${selectedPlaylist.name}".`
@@ -136,56 +235,80 @@ function bindPlaylistButtons() {
 }
 
 function bindFavoriteButtons() {
-  document.querySelectorAll('[data-hymn-favorite]').forEach(button => {
-    button.addEventListener('click', () => {
-      const hymnId = button.dataset.hymnFavorite;
-      const hymn = service.findById(hymnId);
+  document
+    .querySelectorAll(
+      '[data-hymn-favorite]'
+    )
+    .forEach(button => {
+      button.addEventListener('click', () => {
+        const hymnId =
+          button.dataset.hymnFavorite;
 
-      toggleFavorite(hymnId);
+        const hymn =
+          service.findById(hymnId);
 
-      const favorite = isFavorite(hymnId);
-      const title = hymn?.title || 'este himno';
+        toggleFavorite(hymnId);
 
-      button.setAttribute(
-  'aria-pressed',
-  String(favorite)
-);
-      button.setAttribute(
-        'aria-label',
-        favorite
-          ? `Quitar ${title} de favoritos`
-          : `Agregar ${title} a favoritos`
-      );
-      button.title = favorite
-        ? 'Quitar de favoritos'
-        : 'Agregar a favoritos';
+        const favorite =
+          isFavorite(hymnId);
 
-      window.dispatchEvent(
-        new CustomEvent('cantico:favorites-changed', {
-          detail: {
-            hymnId,
-            favorite
-          }
-        })
-      );
+        const title =
+          hymn?.title || 'este himno';
+
+        button.setAttribute(
+          'aria-pressed',
+          String(favorite)
+        );
+
+        button.setAttribute(
+          'aria-label',
+          favorite
+            ? `Quitar ${title} de favoritos`
+            : `Agregar ${title} a favoritos`
+        );
+
+        button.title = favorite
+          ? 'Quitar de favoritos'
+          : 'Agregar a favoritos';
+
+        window.dispatchEvent(
+          new CustomEvent(
+            'cantico:favorites-changed',
+            {
+              detail: {
+                hymnId,
+                favorite
+              }
+            }
+          )
+        );
+      });
     });
-  });
 }
 
 function bindPlayButtons(onPlay) {
-  document.querySelectorAll('[data-hymn-play]').forEach(button => {
-    button.addEventListener('click', () => {
-      const hymn = service.findById(button.dataset.hymnPlay);
-
-      if (typeof onPlay === 'function') {
-        onPlay(hymn);
-      } else {
-        window.dispatchEvent(
-          new CustomEvent('cantico:hymn-play', {
-            detail: hymn
-          })
+  document
+    .querySelectorAll(
+      '[data-hymn-play]'
+    )
+    .forEach(button => {
+      button.addEventListener('click', () => {
+        const hymn = service.findById(
+          button.dataset.hymnPlay
         );
-      }
+
+        if (typeof onPlay === 'function') {
+          onPlay(hymn);
+        } else {
+          window.dispatchEvent(
+            new CustomEvent(
+              'cantico:hymn-play',
+              {
+                detail: hymn
+              }
+            )
+          );
+        }
+      });
     });
-  });
 }
