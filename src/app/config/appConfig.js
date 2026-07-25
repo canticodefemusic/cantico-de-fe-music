@@ -11,7 +11,6 @@ export const appConfig = {
     { id: 'himnos', label: 'Himnos', href: '/?page=himnos' },
     { id: 'favoritos', label: 'Favoritos', href: '/?page=favoritos' },
     { id: 'playlists', label: 'Playlists', href: '/?page=playlists' },
-    { id: 'colecciones', label: 'Colecciones', href: '/?page=colecciones' },
     { id: 'videos', label: 'Videos', href: '/?page=videos' },
     { id: 'devocionales', label: 'Devocionales', href: '/?page=devocionales' },
     { id: 'contacto', label: 'Contacto', href: '/?page=contacto' }
