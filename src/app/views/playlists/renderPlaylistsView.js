@@ -139,7 +139,15 @@ export function renderPlaylistsView(route = {}) {
             <a href="/?page=playlists&id=${encodeURIComponent(playlist.id)}">
               Abrir playlist
             </a>
-          
+         
+          <button
+  type="button"
+  data-playlist-rename="${escapeHtml(playlist.id)}"
+  data-playlist-name="${escapeHtml(playlist.name)}"
+>
+  Renombrar playlist
+</button>
+
           <button
   type="button"
   data-playlist-delete="${escapeHtml(playlist.id)}"
