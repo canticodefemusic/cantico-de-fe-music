@@ -43,6 +43,31 @@ export function createPlaylist(name) {
   return newPlaylist;
 }
 
+export function renamePlaylist(playlistId, newName) {
+  const cleanName = newName.trim();
+
+  if (!cleanName) {
+    return null;
+  }
+
+  const playlists = getPlaylists();
+
+  const updatedPlaylists = playlists.map(playlist => {
+    if (playlist.id !== playlistId) {
+      return playlist;
+    }
+
+    return {
+      ...playlist,
+      name: cleanName
+    };
+  });
+
+  savePlaylists(updatedPlaylists);
+
+  return updatedPlaylists;
+}
+
 export function deletePlaylist(playlistId) {
   const playlists = getPlaylists();
   const updatedPlaylists = playlists.filter(
