@@ -1,7 +1,9 @@
-import { albums } from '../../data/siteData.js';
+import { getAlbums } from '../../../features/albums-engine/services/albumsService.js';
 import { renderCards } from '../../components/cards/renderCards.js';
 
 export function renderAlbumsView() {
+  const albums = getAlbums();
+  
   return `
     <section class="cantico-section">
       <h1>Álbumes</h1>
