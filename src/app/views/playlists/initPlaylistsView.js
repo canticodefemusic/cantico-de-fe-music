@@ -1,5 +1,6 @@
 import {
   createPlaylist,
+  renamePlaylist,
   deletePlaylist,
   removeHymnFromPlaylist
 } from '../../../features/playlist-engine/services/playlistService.js';
@@ -7,6 +8,7 @@ import {
 export function initPlaylistsView() {
   bindCreatePlaylistButton();
   bindRemoveHymnButtons();
+  bindRenamePlaylistButtons();
   bindDeletePlaylistButtons();
 }
 
@@ -47,6 +49,30 @@ function bindRemoveHymnButtons() {
         }
 
         removeHymnFromPlaylist(playlistId, hymnId);
+
+        window.location.reload();
+      });
+    });
+}
+
+function bindRenamePlaylistButtons() {
+  document
+    .querySelectorAll('[data-playlist-rename]')
+    .forEach(button => {
+      button.addEventListener('click', () => {
+        const playlistId = button.dataset.playlistRename;
+        const currentName = button.dataset.playlistName;
+
+        const newName = window.prompt(
+          'Nuevo nombre de la playlist:',
+          currentName
+        );
+
+        if (!newName) {
+          return;
+        }
+
+        renamePlaylist(playlistId, newName);
 
         window.location.reload();
       });
