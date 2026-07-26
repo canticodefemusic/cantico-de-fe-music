@@ -3,6 +3,14 @@ import {
 } from '../../../features/playlist-engine/services/playlistService.js';
 
 import {
+  getFavorites
+} from '../../../features/favorites-engine/services/favoritesService.js';
+
+import {
+  SmartPlaylistEngine
+} from '../../../features/playlist-engine/smart/SmartPlaylistEngine.js';
+
+import {
   HymnLibraryService
 } from '../../../features/hymn-library-engine/services/HymnLibraryService.js';
 
@@ -17,10 +25,45 @@ function escapeHtml(value = '') {
     .replace(/'/g, '&#039;');
 }
 
+function getSmartPlaylists() {
+  const hymns = hymnService.list();
+  const favoriteIds = getFavorites();
+
+  const definitions = SmartPlaylistEngine
+    .definitions()
+    .map(definition => {
+      if (definition.type !== 'favorites') {
+        return definition;
+      }
+
+      return {
+        ...definition,
+        rule: {
+          ...definition.rule,
+          favoriteIds
+        }
+      };
+    });
+
+  return SmartPlaylistEngine.generate(
+    hymns,
+    {
+      definitions
+    }
+  );
+}
+
 function renderPlaylistDetail(playlist) {
-  const hymns = playlist.hymnIds
-    .map(hymnId => hymnService.findById(hymnId))
-    .filter(Boolean);
+  const hymns = Array.isArray(playlist.hymns)
+    ? playlist.hymns
+    : playlist.hymnIds
+        .map(hymnId =>
+          hymnService.findById(hymnId)
+        )
+        .filter(Boolean);
+
+  const isSmartPlaylist =
+    playlist.automatic === true;
 
   return `
     <section class="cantico-section">
@@ -30,39 +73,77 @@ function renderPlaylistDetail(playlist) {
 
       <h1>${escapeHtml(playlist.name)}</h1>
 
+      ${
+        playlist.description
+          ? `
+            <p>
+              ${escapeHtml(playlist.description)}
+            </p>
+          `
+          : ''
+      }
+
       <p>
-        ${hymns.length} himno${hymns.length === 1 ? '' : 's'}
+        ${hymns.length}
+        himno${hymns.length === 1 ? '' : 's'}
       </p>
+
+      ${
+        isSmartPlaylist
+          ? `
+            <p>
+              Esta playlist se actualiza automáticamente.
+            </p>
+          `
+          : ''
+      }
 
       ${
         hymns.length
           ? `
             <div class="cantico-grid">
-              ${hymns.map(hymn => `
-                <article class="cantico-card">
-                  <h3>${escapeHtml(hymn.title)}</h3>
+              ${hymns
+                .map(hymn => `
+                  <article class="cantico-card">
+                    <h3>
+                      ${escapeHtml(hymn.title)}
+                    </h3>
 
-                  <p>${escapeHtml(hymn.description || '')}</p>
+                    <p>
+                      ${escapeHtml(
+                        hymn.description || ''
+                      )}
+                    </p>
 
-                  <a href="/?page=himnos&id=${encodeURIComponent(hymn.id)}">
-                    Ver letra
-                  </a>
+                    <a
+                      href="/?page=himnos&id=${encodeURIComponent(hymn.id)}"
+                    >
+                      Ver letra
+                    </a>
 
-                  <button
-                    type="button"
-                    data-hymn-play="${escapeHtml(hymn.id)}"
-                  >
-                    ▶ Escuchar
-                  </button>
-                <button
-  type="button"
-  data-playlist-remove-hymn="${escapeHtml(hymn.id)}"
-  data-playlist-id="${escapeHtml(playlist.id)}"
->
-  Quitar de la playlist
-</button>
-</article>
-              `).join('')}
+                    <button
+                      type="button"
+                      data-hymn-play="${escapeHtml(hymn.id)}"
+                    >
+                      ▶ Escuchar
+                    </button>
+
+                    ${
+                      isSmartPlaylist
+                        ? ''
+                        : `
+                          <button
+                            type="button"
+                            data-playlist-remove-hymn="${escapeHtml(hymn.id)}"
+                            data-playlist-id="${escapeHtml(playlist.id)}"
+                          >
+                            Quitar de la playlist
+                          </button>
+                        `
+                    }
+                  </article>
+                `)
+                .join('')}
             </div>
           `
           : `
@@ -75,21 +156,96 @@ function renderPlaylistDetail(playlist) {
   `;
 }
 
+function renderSmartPlaylistCard(playlist) {
+  return `
+    <article class="cantico-card">
+      <p>
+        Playlist inteligente
+      </p>
+
+      <h3>
+        ${escapeHtml(playlist.name)}
+      </h3>
+
+      <p>
+        ${escapeHtml(playlist.description || '')}
+      </p>
+
+      <p>
+        ${playlist.hymnIds.length}
+        himno${playlist.hymnIds.length === 1 ? '' : 's'}
+      </p>
+
+      <a
+        href="/?page=playlists&id=${encodeURIComponent(playlist.id)}"
+      >
+        Abrir playlist
+      </a>
+    </article>
+  `;
+}
+
+function renderManualPlaylistCard(playlist) {
+  return `
+    <article class="cantico-card">
+      <h3>
+        ${escapeHtml(playlist.name)}
+      </h3>
+
+      <p>
+        ${playlist.hymnIds.length}
+        himno${playlist.hymnIds.length === 1 ? '' : 's'}
+      </p>
+
+      <a
+        href="/?page=playlists&id=${encodeURIComponent(playlist.id)}"
+      >
+        Abrir playlist
+      </a>
+
+      <button
+        type="button"
+        data-playlist-rename="${escapeHtml(playlist.id)}"
+        data-playlist-name="${escapeHtml(playlist.name)}"
+      >
+        Renombrar playlist
+      </button>
+
+      <button
+        type="button"
+        data-playlist-delete="${escapeHtml(playlist.id)}"
+      >
+        Eliminar playlist
+      </button>
+    </article>
+  `;
+}
+
 export function renderPlaylistsView(route = {}) {
-  const playlists = getPlaylists();
+  const manualPlaylists = getPlaylists();
+  const smartPlaylists = getSmartPlaylists();
+
+  const allPlaylists = [
+    ...smartPlaylists,
+    ...manualPlaylists
+  ];
 
   if (route.id) {
-    const selectedPlaylist = playlists.find(
-      playlist => playlist.id === route.id
-    );
+    const selectedPlaylist =
+      allPlaylists.find(
+        playlist => playlist.id === route.id
+      );
 
     if (!selectedPlaylist) {
       return `
         <section class="cantico-section">
-          <h1>Playlist no encontrada</h1>
+          <h1>
+            Playlist no encontrada
+          </h1>
 
           <p>
-            La playlist solicitada no existe o fue eliminada.
+            La playlist solicitada no existe
+            o fue eliminada.
           </p>
 
           <a href="/?page=playlists">
@@ -99,23 +255,9 @@ export function renderPlaylistsView(route = {}) {
       `;
     }
 
-    return renderPlaylistDetail(selectedPlaylist);
-  }
-
-  if (playlists.length === 0) {
-    return `
-      <section class="cantico-section">
-        <h1>Playlists</h1>
-
-        <p>
-          Aún no has creado ninguna playlist.
-        </p>
-
-        <button id="create-playlist-button">
-          Crear playlist
-        </button>
-      </section>
-    `;
+    return renderPlaylistDetail(
+      selectedPlaylist
+    );
   }
 
   return `
@@ -126,37 +268,42 @@ export function renderPlaylistsView(route = {}) {
         Nueva playlist
       </button>
 
+      <h2>
+        Playlists inteligentes
+      </h2>
+
       <div class="cantico-grid">
-        ${playlists.map(playlist => `
-          <article class="cantico-card">
-            <h3>${escapeHtml(playlist.name)}</h3>
-
+        ${smartPlaylists.length
+          ? smartPlaylists
+              .map(renderSmartPlaylistCard)
+              .join('')
+          : `
             <p>
-              ${playlist.hymnIds.length}
-              himno${playlist.hymnIds.length === 1 ? '' : 's'}
+              No hay playlists inteligentes disponibles.
             </p>
-
-            <a href="/?page=playlists&id=${encodeURIComponent(playlist.id)}">
-              Abrir playlist
-            </a>
-         
-          <button
-  type="button"
-  data-playlist-rename="${escapeHtml(playlist.id)}"
-  data-playlist-name="${escapeHtml(playlist.name)}"
->
-  Renombrar playlist
-</button>
-
-          <button
-  type="button"
-  data-playlist-delete="${escapeHtml(playlist.id)}"
->
-  Eliminar playlist
-</button>
-</article>
-        `).join('')}
+          `
+        }
       </div>
+
+      <h2>
+        Mis playlists
+      </h2>
+
+      ${
+        manualPlaylists.length
+          ? `
+            <div class="cantico-grid">
+              ${manualPlaylists
+                .map(renderManualPlaylistCard)
+                .join('')}
+            </div>
+          `
+          : `
+            <p>
+              Aún no has creado ninguna playlist.
+            </p>
+          `
+      }
     </section>
   `;
 }
