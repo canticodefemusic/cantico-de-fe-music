@@ -1,4 +1,5 @@
 import { playerState } from '../state/playerState.js';
+import { HistoryEngine } from '../../history-engine/index.js';
 
 export class MusicPlayerService {
   constructor(tracks = []) {
@@ -24,20 +25,31 @@ export class MusicPlayerService {
 
   load(index = 0) {
     if (!playerState.tracks[index]) return null;
+
     playerState.currentIndex = index;
+
     const track = this.getCurrentTrack();
+
     playerState.audio.src = track.src || '';
+
     return track;
   }
 
   loadById(id) {
-   const index = playerState.tracks.findIndex(track => track.id === id);
-   if (index === -1) return null;
-   return this.load(index);
- }
-  
+    const index = playerState.tracks.findIndex(
+      track => track.id === id
+    );
+
+    if (index === -1) return null;
+
+    return this.load(index);
+  }
+
   async play(index = null) {
-    if (index !== null) this.load(index);
+    if (index !== null) {
+      this.load(index);
+    }
+
     const track = this.getCurrentTrack();
 
     if (!track) return false;
@@ -47,13 +59,32 @@ export class MusicPlayerService {
     }
 
     if (!playerState.audio.src) {
-      console.warn('[Music Player Pro] No audio source configured for:', track.title);
+      console.warn(
+        '[Music Player Pro] No audio source configured for:',
+        track.title
+      );
+
       return false;
     }
 
-    await playerState.audio.play();
-    playerState.isPlaying = true;
-    return true;
+    try {
+      await playerState.audio.play();
+
+      playerState.isPlaying = true;
+
+      HistoryEngine.addPlay(track);
+
+      return true;
+    } catch (error) {
+      playerState.isPlaying = false;
+
+      console.error(
+        '[Music Player Pro] No se pudo reproducir el audio:',
+        error
+      );
+
+      return false;
+    }
   }
 
   pause() {
@@ -66,32 +97,52 @@ export class MusicPlayerService {
       this.pause();
       return false;
     }
+
     this.play();
+
     return true;
   }
 
   next() {
     if (!playerState.tracks.length) return null;
-    playerState.currentIndex = (playerState.currentIndex + 1) % playerState.tracks.length;
+
+    playerState.currentIndex =
+      (playerState.currentIndex + 1) %
+      playerState.tracks.length;
+
     this.load(playerState.currentIndex);
+
     return this.play();
   }
 
   previous() {
     if (!playerState.tracks.length) return null;
+
     playerState.currentIndex =
-      (playerState.currentIndex - 1 + playerState.tracks.length) % playerState.tracks.length;
+      (
+        playerState.currentIndex -
+        1 +
+        playerState.tracks.length
+      ) % playerState.tracks.length;
+
     this.load(playerState.currentIndex);
+
     return this.play();
   }
 
   seek(percent) {
     if (!playerState.audio.duration) return;
-    playerState.audio.currentTime = playerState.audio.duration * percent;
+
+    playerState.audio.currentTime =
+      playerState.audio.duration * percent;
   }
 
   setVolume(value) {
-    const volume = Math.max(0, Math.min(1, value));
+    const volume = Math.max(
+      0,
+      Math.min(1, value)
+    );
+
     playerState.volume = volume;
     playerState.audio.volume = volume;
   }
