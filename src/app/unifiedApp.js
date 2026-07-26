@@ -5,11 +5,14 @@ import { setPageSEO } from './seo/setPageSEO.js';
 
 import { renderHomeView } from './views/home/renderHomeView.js';
 import { renderHymnsView } from './views/hymns/renderHymnsView.js';
+
 import {
   renderFavoritesView,
   initFavoritesView
 } from './views/favorites/renderFavoritesView.js';
+
 import { renderAlbumsView } from './views/albums/renderAlbumsView.js';
+
 import {
   renderPlaylistsView
 } from './views/playlists/renderPlaylistsView.js';
@@ -17,6 +20,15 @@ import {
 import {
   initPlaylistsView
 } from './views/playlists/initPlaylistsView.js';
+
+import {
+  renderHistoryView
+} from './views/history/renderHistoryView.js';
+
+import {
+  initHistoryView
+} from './views/history/initHistoryView.js';
+
 import { renderDevotionalsView } from './views/devotionals/renderDevotionalsView.js';
 import { renderVideosView } from './views/videos/renderVideosView.js';
 import { renderContactView } from './views/contact/renderContactView.js';
@@ -35,15 +47,16 @@ import {
 
 const views = {
   home: renderHomeView,
-  himnos: (route) =>
-  route.id
-    ? renderHymnDetail(route.id)
-    : renderHymnLibrary(),
-  
+
+  himnos: route =>
+    route.id
+      ? renderHymnDetail(route.id)
+      : renderHymnLibrary(),
+
   favoritos: renderFavoritesView,
-  
   albumes: renderAlbumsView,
   playlists: renderPlaylistsView,
+  historial: renderHistoryView,
   devocionales: renderDevotionalsView,
   videos: renderVideosView,
   contacto: renderContactView
@@ -53,7 +66,11 @@ export function startUnifiedCanticoApp(rootSelector = '#app') {
   const root = document.querySelector(rootSelector);
 
   if (!root) {
-    console.error('[Cántico V8.1] Root element not found:', rootSelector);
+    console.error(
+      '[Cántico V8.1] Root element not found:',
+      rootSelector
+    );
+
     return;
   }
 
@@ -65,39 +82,55 @@ export function startUnifiedCanticoApp(rootSelector = '#app') {
   root.innerHTML = `
     <div class="cantico-app-shell">
       ${renderNavigation(appConfig.navigation, route.page)}
+
       <main class="cantico-main">
         ${renderView(route)}
       </main>
+
       ${renderMusicPlayerPro()}
+
       <footer class="cantico-footer">
-        <p>© 2026 Cántico de Fe Music. Todos los derechos reservados.</p>
+        <p>
+          © 2026 Cántico de Fe Music.
+          Todos los derechos reservados.
+        </p>
       </footer>
     </div>
   `;
 
   setTimeout(() => {
-  initMusicPlayerPro();
+    initMusicPlayerPro();
 
-  initHymnLibrary({
-    onPlay: (hymn) => {
-      window.dispatchEvent(new CustomEvent('cantico:hymn-play', { detail: hymn }));
-    }
-  });
+    initHymnLibrary({
+      onPlay: hymn => {
+        window.dispatchEvent(
+          new CustomEvent('cantico:hymn-play', {
+            detail: hymn
+          })
+        );
+      }
+    });
 
-  initShareButtons();
-if (route.page === 'favoritos') {
-  initFavoritesView({
-    onPlay: (hymn) => {
-      window.dispatchEvent(
-        new CustomEvent('cantico:hymn-play', {
-          detail: hymn
-        })
-      );
+    initShareButtons();
+
+    if (route.page === 'favoritos') {
+      initFavoritesView({
+        onPlay: hymn => {
+          window.dispatchEvent(
+            new CustomEvent('cantico:hymn-play', {
+              detail: hymn
+            })
+          );
+        }
+      });
     }
-  });
-}
-if (route.page === 'playlists') {
-  initPlaylistsView();
-}
+
+    if (route.page === 'playlists') {
+      initPlaylistsView();
+    }
+
+    if (route.page === 'historial') {
+      initHistoryView();
+    }
   }, 0);
 }
