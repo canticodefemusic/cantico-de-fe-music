@@ -1,70 +1,46 @@
 import { HistoryEngine } from '../../../features/history-engine/index.js';
 
-function formatDate(date) {
-  return new Date(date).toLocaleString();
-}
+function renderItem(item) {
+  const label =
+    item.playCount === 1
+      ? 'reproducción'
+      : 'reproducciones';
 
-function renderCard(item) {
   return `
     <article class="history-card">
-
       <h3>${item.title}</h3>
 
       <p>
-        Reproducciones:
-        <strong>${item.playCount}</strong>
+        ${item.playCount} ${label}
       </p>
-
-      <p>
-        Última vez:
-        ${formatDate(item.lastPlayed)}
-      </p>
-
-      <button
-        data-history-play="${item.id}"
-        class="button"
-      >
-        ▶ Reproducir
-      </button>
-
     </article>
   `;
 }
 
 export function renderHistoryView() {
-
-  const recent =
-    HistoryEngine.getRecent(25);
+  const items = HistoryEngine.getMostPlayed(100);
 
   return `
     <section class="history-page">
 
       <header>
-
-        <h1>
-          Historial de reproducción
-        </h1>
+        <h1>Historial de reproducción</h1>
 
         <p>
-          Tus himnos escuchados recientemente.
+          Número de reproducciones de cada himno.
         </p>
-
       </header>
 
       <section class="history-grid">
-
         ${
-          recent.length
-            ? recent
-                .map(renderCard)
-                .join('')
+          items.length
+            ? items.map(renderItem).join('')
             : `
               <p>
                 Aún no hay reproducciones.
               </p>
             `
         }
-
       </section>
 
     </section>
