@@ -1,24 +1,3 @@
-export const hymns = [
-  {
-    id: 'fe-que-mueve-montanas',
-    title: 'Fe que Mueve Montañas',
-    scripture: 'Mateo 17:20',
-    description: 'Himno cristiano sobre la fe que confía en Dios aun cuando la prueba parece grande.',
-    audio: '',
-    video: '',
-    category: 'Fe'
-  },
-  {
-    id: 'quince-anos-mas',
-    title: 'Quince Años Más',
-    scripture: '2 Reyes 20; Isaías 38',
-    description: 'Himno basado en la misericordia de Dios al escuchar el clamor de Ezequías.',
-    audio: '',
-    video: '',
-    category: 'Testimonio'
-  }
-];
-
 export const albums = [
   {
     id: 'himnos-de-fe-vol-1',
