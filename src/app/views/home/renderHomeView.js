@@ -1,4 +1,7 @@
-import { hymns, devotionals } from '../../data/siteData.js';
+import { hymnCatalog } from '../../../features/hymn-library-engine/data/hymnCatalog.js';
+import { renderHymnCard } from '../../../features/hymn-library-engine/components/renderHymnCard.js';
+import { RecommendationEngine } from '../../../features/recommendation-engine/index.js';
+import { devotionals } from '../../data/siteData.js';
 
 export function renderHomeView() {
   return `
