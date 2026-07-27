@@ -1,4 +1,4 @@
-import { devotionals } from '../../data/siteData.js';
+import { devotionals } from '../../data/devotionalsData.js';
 import { renderCards } from '../../components/cards/renderCards.js';
 
 export function renderDevotionalsView() {
