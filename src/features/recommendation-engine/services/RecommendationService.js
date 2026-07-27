@@ -18,12 +18,12 @@ const RecommendationService = {
 
     // Playlists
     const playlistUses = playlists.reduce((count, playlist) => {
-      if (playlist.hymns?.includes(id)) {
-        return count + 1;
-      }
+  if (playlist.hymnIds?.includes(id)) {
+    return count + 1;
+  }
 
-      return count;
-    }, 0);
+  return count;
+}, 0);
 
     points += playlistUses * 2;
 
