@@ -1,61 +1,5 @@
 import { RecommendationEngine } from '../../../features/recommendation-engine/index.js';
-
-function renderRecommendation(hymn) {
-  const coverMarkup = hymn.cover
-    ? `
-      <img
-        class="recommendation-card__cover"
-        src="${hymn.cover}"
-        alt="Portada de ${hymn.title}"
-        loading="lazy"
-      >
-    `
-    : `
-      <div
-        class="recommendation-card__cover recommendation-card__cover--placeholder"
-        aria-hidden="true"
-      >
-        ♪
-      </div>
-    `;
-
-  return `
-    <article class="recommendation-card">
-      ${coverMarkup}
-
-      <div class="recommendation-card__content">
-        <p class="recommendation-card__label">
-          Recomendado para ti
-        </p>
-
-        <h2 class="recommendation-card__title">
-          ${hymn.title}
-        </h2>
-
-        <p class="recommendation-card__description">
-          ${hymn.subtitle || hymn.description || ''}
-        </p>
-
-        <div class="recommendation-card__actions">
-          <button
-            type="button"
-            class="recommendation-card__play"
-            data-recommendation-play="${hymn.id}"
-          >
-            ▶ Reproducir
-          </button>
-
-          <a
-            class="recommendation-card__link"
-            href="?page=himnos&id=${hymn.id}"
-          >
-            Ver himno
-          </a>
-        </div>
-      </div>
-    </article>
-  `;
-}
+import { renderHymnCard } from '../../../features/hymn-library-engine/components/renderHymnCard.js';
 
 export function renderRecommendationsView() {
   const recommendations =
@@ -80,11 +24,11 @@ export function renderRecommendationsView() {
         recommendations.length
           ? `
             <section
-              class="recommendations-grid"
+              class="hymn-library-grid"
               aria-label="Himnos recomendados"
             >
               ${recommendations
-                .map(renderRecommendation)
+                .map(hymn => renderHymnCard(hymn))
                 .join('')}
             </section>
           `
