@@ -29,6 +29,14 @@ import {
   initHistoryView
 } from './views/history/initHistoryView.js';
 
+import {
+  renderRecommendationsView
+} from './views/recommendations/renderRecommendationsView.js';
+
+import {
+  initRecommendationsView
+} from './views/recommendations/initRecommendationsView.js';
+
 import { renderDevotionalsView } from './views/devotionals/renderDevotionalsView.js';
 import { renderVideosView } from './views/videos/renderVideosView.js';
 import { renderContactView } from './views/contact/renderContactView.js';
@@ -57,6 +65,7 @@ const views = {
   albumes: renderAlbumsView,
   playlists: renderPlaylistsView,
   historial: renderHistoryView,
+  recomendados: renderRecommendationsView,
   devocionales: renderDevotionalsView,
   videos: renderVideosView,
   contacto: renderContactView
@@ -132,5 +141,9 @@ export function startUnifiedCanticoApp(rootSelector = '#app') {
     if (route.page === 'historial') {
       initHistoryView();
     }
+
+    if (route.page === 'recomendados') {
+  initRecommendationsView();
+}
   }, 0);
 }
