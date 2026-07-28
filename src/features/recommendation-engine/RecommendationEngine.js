@@ -14,7 +14,7 @@ import {
 
 import {
   getPlaylists
-} from '../playlist-engine/services/playlistService.js';
+} from '../playlist-engine/index.js';
 
 const RecommendationEngine = {
   getRecommendations(limit = 8) {
