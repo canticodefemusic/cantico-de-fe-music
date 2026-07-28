@@ -124,15 +124,23 @@ export function startUnifiedCanticoApp(rootSelector = '#app') {
     initShareButtons();
 
     if (route.page === 'favoritos') {
-      initFavoritesView({
-        onPlay: hymn => {
-          window.dispatchEvent(
-            new CustomEvent('cantico:hymn-play', {
-              detail: hymn
-            })
-          );
-        }
-      });
+      const handleHymnPlay = hymn => {
+  window.dispatchEvent(
+    new CustomEvent('cantico:hymn-play', {
+      detail: hymn
+    })
+  );
+};
+
+initHymnCardInteractions({
+  onPlay: handleHymnPlay
+});
+
+if (route.page === 'himnos' && !route.id) {
+  initHymnLibrary({
+    onPlay: handleHymnPlay
+  });
+}
     }
 
     if (route.page === 'playlists') {
