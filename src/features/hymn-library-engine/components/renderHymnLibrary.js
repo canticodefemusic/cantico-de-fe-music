@@ -10,7 +10,7 @@ import {
 import {
   getPlaylists,
   addHymnToPlaylist
-} from '../../playlist-engine/services/playlistService.js';
+} from '../../playlist-engine/index.js';
 
 const service = new HymnLibraryService();
 
