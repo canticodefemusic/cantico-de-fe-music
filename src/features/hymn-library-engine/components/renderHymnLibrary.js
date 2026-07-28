@@ -155,14 +155,6 @@ export function initHymnLibrary({ onPlay } = {}) {
   }
 }
 
-export function initHymnCardInteractions({
-  onPlay
-} = {}) {
-  bindPlayButtons(onPlay);
-  bindFavoriteButtons();
-  bindPlaylistButtons();
-}
-
 function bindPlaylistButtons() {
   document
     .querySelectorAll(
@@ -241,6 +233,14 @@ function bindPlaylistButtons() {
     });
 }
 
+export function initHymnCardInteractions({
+  onPlay
+} = {}) {
+  bindPlayButtons(onPlay);
+  bindFavoriteButtons();
+  bindPlaylistButtons();
+}
+  
 function bindFavoriteButtons() {
   document
     .querySelectorAll(
