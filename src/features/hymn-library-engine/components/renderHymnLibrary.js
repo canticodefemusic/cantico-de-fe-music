@@ -109,8 +109,9 @@ export function initHymnLibrary({ onPlay } = {}) {
         </p>
       `;
 
-    bindCardButtons(onPlay);
-  }
+    initHymnCardInteractions({
+  onPlay
+});
 
   if (sortContainer) {
     SortEngine.init({
