@@ -84,7 +84,10 @@ export function initHymnLibrary({ onPlay } = {}) {
   );
 
   if (!grid) {
-  bindCardButtons(onPlay);
+  initHymnCardInteractions({
+    onPlay
+  });
+
   return;
 }
 
@@ -151,7 +154,9 @@ export function initHymnLibrary({ onPlay } = {}) {
   }
 }
 
-function bindCardButtons(onPlay) {
+export function initHymnCardInteractions({
+  onPlay
+} = {}) {
   bindPlayButtons(onPlay);
   bindFavoriteButtons();
   bindPlaylistButtons();
