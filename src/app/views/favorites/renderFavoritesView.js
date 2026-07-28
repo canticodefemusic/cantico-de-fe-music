@@ -50,9 +50,9 @@ export function renderFavoritesView() {
       </div>
 
       <div
-        class="hymn-library__grid"
-        id="favoritesGrid"
-      >
+  class="hymn-library__grid"
+  id="hymnLibraryGrid"
+>
         ${renderFavoritesContent()}
       </div>
     </section>
@@ -60,7 +60,7 @@ export function renderFavoritesView() {
 }
 
 export function initFavoritesView({ onPlay } = {}) {
-  const grid = document.getElementById('favoritesGrid');
+  const grid = document.getElementById('hymnLibraryGrid');
 
   if (!grid) {
     return;

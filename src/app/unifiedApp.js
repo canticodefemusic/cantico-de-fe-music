@@ -50,6 +50,7 @@ import {
   renderHymnLibrary,
   renderHymnDetail,
   initHymnLibrary,
+  initHymnCardInteractions,
   initShareButtons
 } from '../features/hymn-library-engine/index.js';
 
@@ -108,42 +109,44 @@ export function startUnifiedCanticoApp(rootSelector = '#app') {
   `;
 
   setTimeout(() => {
-    initMusicPlayerPro();
+  initMusicPlayerPro();
 
+  const handleHymnPlay = hymn => {
+    window.dispatchEvent(
+      new CustomEvent('cantico:hymn-play', {
+        detail: hymn
+      })
+    );
+  };
+
+  initHymnCardInteractions({
+    onPlay: handleHymnPlay
+  });
+
+  if (route.page === 'himnos' && !route.id) {
     initHymnLibrary({
-      onPlay: hymn => {
-        window.dispatchEvent(
-          new CustomEvent('cantico:hymn-play', {
-            detail: hymn
-          })
-        );
-      }
+      onPlay: handleHymnPlay
     });
+  }
 
-    initShareButtons();
+  initShareButtons();
 
-    if (route.page === 'favoritos') {
-      initFavoritesView({
-        onPlay: hymn => {
-          window.dispatchEvent(
-            new CustomEvent('cantico:hymn-play', {
-              detail: hymn
-            })
-          );
-        }
-      });
-    }
+  if (route.page === 'favoritos') {
+    initFavoritesView({
+      onPlay: handleHymnPlay
+    });
+  }
 
-    if (route.page === 'playlists') {
-      initPlaylistsView();
-    }
+  if (route.page === 'playlists') {
+    initPlaylistsView();
+  }
 
-    if (route.page === 'historial') {
-      initHistoryView();
-    }
+  if (route.page === 'historial') {
+    initHistoryView();
+  }
 
-    if (route.page === 'recomendados') {
-  initRecommendationsView();
-}
-  }, 0);
+  if (route.page === 'recomendados') {
+    initRecommendationsView();
+  }
+}, 0);
 }

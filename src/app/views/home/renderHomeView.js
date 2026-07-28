@@ -65,7 +65,10 @@ export function renderHomeView() {
         </a>
       </div>
 
-      <div class="hymn-library-grid">
+      <div
+  id="hymnLibraryGrid"
+  class="hymn-library-grid"
+>
         ${featuredHymns
           .map(hymn => renderHymnCard(hymn))
           .join('')}
