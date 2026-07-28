@@ -5,7 +5,7 @@ import { SortEngine } from '../sorting/SortEngine.js';
 import {
   isFavorite,
   toggleFavorite
-} from '../../favorites-engine/services/favoritesService.js';
+} from '../../favorites-engine/index.js';
 
 import {
   getPlaylists,
