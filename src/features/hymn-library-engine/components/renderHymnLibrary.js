@@ -84,8 +84,9 @@ export function initHymnLibrary({ onPlay } = {}) {
   );
 
   if (!grid) {
-    return;
-  }
+  bindCardButtons(onPlay);
+  return;
+}
 
   let currentQuery = '';
 
