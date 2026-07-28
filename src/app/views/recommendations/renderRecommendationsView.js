@@ -24,9 +24,10 @@ export function renderRecommendationsView() {
         recommendations.length
           ? `
             <section
-              class="hymn-library-grid"
-              aria-label="Himnos recomendados"
-            >
+  id="hymnLibraryGrid"
+  class="hymn-library-grid"
+  aria-label="Himnos recomendados"
+>
               ${recommendations
                 .map(hymn => renderHymnCard(hymn))
                 .join('')}
