@@ -47,9 +47,18 @@ import {
 } from '../features/music-player-pro/index.js';
 
 import {
+  QueueService
+} from '../features/queue-engine/index.js';
+
+import {
+  HymnLibraryService
+} from '../features/hymn-library-engine/services/HymnLibraryService.js';
+
+import {
   renderHymnLibrary,
   renderHymnDetail,
   initHymnLibrary,
+  initHymnCardInteractions,
   initShareButtons
 } from '../features/hymn-library-engine/index.js';
 
@@ -70,6 +79,10 @@ const views = {
   videos: renderVideosView,
   contacto: renderContactView
 };
+
+const queueService = new QueueService();
+const hymnLibraryService =
+  new HymnLibraryService();
 
 export function startUnifiedCanticoApp(rootSelector = '#app') {
   const root = document.querySelector(rootSelector);
@@ -108,42 +121,60 @@ export function startUnifiedCanticoApp(rootSelector = '#app') {
   `;
 
   setTimeout(() => {
-    initMusicPlayerPro();
+  initMusicPlayerPro();
+  queueService.restore();
 
+  const handleHymnPlay = hymn => {
+    if (!hymn) {
+      return;
+    }
+
+    const hymns = hymnLibraryService.list();
+
+    const startIndex = hymns.findIndex(
+      item => item.id === hymn.id
+    );
+
+    queueService.load(
+      hymns,
+      startIndex >= 0 ? startIndex : 0
+    );
+
+    window.dispatchEvent(
+      new CustomEvent('cantico:hymn-play', {
+        detail: hymn
+      })
+    );
+  };
+
+  initHymnCardInteractions({
+    onPlay: handleHymnPlay
+  });
+
+  if (route.page === 'himnos' && !route.id) {
     initHymnLibrary({
-      onPlay: hymn => {
-        window.dispatchEvent(
-          new CustomEvent('cantico:hymn-play', {
-            detail: hymn
-          })
-        );
-      }
+      onPlay: handleHymnPlay
     });
+  }
 
-    initShareButtons();
+  initShareButtons();
 
-    if (route.page === 'favoritos') {
-      initFavoritesView({
-        onPlay: hymn => {
-          window.dispatchEvent(
-            new CustomEvent('cantico:hymn-play', {
-              detail: hymn
-            })
-          );
-        }
-      });
-    }
+  if (route.page === 'favoritos') {
+    initFavoritesView({
+      onPlay: handleHymnPlay
+    });
+  }
 
-    if (route.page === 'playlists') {
-      initPlaylistsView();
-    }
+  if (route.page === 'playlists') {
+    initPlaylistsView();
+  }
 
-    if (route.page === 'historial') {
-      initHistoryView();
-    }
+  if (route.page === 'historial') {
+    initHistoryView();
+  }
 
-    if (route.page === 'recomendados') {
-  initRecommendationsView();
-}
-  }, 0);
+  if (route.page === 'recomendados') {
+    initRecommendationsView();
+  }
+}, 0);
 }
