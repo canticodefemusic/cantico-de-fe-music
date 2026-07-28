@@ -109,50 +109,44 @@ export function startUnifiedCanticoApp(rootSelector = '#app') {
   `;
 
   setTimeout(() => {
-    initMusicPlayerPro();
+  initMusicPlayerPro();
 
-    initHymnLibrary({
-      onPlay: hymn => {
-        window.dispatchEvent(
-          new CustomEvent('cantico:hymn-play', {
-            detail: hymn
-          })
-        );
-      }
-    });
+  const handleHymnPlay = hymn => {
+    window.dispatchEvent(
+      new CustomEvent('cantico:hymn-play', {
+        detail: hymn
+      })
+    );
+  };
 
-    initShareButtons();
-
-    if (route.page === 'favoritos') {
-      const handleHymnPlay = hymn => {
-  window.dispatchEvent(
-    new CustomEvent('cantico:hymn-play', {
-      detail: hymn
-    })
-  );
-};
-
-initHymnCardInteractions({
-  onPlay: handleHymnPlay
-});
-
-if (route.page === 'himnos' && !route.id) {
-  initHymnLibrary({
+  initHymnCardInteractions({
     onPlay: handleHymnPlay
   });
-}
-    }
 
-    if (route.page === 'playlists') {
-      initPlaylistsView();
-    }
+  if (route.page === 'himnos' && !route.id) {
+    initHymnLibrary({
+      onPlay: handleHymnPlay
+    });
+  }
 
-    if (route.page === 'historial') {
-      initHistoryView();
-    }
+  initShareButtons();
 
-    if (route.page === 'recomendados') {
-  initRecommendationsView();
-}
-  }, 0);
+  if (route.page === 'favoritos') {
+    initFavoritesView({
+      onPlay: handleHymnPlay
+    });
+  }
+
+  if (route.page === 'playlists') {
+    initPlaylistsView();
+  }
+
+  if (route.page === 'historial') {
+    initHistoryView();
+  }
+
+  if (route.page === 'recomendados') {
+    initRecommendationsView();
+  }
+}, 0);
 }
