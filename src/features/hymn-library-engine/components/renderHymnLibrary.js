@@ -8,7 +8,6 @@ import {
 } from '../../favorites-engine/services/favoritesService.js';
 
 import {
-  import {
   getPlaylists,
   addHymnToPlaylist
 } from '../../playlist-engine/index.js';
