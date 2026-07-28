@@ -17,7 +17,11 @@ export function renderHymnDetailView(hymn) {
     : '';
 
   return `
-    <section class="hymn-detail" data-hymn-id="${hymn.id}">
+    <section
+  id="hymnLibraryGrid"
+  class="hymn-detail"
+  data-hymn-id="${hymn.id}"
+>
       <a class="hymn-detail__back" href="/?page=himnos">← Volver a himnos</a>
 
       <article class="hymn-detail__card">
