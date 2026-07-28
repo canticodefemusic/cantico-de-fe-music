@@ -84,12 +84,8 @@ export function initHymnLibrary({ onPlay } = {}) {
   );
 
   if (!grid) {
-  initHymnCardInteractions({
-    onPlay
-  });
-
-  return;
-}
+    return;
+  }
 
   let currentQuery = '';
 
@@ -110,8 +106,9 @@ export function initHymnLibrary({ onPlay } = {}) {
       `;
 
     initHymnCardInteractions({
-  onPlay
-});
+      onPlay
+    });
+  }
 
   if (sortContainer) {
     SortEngine.init({
