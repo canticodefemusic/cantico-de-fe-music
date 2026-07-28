@@ -1,30 +1,17 @@
 /**
- * V9.1.0 Smart Playlists
+ * Playlist Engine
  * Public API
  */
 
 export {
-  SmartPlaylistService
-} from './SmartPlaylistService.js';
-
-export {
-  SmartPlaylistDefinitions,
-  getSmartPlaylistDefinitions,
-  findSmartPlaylistDefinition
-} from './SmartPlaylistDefinitions.js';
+  getPlaylists,
+  createPlaylist,
+  renamePlaylist,
+  deletePlaylist,
+  addHymnToPlaylist,
+  removeHymnFromPlaylist
+} from './services/playlistService.js';
 
 export {
   SmartPlaylistEngine
-} from './SmartPlaylistEngine.js';
-
-export {
-  default as SmartPlaylistServiceDefault
-} from './SmartPlaylistService.js';
-
-export {
-  default as SmartPlaylistDefinitionsDefault
-} from './SmartPlaylistDefinitions.js';
-
-export {
-  default as SmartPlaylistEngineDefault
-} from './SmartPlaylistEngine.js';
+} from './smart/SmartPlaylistEngine.js';
