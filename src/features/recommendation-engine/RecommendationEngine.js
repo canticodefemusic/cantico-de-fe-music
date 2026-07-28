@@ -1,9 +1,20 @@
 import RecommendationService from './services/RecommendationService.js';
 
-import { hymnCatalog } from '../hymn-library-engine/data/hymnCatalog.js';
-import { getFavorites } from '../favorites-engine/services/favoritesService.js';
-import HistoryService from '../history-engine/services/HistoryService.js';
-import { getPlaylists } from '../playlist-engine/services/playlistService.js';
+import {
+  hymnCatalog
+} from '../hymn-library-engine/index.js';
+
+import {
+  getFavorites
+} from '../favorites-engine/index.js';
+
+import {
+  HistoryService
+} from '../history-engine/index.js';
+
+import {
+  getPlaylists
+} from '../playlist-engine/services/playlistService.js';
 
 const RecommendationEngine = {
   getRecommendations(limit = 8) {
