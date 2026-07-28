@@ -1,6 +1,6 @@
 import {
   getPlaylists
-} from '../../../features/playlist-engine/services/playlistService.js';
+} from '../../../features/playlist-engine/index.js';
 
 import {
   getFavorites
