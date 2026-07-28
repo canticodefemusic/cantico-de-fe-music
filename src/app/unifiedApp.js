@@ -50,6 +50,7 @@ import {
   renderHymnLibrary,
   renderHymnDetail,
   initHymnLibrary,
+  initHymnCardInteractions,
   initShareButtons
 } from '../features/hymn-library-engine/index.js';
 
