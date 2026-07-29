@@ -48,6 +48,21 @@ if (restoredSession) {
       restoredTrack?.audio ||
       '';
 
+    playerState.audio.onloadedmetadata = () => {
+  if (
+    Number.isFinite(restoredSession.currentTime) &&
+    restoredSession.currentTime > 0
+  ) {
+    playerState.audio.currentTime =
+      restoredSession.currentTime;
+  }
+
+  syncPlayerApplicationState({
+    source: 'music-player-service',
+    action: 'metadata-loaded'
+  });
+};
+    
     playerState.isPlaying = false;
   }
 }
