@@ -7,6 +7,10 @@ import { HistoryEngine } from '../../history-engine/index.js';
 import { QueueService } from '../../queue-engine/index.js';
 import { MediaSessionService } from '../../media-session/index.js';
 
+import {
+  PlayerPersistenceService
+} from '../../player-persistence/index.js';
+
 const queueService = new QueueService();
 
 export class MusicPlayerService {
@@ -295,5 +299,9 @@ export class MusicPlayerService {
       source: 'music-player-service',
       action: 'set-volume'
     });
+
+    PlayerPersistenceService.save({
+     volume: playerState.volume
+  });
   }
 }
