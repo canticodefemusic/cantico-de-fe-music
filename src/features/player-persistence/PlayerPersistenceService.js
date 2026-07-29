@@ -8,18 +8,27 @@ const STORAGE_KEY = 'cantico:player-session';
 export class PlayerPersistenceService {
   static save(data = {}) {
     try {
+      const currentSession = this.load() || {};
+
+      const session = {
+        ...currentSession,
+        ...data,
+        savedAt: Date.now()
+      };
+
       localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify({
-          ...data,
-          savedAt: Date.now()
-        })
+        JSON.stringify(session)
       );
+
+      return session;
     } catch (error) {
       console.error(
         '[Player Persistence] Error saving session:',
         error
       );
+
+      return null;
     }
   }
 
@@ -43,15 +52,15 @@ export class PlayerPersistenceService {
   }
 
   static restore(playerService) {
-  const session = this.load();
+    const session = this.load();
 
-  if (!session || !playerService) {
-    return false;
+    if (!session || !playerService) {
+      return false;
+    }
+
+    return session;
   }
 
-  return session;
-}
-  
   static clear() {
     try {
       localStorage.removeItem(STORAGE_KEY);
