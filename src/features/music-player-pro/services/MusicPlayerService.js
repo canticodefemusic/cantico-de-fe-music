@@ -5,6 +5,7 @@ import {
 
 import { HistoryEngine } from '../../history-engine/index.js';
 import { QueueService } from '../../queue-engine/index.js';
+import { MediaSessionService } from '../../media-session/index.js';
 
 const queueService = new QueueService();
 
