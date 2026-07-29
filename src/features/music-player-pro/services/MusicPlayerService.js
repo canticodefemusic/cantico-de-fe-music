@@ -225,6 +225,14 @@ export class MusicPlayerService {
       source: 'music-player-service',
       action: 'pause'
     });
+  
+    PlayerPersistenceService.save({
+      trackId: this.getCurrentTrack()?.id ?? null,
+      currentIndex: playerState.currentIndex,
+      currentTime: playerState.audio.currentTime,
+      volume: playerState.volume,
+      isPlaying: false
+    });
   }
 
   toggle() {
