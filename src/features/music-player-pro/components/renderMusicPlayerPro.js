@@ -13,7 +13,6 @@ let hymnPlayHandler = null;
 
 export function renderMusicPlayerPro() {
   service = new MusicPlayerService(playerTracks);
-  service.load(0);
 
   const track = service.getCurrentTrack();
 
