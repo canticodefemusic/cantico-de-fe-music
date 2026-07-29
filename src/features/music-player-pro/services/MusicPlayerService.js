@@ -189,6 +189,13 @@ export class MusicPlayerService {
 
       HistoryEngine.addPlay(track);
 
+      PlayerPersistenceService.save({
+        trackId: track.id ?? null,
+        currentIndex: playerState.currentIndex,
+        volume: playerState.volume,
+        isPlaying: playerState.isPlaying
+      });
+      
       return true;
     } catch (error) {
       playerState.isPlaying = false;
