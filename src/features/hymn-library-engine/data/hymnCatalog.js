@@ -60,7 +60,7 @@ export const hymnCatalog = [
 
     artist: 'Cántico de Fe Music',
 
-    audio: '/assets/audio/himnos/quince-años-más.m4a',
+    audio: '/assets/audio/himnos/quince-anos-mas.m4a',
     cover: '',
     duration: '',
 
