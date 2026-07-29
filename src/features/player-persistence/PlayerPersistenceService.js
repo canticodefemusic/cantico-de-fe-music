@@ -42,6 +42,16 @@ export class PlayerPersistenceService {
     }
   }
 
+  static restore(playerService) {
+  const session = this.load();
+
+  if (!session || !playerService) {
+    return false;
+  }
+
+  return session;
+}
+  
   static clear() {
     try {
       localStorage.removeItem(STORAGE_KEY);
