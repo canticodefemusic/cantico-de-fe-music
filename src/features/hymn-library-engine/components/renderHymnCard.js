@@ -1,4 +1,4 @@
-import { isFavorite } from '../../favorites-engine/services/favoritesService.js';
+import { isFavorite } from '../../favorites-engine/index.js';
 
 function escapeHtml(value = '') {
   return String(value)
