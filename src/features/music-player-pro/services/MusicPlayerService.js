@@ -67,7 +67,9 @@ export class MusicPlayerService {
       track.src ||
       track.audio ||
       '';
-
+    
+    MediaSessionService.update(track);
+    
     syncPlayerApplicationState({
       source: 'music-player-service',
       action: 'load',
@@ -107,7 +109,9 @@ export class MusicPlayerService {
       track.src ||
       track.audio ||
       '';
-
+    
+    MediaSessionService.update(track);
+    
     syncPlayerApplicationState({
       source: 'music-player-service',
       action: 'load-track',
