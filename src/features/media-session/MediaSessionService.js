@@ -42,20 +42,28 @@ export class MediaSessionService {
     }
 
     const actions = [
-      'play',
-      'pause',
-      'previoustrack',
-      'nexttrack'
-    ];
+  'play',
+  'pause',
+  'previoustrack',
+  'nexttrack',
+  'seekbackward',
+  'seekforward',
+  'seekto'
+];
 
     actions.forEach(action => {
-      if (typeof handlers[action] === 'function') {
-        navigator.mediaSession.setActionHandler(
-          action,
-          handlers[action]
-        );
-      }
-    });
+  try {
+    if (typeof handlers[action] === 'function') {
+      navigator.mediaSession.setActionHandler(
+        action,
+        handlers[action]
+      );
+    }
+  } catch (error) {
+    // Algunos navegadores aún no soportan
+    // determinadas acciones de Media Session.
+  }
+});
   }
 
   static setPlaybackState(state = 'none') {
