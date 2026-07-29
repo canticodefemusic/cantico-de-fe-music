@@ -29,6 +29,8 @@ export class MusicPlayerService {
     };
 
     playerState.audio.ontimeupdate = () => {
+      MediaSessionService.updatePosition(playerState.audio);
+      
       syncPlayerApplicationState({
         source: 'music-player-service',
         action: 'time-update'
