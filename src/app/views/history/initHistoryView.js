@@ -1,5 +1,7 @@
-import { MusicPlayerService } from '../../../features/music-player-pro/services/MusicPlayerService.js';
-import { playerTracks } from '../../../features/music-player-pro/data/playerTracks.js';
+import {
+  MusicPlayerService,
+  playerTracks
+} from '../../../features/music-player-pro/index.js';
 
 const player = new MusicPlayerService(playerTracks);
 
