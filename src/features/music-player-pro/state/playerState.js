@@ -1,4 +1,4 @@
-import { applicationState } from "../../core/state/index.js";
+import { applicationState } from "../../../core/state/index.js";
 
 const audio = new Audio();
 
