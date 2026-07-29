@@ -1,5 +1,5 @@
 import { hymnCatalog } from '../data/hymnCatalog.js';
-import { searchItems } from '../../smart-search-engine/services/searchEngine.js';
+import { searchItems } from '../../smart-search-engine/index.js';
 
 export class HymnLibraryService {
   constructor(catalog = hymnCatalog) {
@@ -11,14 +11,25 @@ export class HymnLibraryService {
   }
 
   findById(id) {
-    return this.catalog.find(hymn => hymn.id === id) || null;
+    return this.catalog.find(
+      hymn => hymn.id === id
+    ) || null;
   }
 
   search(query) {
-  return searchItems(this.catalog, query);
-}
+    return searchItems(
+      this.catalog,
+      query
+    );
+  }
 
   categories() {
-    return [...new Set(this.catalog.map(hymn => hymn.category).filter(Boolean))];
+    return [
+      ...new Set(
+        this.catalog
+          .map(hymn => hymn.category)
+          .filter(Boolean)
+      )
+    ];
   }
 }

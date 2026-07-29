@@ -5,12 +5,12 @@ import { SortEngine } from '../sorting/SortEngine.js';
 import {
   isFavorite,
   toggleFavorite
-} from '../../favorites-engine/services/favoritesService.js';
+} from '../../favorites-engine/index.js';
 
 import {
   getPlaylists,
   addHymnToPlaylist
-} from '../../playlist-engine/services/playlistService.js';
+} from '../../playlist-engine/index.js';
 
 const service = new HymnLibraryService();
 
@@ -105,7 +105,9 @@ export function initHymnLibrary({ onPlay } = {}) {
         </p>
       `;
 
-    bindCardButtons(onPlay);
+    initHymnCardInteractions({
+  onPlay
+});
   }
 
   if (sortContainer) {
@@ -150,7 +152,9 @@ export function initHymnLibrary({ onPlay } = {}) {
   }
 }
 
-function bindCardButtons(onPlay) {
+export function initHymnCardInteractions({
+  onPlay
+} = {}) {
   bindPlayButtons(onPlay);
   bindFavoriteButtons();
   bindPlaylistButtons();

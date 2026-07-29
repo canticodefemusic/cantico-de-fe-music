@@ -3,7 +3,7 @@ import {
   renamePlaylist,
   deletePlaylist,
   removeHymnFromPlaylist
-} from '../../../features/playlist-engine/services/playlistService.js';
+} from '../../../features/playlist-engine/index.js';
 
 export function initPlaylistsView() {
   bindCreatePlaylistButton();

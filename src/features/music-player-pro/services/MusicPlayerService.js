@@ -1,18 +1,22 @@
 import { playerState } from '../state/playerState.js';
 import { HistoryEngine } from '../../history-engine/index.js';
+import { QueueService } from '../../queue-engine/index.js';
+
+const queueService = new QueueService();
 
 export class MusicPlayerService {
   constructor(tracks = []) {
     playerState.tracks = tracks;
     playerState.audio.volume = playerState.volume;
 
-    playerState.audio.addEventListener('ended', () => {
-      if (playerState.repeat) {
-        this.play();
-      } else {
-        this.next();
-      }
-    });
+    /*
+     * Usamos onended en lugar de addEventListener
+     * para evitar listeners duplicados si el
+     * reproductor vuelve a inicializarse.
+     */
+    playerState.audio.onended = () => {
+      this.next();
+    };
   }
 
   getState() {
@@ -20,17 +24,59 @@ export class MusicPlayerService {
   }
 
   getCurrentTrack() {
-    return playerState.tracks[playerState.currentIndex] || null;
+    return (
+      playerState.tracks[playerState.currentIndex] ||
+      null
+    );
   }
 
   load(index = 0) {
-    if (!playerState.tracks[index]) return null;
+    if (!playerState.tracks[index]) {
+      return null;
+    }
 
     playerState.currentIndex = index;
 
     const track = this.getCurrentTrack();
 
-    playerState.audio.src = track.src || '';
+    playerState.audio.src =
+      track.src ||
+      track.audio ||
+      '';
+
+    return track;
+  }
+
+  loadTrack(track, queue = null, index = null) {
+    if (!track) {
+      return null;
+    }
+
+    if (Array.isArray(queue) && queue.length) {
+      playerState.tracks = queue;
+    }
+
+    if (
+      Number.isInteger(index) &&
+      index >= 0 &&
+      index < playerState.tracks.length
+    ) {
+      playerState.currentIndex = index;
+    } else {
+      const trackIndex =
+        playerState.tracks.findIndex(
+          item => item.id === track.id
+        );
+
+      if (trackIndex >= 0) {
+        playerState.currentIndex = trackIndex;
+      }
+    }
+
+    playerState.audio.src =
+      track.src ||
+      track.audio ||
+      '';
 
     return track;
   }
@@ -40,7 +86,9 @@ export class MusicPlayerService {
       track => track.id === id
     );
 
-    if (index === -1) return null;
+    if (index === -1) {
+      return null;
+    }
 
     return this.load(index);
   }
@@ -52,10 +100,15 @@ export class MusicPlayerService {
 
     const track = this.getCurrentTrack();
 
-    if (!track) return false;
+    if (!track) {
+      return false;
+    }
 
-    if (!playerState.audio.src && track.src) {
-      playerState.audio.src = track.src;
+    if (!playerState.audio.src) {
+      playerState.audio.src =
+        track.src ||
+        track.audio ||
+        '';
     }
 
     if (!playerState.audio.src) {
@@ -104,34 +157,42 @@ export class MusicPlayerService {
   }
 
   next() {
-    if (!playerState.tracks.length) return null;
+    const track = queueService.next();
 
-    playerState.currentIndex =
-      (playerState.currentIndex + 1) %
-      playerState.tracks.length;
+    if (!track) {
+      playerState.isPlaying = false;
+      return null;
+    }
 
-    this.load(playerState.currentIndex);
+    this.loadTrack(
+      track,
+      queueService.all(),
+      queueService.index()
+    );
 
     return this.play();
   }
 
   previous() {
-    if (!playerState.tracks.length) return null;
+    const track = queueService.previous();
 
-    playerState.currentIndex =
-      (
-        playerState.currentIndex -
-        1 +
-        playerState.tracks.length
-      ) % playerState.tracks.length;
+    if (!track) {
+      return null;
+    }
 
-    this.load(playerState.currentIndex);
+    this.loadTrack(
+      track,
+      queueService.all(),
+      queueService.index()
+    );
 
     return this.play();
   }
 
   seek(percent) {
-    if (!playerState.audio.duration) return;
+    if (!playerState.audio.duration) {
+      return;
+    }
 
     playerState.audio.currentTime =
       playerState.audio.duration * percent;

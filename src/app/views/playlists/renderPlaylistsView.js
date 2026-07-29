@@ -1,18 +1,15 @@
 import {
-  getPlaylists
-} from '../../../features/playlist-engine/services/playlistService.js';
+  getPlaylists,
+  SmartPlaylistEngine
+} from '../../../features/playlist-engine/index.js';
 
 import {
   getFavorites
-} from '../../../features/favorites-engine/services/favoritesService.js';
-
-import {
-  SmartPlaylistEngine
-} from '../../../features/playlist-engine/smart/SmartPlaylistEngine.js';
+} from '../../../features/favorites-engine/index.js';
 
 import {
   HymnLibraryService
-} from '../../../features/hymn-library-engine/services/HymnLibraryService.js';
+} from '../../../features/hymn-library-engine/index.js';
 
 const hymnService = new HymnLibraryService();
 
