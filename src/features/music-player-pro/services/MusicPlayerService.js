@@ -18,6 +18,40 @@ export class MusicPlayerService {
     playerState.tracks = tracks;
     playerState.audio.volume = playerState.volume;
 
+    const restoredSession =
+  PlayerPersistenceService.restore(this);
+
+if (restoredSession) {
+  const savedVolume = Number(restoredSession.volume);
+
+  if (
+    Number.isFinite(savedVolume) &&
+    savedVolume >= 0 &&
+    savedVolume <= 1
+  ) {
+    playerState.volume = savedVolume;
+    playerState.audio.volume = savedVolume;
+  }
+
+  const restoredIndex =
+    playerState.tracks.findIndex(
+      track => track.id === restoredSession.trackId
+    );
+
+  if (restoredIndex >= 0) {
+    playerState.currentIndex = restoredIndex;
+
+    const restoredTrack = this.getCurrentTrack();
+
+    playerState.audio.src =
+      restoredTrack?.src ||
+      restoredTrack?.audio ||
+      '';
+
+    playerState.isPlaying = false;
+  }
+}
+    
     syncPlayerApplicationState({
       source: 'music-player-service',
       action: 'initialize'
