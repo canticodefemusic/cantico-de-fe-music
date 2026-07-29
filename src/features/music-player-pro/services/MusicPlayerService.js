@@ -5,6 +5,7 @@ import {
 
 import { HistoryEngine } from '../../history-engine/index.js';
 import { QueueService } from '../../queue-engine/index.js';
+import { MediaSessionService } from '../../media-session/index.js';
 
 const queueService = new QueueService();
 
@@ -28,6 +29,8 @@ export class MusicPlayerService {
     };
 
     playerState.audio.ontimeupdate = () => {
+      MediaSessionService.updatePosition(playerState.audio);
+      
       syncPlayerApplicationState({
         source: 'music-player-service',
         action: 'time-update'
@@ -66,7 +69,9 @@ export class MusicPlayerService {
       track.src ||
       track.audio ||
       '';
-
+    
+    MediaSessionService.update(track);
+    
     syncPlayerApplicationState({
       source: 'music-player-service',
       action: 'load',
@@ -106,7 +111,9 @@ export class MusicPlayerService {
       track.src ||
       track.audio ||
       '';
-
+    
+    MediaSessionService.update(track);
+    
     syncPlayerApplicationState({
       source: 'music-player-service',
       action: 'load-track',
@@ -159,7 +166,17 @@ export class MusicPlayerService {
       await playerState.audio.play();
 
       playerState.isPlaying = true;
+      MediaSessionService.update(track);
 
+      MediaSessionService.setPlaybackState('playing');
+
+      MediaSessionService.registerHandlers({
+        play: () => this.play(),
+        pause: () => this.pause(),
+        nexttrack: () => this.next(),
+        previoustrack: () => this.previous()
+      });
+      
       syncPlayerApplicationState({
         source: 'music-player-service',
         action: 'play',
@@ -190,7 +207,9 @@ export class MusicPlayerService {
   pause() {
     playerState.audio.pause();
     playerState.isPlaying = false;
-
+    
+    MediaSessionService.setPlaybackState('paused');
+    
     syncPlayerApplicationState({
       source: 'music-player-service',
       action: 'pause'
@@ -214,6 +233,8 @@ export class MusicPlayerService {
     if (!track) {
       playerState.isPlaying = false;
 
+      MediaSessionService.clear();
+      
       syncPlayerApplicationState({
         source: 'music-player-service',
         action: 'queue-ended'
