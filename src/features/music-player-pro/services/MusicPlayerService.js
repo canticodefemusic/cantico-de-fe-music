@@ -88,6 +88,8 @@ export class MusicPlayerService {
       });
     });
 
+        let lastSavedSecond = -1;
+
     playerState.audio.ontimeupdate = () => {
       MediaSessionService.updatePosition(
         playerState.audio
@@ -97,6 +99,32 @@ export class MusicPlayerService {
         source: 'music-player-service',
         action: 'time-update'
       });
+
+      const currentSecond = Math.floor(
+        playerState.audio.currentTime
+      );
+
+      if (
+        currentSecond > 0 &&
+        currentSecond % 5 === 0 &&
+        currentSecond !== lastSavedSecond
+      ) {
+        lastSavedSecond = currentSecond;
+
+        PlayerPersistenceService.save({
+          trackId:
+            this.getCurrentTrack()?.id ??
+            null,
+          currentIndex:
+            playerState.currentIndex,
+          currentTime:
+            playerState.audio.currentTime,
+          volume:
+            playerState.volume,
+          isPlaying:
+            playerState.isPlaying
+        });
+      }
     };
 
     playerState.audio.onloadedmetadata = () => {
