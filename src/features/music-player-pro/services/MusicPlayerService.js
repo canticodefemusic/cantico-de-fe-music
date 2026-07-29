@@ -127,7 +127,7 @@ export class MusicPlayerService {
       }
     };
 
-    playerState.audio.onloadedmetadata = () => {
+        playerState.audio.oncanplay = () => {
       if (pendingRestoreTime !== null) {
         const duration =
           playerState.audio.duration;
@@ -149,7 +149,7 @@ export class MusicPlayerService {
 
       syncPlayerApplicationState({
         source: 'music-player-service',
-        action: 'metadata-loaded'
+        action: 'can-play'
       });
     };
 
