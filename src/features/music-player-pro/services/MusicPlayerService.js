@@ -15,87 +15,101 @@ const queueService = new QueueService();
 
 export class MusicPlayerService {
   constructor(tracks = []) {
-    playerState.tracks = tracks;
-    playerState.audio.volume = playerState.volume;
+  playerState.tracks = tracks;
+  playerState.audio.volume = playerState.volume;
 
-    const restoredSession =
-  PlayerPersistenceService.restore(this);
+  const restoredSession =
+    PlayerPersistenceService.restore(this);
 
-if (restoredSession) {
-  const savedVolume = Number(restoredSession.volume);
+  let restoredTrack = null;
+  let pendingRestoreTime = null;
 
-  if (
-    Number.isFinite(savedVolume) &&
-    savedVolume >= 0 &&
-    savedVolume <= 1
-  ) {
-    playerState.volume = savedVolume;
-    playerState.audio.volume = savedVolume;
+  if (restoredSession) {
+    const savedVolume = Number(restoredSession.volume);
+
+    if (
+      Number.isFinite(savedVolume) &&
+      savedVolume >= 0 &&
+      savedVolume <= 1
+    ) {
+      playerState.volume = savedVolume;
+      playerState.audio.volume = savedVolume;
+    }
+
+    const restoredIndex =
+      playerState.tracks.findIndex(
+        track => track.id === restoredSession.trackId
+      );
+
+    if (restoredIndex >= 0) {
+      playerState.currentIndex = restoredIndex;
+      restoredTrack = this.getCurrentTrack();
+
+      const savedTime =
+        Number(restoredSession.currentTime);
+
+      if (
+        Number.isFinite(savedTime) &&
+        savedTime > 0
+      ) {
+        pendingRestoreTime = savedTime;
+      }
+
+      playerState.isPlaying = false;
+    }
   }
 
-  const restoredIndex =
-    playerState.tracks.findIndex(
-      track => track.id === restoredSession.trackId
+  /*
+   * Usamos onended en lugar de addEventListener
+   * para evitar listeners duplicados si el
+   * reproductor vuelve a inicializarse.
+   */
+  playerState.audio.onended = () => {
+    this.next();
+  };
+
+  playerState.audio.ontimeupdate = () => {
+    MediaSessionService.updatePosition(
+      playerState.audio
     );
 
-  if (restoredIndex >= 0) {
-    playerState.currentIndex = restoredIndex;
+    syncPlayerApplicationState({
+      source: 'music-player-service',
+      action: 'time-update'
+    });
+  };
 
-    const restoredTrack = this.getCurrentTrack();
+  playerState.audio.onloadedmetadata = () => {
+    if (pendingRestoreTime !== null) {
+      const safePosition = Math.min(
+        pendingRestoreTime,
+        playerState.audio.duration
+      );
 
+      playerState.audio.currentTime = safePosition;
+      pendingRestoreTime = null;
+    }
+
+    syncPlayerApplicationState({
+      source: 'music-player-service',
+      action: 'metadata-loaded'
+    });
+  };
+
+  if (restoredTrack) {
     playerState.audio.src =
-      restoredTrack?.src ||
-      restoredTrack?.audio ||
+      restoredTrack.src ||
+      restoredTrack.audio ||
       '';
 
-    playerState.audio.onloadedmetadata = () => {
-  if (
-    Number.isFinite(restoredSession.currentTime) &&
-    restoredSession.currentTime > 0
-  ) {
-    playerState.audio.currentTime =
-      restoredSession.currentTime;
+    MediaSessionService.update(restoredTrack);
   }
 
   syncPlayerApplicationState({
     source: 'music-player-service',
-    action: 'metadata-loaded'
+    action: 'initialize'
   });
-};
-    
-    playerState.isPlaying = false;
-  }
 }
-    
-    syncPlayerApplicationState({
-      source: 'music-player-service',
-      action: 'initialize'
-    });
-
-    /*
-     * Usamos onended en lugar de addEventListener
-     * para evitar listeners duplicados si el
-     * reproductor vuelve a inicializarse.
-     */
-    playerState.audio.onended = () => {
-      this.next();
-    };
-
-    playerState.audio.ontimeupdate = () => {
-      MediaSessionService.updatePosition(playerState.audio);
-      
-      syncPlayerApplicationState({
-        source: 'music-player-service',
-        action: 'time-update'
-      });
-    };
-
-    playerState.audio.onloadedmetadata = () => {
-      syncPlayerApplicationState({
-        source: 'music-player-service',
-        action: 'metadata-loaded'
-      });
-    };
   }
 
   getState() {
@@ -365,7 +379,7 @@ if (restoredSession) {
     });
 
     PlayerPersistenceService.save({
-     volume: playerState.volume
-  });
+      volume: playerState.volume
+    });
   }
 }
