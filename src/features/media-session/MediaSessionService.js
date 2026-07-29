@@ -74,6 +74,37 @@ export class MediaSessionService {
     navigator.mediaSession.playbackState = state;
   }
 
+  static updatePosition(audio) {
+  if (!this.isSupported()) {
+    return;
+  }
+
+  if (
+    !audio ||
+    Number.isNaN(audio.duration) ||
+    !Number.isFinite(audio.duration)
+  ) {
+    return;
+  }
+
+  if (
+    typeof navigator.mediaSession.setPositionState !== 'function'
+  ) {
+    return;
+  }
+
+  try {
+    navigator.mediaSession.setPositionState({
+      duration: audio.duration,
+      playbackRate: audio.playbackRate,
+      position: audio.currentTime
+    });
+  } catch (error) {
+    // Algunos navegadores aún no soportan
+    // Position State completamente.
+  }
+}
+  
   static clear() {
     if (!this.isSupported()) {
       return;
