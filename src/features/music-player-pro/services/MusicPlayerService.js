@@ -72,6 +72,22 @@ export class MusicPlayerService {
       this.next();
     };
 
+    window.addEventListener('pagehide', () => {
+      PlayerPersistenceService.save({
+        trackId:
+          this.getCurrentTrack()?.id ??
+          null,
+        currentIndex:
+          playerState.currentIndex,
+        currentTime:
+          playerState.audio.currentTime,
+        volume:
+          playerState.volume,
+        isPlaying:
+          playerState.isPlaying
+      });
+    });
+
     playerState.audio.ontimeupdate = () => {
       MediaSessionService.updatePosition(
         playerState.audio
@@ -89,7 +105,8 @@ export class MusicPlayerService {
           playerState.audio.duration;
 
         const safePosition =
-          Number.isFinite(duration) && duration > 0
+          Number.isFinite(duration) &&
+          duration > 0
             ? Math.min(
                 pendingRestoreTime,
                 duration
@@ -114,7 +131,9 @@ export class MusicPlayerService {
         restoredTrack.audio ||
         '';
 
-      MediaSessionService.update(restoredTrack);
+      MediaSessionService.update(
+        restoredTrack
+      );
     }
 
     syncPlayerApplicationState({
@@ -281,7 +300,8 @@ export class MusicPlayerService {
         trackId: track.id ?? null,
         currentIndex:
           playerState.currentIndex,
-        volume: playerState.volume,
+        volume:
+          playerState.volume,
         isPlaying:
           playerState.isPlaying
       });
@@ -326,7 +346,8 @@ export class MusicPlayerService {
         playerState.currentIndex,
       currentTime:
         playerState.audio.currentTime,
-      volume: playerState.volume,
+      volume:
+        playerState.volume,
       isPlaying: false
     });
   }
@@ -414,7 +435,8 @@ export class MusicPlayerService {
     });
 
     PlayerPersistenceService.save({
-      volume: playerState.volume
+      volume:
+        playerState.volume
     });
   }
 }
