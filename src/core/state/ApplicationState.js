@@ -39,6 +39,23 @@ const initialState = {
     relatedItems: []
   },
 
+  router: {
+    currentRoute: null,
+    currentPage: 'home',
+    currentId: null,
+    path: '/',
+    query: {}
+  },
+
+  application: {
+    status: 'idle',
+    rootSelector: null,
+    environment: null,
+    startedAt: null,
+    initializedAt: null,
+    message: null
+  },
+
   app: {
     initialized: false,
     activeView: 'home',
