@@ -160,7 +160,17 @@ export class MusicPlayerService {
       await playerState.audio.play();
 
       playerState.isPlaying = true;
+      MediaSessionService.update(track);
 
+      MediaSessionService.setPlaybackState('playing');
+
+      MediaSessionService.registerHandlers({
+        play: () => this.play(),
+        pause: () => this.pause(),
+        nexttrack: () => this.next(),
+        previoustrack: () => this.previous()
+      });
+      
       syncPlayerApplicationState({
         source: 'music-player-service',
         action: 'play',
@@ -191,7 +201,9 @@ export class MusicPlayerService {
   pause() {
     playerState.audio.pause();
     playerState.isPlaying = false;
-
+    
+    MediaSessionService.setPlaybackState('paused');
+    
     syncPlayerApplicationState({
       source: 'music-player-service',
       action: 'pause'
