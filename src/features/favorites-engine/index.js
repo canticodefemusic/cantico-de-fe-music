@@ -6,6 +6,5 @@
 export {
   isFavorite,
   toggleFavorite,
-  getFavorites,
-  clearFavorites
+  getFavorites
 } from './services/favoritesService.js';
