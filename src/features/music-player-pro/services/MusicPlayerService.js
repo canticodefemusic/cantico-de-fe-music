@@ -26,6 +26,20 @@ export class MusicPlayerService {
     playerState.audio.onended = () => {
       this.next();
     };
+
+    playerState.audio.ontimeupdate = () => {
+      syncPlayerApplicationState({
+        source: 'music-player-service',
+        action: 'time-update'
+      });
+    };
+
+    playerState.audio.onloadedmetadata = () => {
+      syncPlayerApplicationState({
+        source: 'music-player-service',
+        action: 'metadata-loaded'
+      });
+    };
   }
 
   getState() {
