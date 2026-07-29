@@ -1,4 +1,8 @@
-import { playerState } from '../state/playerState.js';
+import {
+  playerState,
+  syncPlayerApplicationState
+} from '../state/playerState.js';
+
 import { HistoryEngine } from '../../history-engine/index.js';
 import { QueueService } from '../../queue-engine/index.js';
 
@@ -9,6 +13,11 @@ export class MusicPlayerService {
     playerState.tracks = tracks;
     playerState.audio.volume = playerState.volume;
 
+    syncPlayerApplicationState({
+      source: 'music-player-service',
+      action: 'initialize'
+    });
+
     /*
      * Usamos onended en lugar de addEventListener
      * para evitar listeners duplicados si el
@@ -16,6 +25,20 @@ export class MusicPlayerService {
      */
     playerState.audio.onended = () => {
       this.next();
+    };
+
+    playerState.audio.ontimeupdate = () => {
+      syncPlayerApplicationState({
+        source: 'music-player-service',
+        action: 'time-update'
+      });
+    };
+
+    playerState.audio.onloadedmetadata = () => {
+      syncPlayerApplicationState({
+        source: 'music-player-service',
+        action: 'metadata-loaded'
+      });
     };
   }
 
@@ -43,6 +66,12 @@ export class MusicPlayerService {
       track.src ||
       track.audio ||
       '';
+
+    syncPlayerApplicationState({
+      source: 'music-player-service',
+      action: 'load',
+      trackId: track.id ?? null
+    });
 
     return track;
   }
@@ -77,6 +106,12 @@ export class MusicPlayerService {
       track.src ||
       track.audio ||
       '';
+
+    syncPlayerApplicationState({
+      source: 'music-player-service',
+      action: 'load-track',
+      trackId: track.id ?? null
+    });
 
     return track;
   }
@@ -125,11 +160,23 @@ export class MusicPlayerService {
 
       playerState.isPlaying = true;
 
+      syncPlayerApplicationState({
+        source: 'music-player-service',
+        action: 'play',
+        trackId: track.id ?? null
+      });
+
       HistoryEngine.addPlay(track);
 
       return true;
     } catch (error) {
       playerState.isPlaying = false;
+
+      syncPlayerApplicationState({
+        source: 'music-player-service',
+        action: 'play-error',
+        trackId: track.id ?? null
+      });
 
       console.error(
         '[Music Player Pro] No se pudo reproducir el audio:',
@@ -143,6 +190,11 @@ export class MusicPlayerService {
   pause() {
     playerState.audio.pause();
     playerState.isPlaying = false;
+
+    syncPlayerApplicationState({
+      source: 'music-player-service',
+      action: 'pause'
+    });
   }
 
   toggle() {
@@ -161,6 +213,12 @@ export class MusicPlayerService {
 
     if (!track) {
       playerState.isPlaying = false;
+
+      syncPlayerApplicationState({
+        source: 'music-player-service',
+        action: 'queue-ended'
+      });
+
       return null;
     }
 
@@ -196,6 +254,11 @@ export class MusicPlayerService {
 
     playerState.audio.currentTime =
       playerState.audio.duration * percent;
+
+    syncPlayerApplicationState({
+      source: 'music-player-service',
+      action: 'seek'
+    });
   }
 
   setVolume(value) {
@@ -206,5 +269,10 @@ export class MusicPlayerService {
 
     playerState.volume = volume;
     playerState.audio.volume = volume;
+
+    syncPlayerApplicationState({
+      source: 'music-player-service',
+      action: 'set-volume'
+    });
   }
 }
