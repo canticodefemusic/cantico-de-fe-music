@@ -233,6 +233,8 @@ export class MusicPlayerService {
     if (!track) {
       playerState.isPlaying = false;
 
+      MediaSessionService.clear();
+      
       syncPlayerApplicationState({
         source: 'music-player-service',
         action: 'queue-ended'
