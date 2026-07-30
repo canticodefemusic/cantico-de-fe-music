@@ -129,33 +129,42 @@ export class MusicPlayerService {
     };
 
     const restorePendingPosition = () => {
-      if (this.pendingRestoreTime === null) {
-        return;
-      }
+  if (
+    !Number.isFinite(this.pendingRestoreTime) ||
+    this.pendingRestoreTime <= 0
+  ) {
+    return;
+  }
 
-      const duration =
-        playerState.audio.duration;
+  const duration = playerState.audio.duration;
 
-      if (
-        !Number.isFinite(duration) ||
-        duration <= 0
-      ) {
-        return;
-      }
+  if (
+    !Number.isFinite(duration) ||
+    duration <= 0
+  ) {
+    return;
+  }
 
-      const safePosition = Math.min(
-        this.pendingRestoreTime,
-        Math.max(0, duration - 0.1)
-      );
-    
-      playerState.audio.currentTime =
-        safePosition;
+  const safePosition = Math.min(
+    this.pendingRestoreTime,
+    Math.max(0, duration - 0.1)
+  );
 
-      syncPlayerApplicationState({
-        source: 'music-player-service',
-        action: 'restore-position'
-      });
-    };
+  /*
+   * Eliminamos la restauración pendiente antes
+   * de cambiar currentTime, para impedir que
+   * loadedmetadata o canplay la repitan.
+   */
+  this.pendingRestoreTime = null;
+
+  playerState.audio.currentTime =
+    safePosition;
+
+  syncPlayerApplicationState({
+    source: 'music-player-service',
+    action: 'restore-position'
+  });
+};
 
       playerState.audio.onloadedmetadata =
        restorePendingPosition;
@@ -476,19 +485,42 @@ export class MusicPlayerService {
   }
 
   seek(percent) {
-    if (!playerState.audio.duration) {
-      return;
-    }
+  const duration =
+    playerState.audio.duration;
 
-    playerState.audio.currentTime =
-      playerState.audio.duration *
-      percent;
-
-    syncPlayerApplicationState({
-      source: 'music-player-service',
-      action: 'seek'
-    });
+  if (
+    !Number.isFinite(duration) ||
+    duration <= 0
+  ) {
+    return;
   }
+
+  const numericPercent =
+  Number(percent);
+
+if (!Number.isFinite(numericPercent)) {
+  return;
+}
+
+const safePercent = Math.max(
+  0,
+  Math.min(1, numericPercent)
+);
+
+  /*
+   * Una búsqueda manual cancela cualquier
+   * restauración pendiente.
+   */
+  this.pendingRestoreTime = null;
+
+  playerState.audio.currentTime =
+    duration * safePercent;
+
+  syncPlayerApplicationState({
+    source: 'music-player-service',
+    action: 'seek'
+  });
+}
 
   setVolume(value) {
     const volume = Math.max(
