@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v8.6.0';
+const CACHE_VERSION = 'v10.1.1';
 const STATIC_CACHE = `cantico-static-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `cantico-runtime-${CACHE_VERSION}`;
 
@@ -69,6 +69,14 @@ self.addEventListener('fetch', event => {
     return;
   }
 
+  if (
+  request.destination === 'audio' ||
+  requestUrl.pathname.endsWith('.mp3') ||
+  requestUrl.pathname.endsWith('.m4a')
+) {
+  return;
+}
+  
   event.respondWith(
     caches.match(request).then(cached => {
       if (cached) return cached;
