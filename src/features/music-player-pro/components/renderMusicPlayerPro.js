@@ -10,6 +10,7 @@ let service = null;
 let progressIntervalId = null;
 let removeQueueTrackListener = null;
 let hymnPlayHandler = null;
+let isSeeking = false;
 
 export function renderMusicPlayerPro() {
   service = new MusicPlayerService(playerTracks);
@@ -148,13 +149,47 @@ export function initMusicPlayerPro() {
   );
 
   progress?.addEventListener(
-    'input',
-    event => {
-      service.seek(
-        Number(event.target.value) / 100
-      );
-    }
-  );
+  'pointerdown',
+  () => {
+    isSeeking = true;
+  }
+);
+
+progress?.addEventListener(
+  'input',
+  event => {
+    isSeeking = true;
+
+    service.seek(
+      Number(event.target.value) / 100
+    );
+  }
+);
+
+progress?.addEventListener(
+  'change',
+  event => {
+    service.seek(
+      Number(event.target.value) / 100
+    );
+
+    isSeeking = false;
+  }
+);
+
+progress?.addEventListener(
+  'pointerup',
+  () => {
+    isSeeking = false;
+  }
+);
+
+progress?.addEventListener(
+  'pointercancel',
+  () => {
+    isSeeking = false;
+  }
+);
 
   volume?.addEventListener(
     'input',
@@ -243,10 +278,11 @@ export function initMusicPlayerPro() {
     () => {
       const state = service.getState();
 
-      if (
-        state.audio.duration &&
-        progress
-      ) {
+  if (
+    state.audio.duration &&
+    progress &&
+    !isSeeking
+  ) {
         progress.value = String(
           (
             state.audio.currentTime /
