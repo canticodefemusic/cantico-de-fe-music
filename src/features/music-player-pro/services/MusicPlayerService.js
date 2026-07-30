@@ -147,7 +147,9 @@ export class MusicPlayerService {
         this.pendingRestoreTime,
         Math.max(0, duration - 0.1)
       );
-
+      
+      this.pendingRestoreTime = null;
+      
       playerState.audio.currentTime =
         safePosition;
 
