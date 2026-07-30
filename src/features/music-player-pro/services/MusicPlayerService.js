@@ -17,6 +17,7 @@ export class MusicPlayerService {
   constructor(tracks = []) {
     playerState.tracks = tracks;
     playerState.audio.volume = playerState.volume;
+    playerState.audio.preload = 'metadata';
 
     const restoredSession =
       PlayerPersistenceService.restore(this);
@@ -88,7 +89,7 @@ export class MusicPlayerService {
       });
     });
 
-        let lastSavedSecond = -1;
+    let lastSavedSecond = -1;
 
     playerState.audio.ontimeupdate = () => {
       MediaSessionService.updatePosition(
@@ -127,29 +128,55 @@ export class MusicPlayerService {
       }
     };
 
-        playerState.audio.oncanplay = () => {
-      if (pendingRestoreTime !== null) {
-        const duration =
-          playerState.audio.duration;
+    const restorePendingPosition = () => {
+      if (pendingRestoreTime === null) {
+        return;
+      }
 
-        const safePosition =
-          Number.isFinite(duration) &&
-          duration > 0
-            ? Math.min(
-                pendingRestoreTime,
-                duration
-              )
-            : pendingRestoreTime;
+      const duration =
+        playerState.audio.duration;
 
-        playerState.audio.currentTime =
-          safePosition;
+      if (
+        !Number.isFinite(duration) ||
+        duration <= 0
+      ) {
+        return;
+      }
 
+      const safePosition = Math.min(
+        pendingRestoreTime,
+        Math.max(0, duration - 0.1)
+      );
+
+      playerState.audio.currentTime =
+        safePosition;
+
+      syncPlayerApplicationState({
+        source: 'music-player-service',
+        action: 'restore-position'
+      });
+    };
+
+    playerState.audio.onloadedmetadata =
+      restorePendingPosition;
+
+    playerState.audio.oncanplay =
+      restorePendingPosition;
+
+    playerState.audio.onseeked = () => {
+      if (
+        pendingRestoreTime !== null &&
+        Math.abs(
+          playerState.audio.currentTime -
+          pendingRestoreTime
+        ) < 2
+      ) {
         pendingRestoreTime = null;
       }
 
       syncPlayerApplicationState({
         source: 'music-player-service',
-        action: 'can-play'
+        action: 'position-restored'
       });
     };
 
@@ -158,6 +185,8 @@ export class MusicPlayerService {
         restoredTrack.src ||
         restoredTrack.audio ||
         '';
+
+      playerState.audio.load();
 
       MediaSessionService.update(
         restoredTrack
