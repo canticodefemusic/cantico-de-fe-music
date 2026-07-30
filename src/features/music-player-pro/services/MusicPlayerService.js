@@ -147,9 +147,7 @@ export class MusicPlayerService {
         this.pendingRestoreTime,
         Math.max(0, duration - 0.1)
       );
-      
-      this.pendingRestoreTime = null;
-      
+    
       playerState.audio.currentTime =
         safePosition;
 
@@ -159,10 +157,10 @@ export class MusicPlayerService {
       });
     };
 
-    playerState.audio.onloadedmetadata =
-      restorePendingPosition;
+      playerState.audio.onloadedmetadata =
+       restorePendingPosition;
 
-    playerState.audio.oncanplay =
+     playerState.audio.oncanplay =
       restorePendingPosition;
 
     playerState.audio.onseeked = () => {
