@@ -23,7 +23,7 @@ export class MusicPlayerService {
       PlayerPersistenceService.restore(this);
 
     let restoredTrack = null;
-    let pendingRestoreTime = null;
+    this.pendingRestoreTime = null;
 
     if (restoredSession) {
       const savedVolume = Number(
@@ -57,7 +57,7 @@ export class MusicPlayerService {
           Number.isFinite(savedTime) &&
           savedTime > 0
         ) {
-          pendingRestoreTime = savedTime;
+          this.pendingRestoreTime = savedTime;
         }
 
         playerState.isPlaying = false;
@@ -129,7 +129,7 @@ export class MusicPlayerService {
     };
 
     const restorePendingPosition = () => {
-      if (pendingRestoreTime === null) {
+      if (this.pendingRestoreTime === null) {
         return;
       }
 
@@ -144,7 +144,7 @@ export class MusicPlayerService {
       }
 
       const safePosition = Math.min(
-        pendingRestoreTime,
+        this.pendingRestoreTime,
         Math.max(0, duration - 0.1)
       );
 
@@ -164,17 +164,7 @@ export class MusicPlayerService {
       restorePendingPosition;
 
     playerState.audio.onseeked = () => {
-      if (
-        pendingRestoreTime !== null &&
-        Math.abs(
-          playerState.audio.currentTime -
-          pendingRestoreTime
-        ) < 2
-      ) {
-        pendingRestoreTime = null;
-      }
-
-      syncPlayerApplicationState({
+     syncPlayerApplicationState({
         source: 'music-player-service',
         action: 'position-restored'
       });
@@ -326,11 +316,33 @@ export class MusicPlayerService {
       return false;
     }
 
-    try {
+      try {
+       if (
+        Number.isFinite(
+          this.pendingRestoreTime
+        ) &&
+        this.pendingRestoreTime > 0 &&
+        Number.isFinite(
+          playerState.audio.duration
+        ) &&
+        playerState.audio.duration > 0
+      ) {
+        playerState.audio.currentTime =
+          Math.min(
+            this.pendingRestoreTime,
+            Math.max(
+              0,
+              playerState.audio.duration - 0.1
+            )
+          );
+      }
+
       await playerState.audio.play();
 
-      playerState.isPlaying = true;
+      this.pendingRestoreTime = null;
 
+      playerState.isPlaying = true;
+        
       MediaSessionService.update(track);
 
       MediaSessionService.setPlaybackState(
@@ -365,6 +377,7 @@ export class MusicPlayerService {
 
       return true;
     } catch (error) {
+        
       playerState.isPlaying = false;
 
       syncPlayerApplicationState({
