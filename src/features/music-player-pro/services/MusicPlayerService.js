@@ -512,7 +512,6 @@ seek(percent) {
   const targetTime =
     duration * safePercent;
 
-requestAnimationFrame(() => {
   playerState.audio.currentTime =
     targetTime;
 
@@ -520,7 +519,6 @@ requestAnimationFrame(() => {
     source: 'music-player-service',
     action: 'seek'
   });
-});
 }
 
   setVolume(value) {
