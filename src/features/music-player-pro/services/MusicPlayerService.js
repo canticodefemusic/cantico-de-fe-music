@@ -485,11 +485,8 @@ export class MusicPlayerService {
   }
 
   seek(percent) {
-  const audio =
-    playerState.audio;
-
   const duration =
-    audio.duration;
+    playerState.audio.duration;
 
   if (
     !Number.isFinite(duration) ||
@@ -510,60 +507,10 @@ export class MusicPlayerService {
     Math.min(1, numericPercent)
   );
 
-  const targetTime =
-    duration * safePercent;
-
-  const wasPlaying =
-    !audio.paused;
-
-  /*
-   * Una búsqueda manual cancela cualquier
-   * restauración pendiente.
-   */
   this.pendingRestoreTime = null;
 
-  /*
-   * Chrome permite buscar correctamente en
-   * algunos archivos MP3 cuando el audio está
-   * pausado momentáneamente.
-   */
-  if (wasPlaying) {
-    audio.pause();
-  }
-
-  audio.currentTime =
-    targetTime;
-
-  const continuePlayback = () => {
-    audio.removeEventListener(
-      'seeked',
-      continuePlayback
-    );
-
-    if (wasPlaying) {
-      audio.play().catch(error => {
-        console.error(
-          '[Music Player Pro] No se pudo continuar después del seek:',
-          error
-        );
-      });
-    }
-  };
-
-  audio.addEventListener(
-    'seeked',
-    continuePlayback,
-    { once: true }
-  );
-
-  /*
-   * Respaldo para navegadores que no emitan
-   * seeked cuando la posición ya está disponible.
-   */
-  window.setTimeout(
-    continuePlayback,
-    300
-  );
+  playerState.audio.currentTime =
+    duration * safePercent;
 
   syncPlayerApplicationState({
     source: 'music-player-service',
