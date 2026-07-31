@@ -150,16 +150,8 @@ export function initMusicPlayerPro() {
 
   progress?.addEventListener(
   'pointerdown',
-  event => {
+  () => {
     isSeeking = true;
-
-    console.log(
-      '[Progress Diagnostic] pointerdown',
-      {
-        value: event.currentTarget.value,
-        isSeeking
-      }
-    );
   }
 );
 
@@ -174,26 +166,7 @@ progress?.addEventListener(
     const percent =
       value / 100;
 
-    console.log(
-      '[Progress Diagnostic] input',
-      {
-        value,
-        percent,
-        isSeeking
-      }
-    );
-
     service.seek(percent);
-
-    console.log(
-      '[Progress Diagnostic] after seek',
-      {
-        currentTime:
-          service.getState().audio.currentTime,
-        duration:
-          service.getState().audio.duration
-      }
-    );
   }
 );
 
@@ -206,14 +179,6 @@ progress?.addEventListener(
     const percent =
       value / 100;
 
-    console.log(
-      '[Progress Diagnostic] change',
-      {
-        value,
-        percent
-      }
-    );
-
     service.seek(percent);
 
     isSeeking = false;
@@ -224,16 +189,6 @@ progress?.addEventListener(
   'pointerup',
   () => {
     isSeeking = false;
-
-    console.log(
-      '[Progress Diagnostic] pointerup',
-      {
-        currentTime:
-          service.getState().audio.currentTime,
-        duration:
-          service.getState().audio.duration
-      }
-    );
   }
 );
 
@@ -241,21 +196,17 @@ progress?.addEventListener(
   'pointercancel',
   () => {
     isSeeking = false;
-
-    console.log(
-      '[Progress Diagnostic] pointercancel'
-    );
   }
 );
 
-  volume?.addEventListener(
-    'input',
-    event => {
-      service.setVolume(
-        Number(event.target.value) / 100
-      );
-    }
-  );
+volume?.addEventListener(
+  'input',
+  event => {
+    service.setVolume(
+      Number(event.target.value) / 100
+    );
+  }
+);
 
   /*
    * Evita registrar varias veces el listener
