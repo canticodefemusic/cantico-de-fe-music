@@ -509,8 +509,59 @@ export class MusicPlayerService {
 
   this.pendingRestoreTime = null;
 
-  playerState.audio.currentTime =
-    duration * safePercent;
+  const targetTime =
+  duration * safePercent;
+
+console.log(
+  '[Seek Diagnostic] before assign',
+  {
+    currentTime:
+      playerState.audio.currentTime,
+    targetTime,
+    duration,
+    readyState:
+      playerState.audio.readyState,
+    networkState:
+      playerState.audio.networkState,
+    paused:
+      playerState.audio.paused
+  }
+);
+
+playerState.audio.currentTime =
+  targetTime;
+
+console.log(
+  '[Seek Diagnostic] after assign',
+  {
+    currentTime:
+      playerState.audio.currentTime,
+    targetTime,
+    readyState:
+      playerState.audio.readyState,
+    networkState:
+      playerState.audio.networkState,
+    paused:
+      playerState.audio.paused
+  }
+);
+
+setTimeout(() => {
+  console.log(
+    '[Seek Diagnostic] after 500ms',
+    {
+      currentTime:
+        playerState.audio.currentTime,
+      targetTime,
+      readyState:
+        playerState.audio.readyState,
+      networkState:
+        playerState.audio.networkState,
+      paused:
+        playerState.audio.paused
+    }
+  );
+}, 500);
 
   syncPlayerApplicationState({
     source: 'music-player-service',
