@@ -1,7 +1,210 @@
-import { hymnCatalog } from '../../../features/hymn-library-engine/data/hymnCatalog.js';
-import { renderHymnCard } from '../../../features/hymn-library-engine/components/renderHymnCard.js';
-import { RecommendationEngine } from '../../../features/recommendation-engine/index.js';
-import { devotionals } from '../../data/devotionalsData.js';
+import {
+  hymnCatalog
+} from '../../../features/hymn-library-engine/data/hymnCatalog.js';
+
+import {
+  renderHymnCard
+} from '../../../features/hymn-library-engine/components/renderHymnCard.js';
+
+import {
+  RecommendationEngine
+} from '../../../features/recommendation-engine/index.js';
+
+import {
+  getFavorites
+} from '../../../features/favorites-engine/index.js';
+
+import {
+  HistoryService
+} from '../../../features/history-engine/index.js';
+
+import {
+  getPlaylists
+} from '../../../features/playlist-engine/index.js';
+
+import {
+  PlayerPersistenceService
+} from '../../../features/player-persistence/index.js';
+
+import {
+  devotionals
+} from '../../data/devotionalsData.js';
+
+function findHymnById(id) {
+  return hymnCatalog.find(
+    hymn => hymn.id === id
+  ) || null;
+}
+
+function resolveHistoryHymns(history = []) {
+  return history
+    .map(item => findHymnById(item.id))
+    .filter(Boolean);
+}
+
+function formatTime(seconds = 0) {
+  const safeSeconds =
+    Number.isFinite(Number(seconds))
+      ? Math.max(0, Math.floor(Number(seconds)))
+      : 0;
+
+  const minutes =
+    Math.floor(safeSeconds / 60);
+
+  const remainingSeconds =
+    safeSeconds % 60;
+
+  return `${minutes}:${String(
+    remainingSeconds
+  ).padStart(2, '0')}`;
+}
+
+function renderHymnSection({
+  kicker,
+  title,
+  hymns,
+  link = '/?page=himnos',
+  linkText = 'Ver todos'
+}) {
+  if (!Array.isArray(hymns) || !hymns.length) {
+    return '';
+  }
+
+  return `
+    <section class="cantico-section">
+      <div class="cantico-section__header">
+        <div>
+          ${
+            kicker
+              ? `
+                <p class="cantico-kicker">
+                  ${kicker}
+                </p>
+              `
+              : ''
+          }
+
+          <h2>${title}</h2>
+        </div>
+
+        <a href="${link}">
+          ${linkText}
+        </a>
+      </div>
+
+      <div class="hymn-library-grid">
+        ${hymns
+          .map(hymn => renderHymnCard(hymn))
+          .join('')}
+      </div>
+    </section>
+  `;
+}
+
+function renderContinueListening() {
+  const session =
+    PlayerPersistenceService.load();
+
+  if (
+    !session?.trackId ||
+    !Number.isFinite(
+      Number(session.currentTime)
+    ) ||
+    Number(session.currentTime) <= 0
+  ) {
+    return '';
+  }
+
+  const hymn =
+    findHymnById(session.trackId);
+
+  if (!hymn) {
+    return '';
+  }
+
+  return `
+    <section class="cantico-section">
+      <div class="cantico-section__header">
+        <div>
+          <p class="cantico-kicker">
+            Continúa donde te quedaste
+          </p>
+
+          <h2>Continuar escuchando</h2>
+        </div>
+      </div>
+
+      <div class="cantico-continue-listening">
+        <div>
+          <strong>${hymn.title}</strong>
+
+          <p>
+            Retomar desde
+            ${formatTime(session.currentTime)}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="cantico-button primary"
+          data-hymn-play="${hymn.id}"
+          aria-label="Continuar reproduciendo ${hymn.title}"
+        >
+          ▶ Continuar
+        </button>
+      </div>
+    </section>
+  `;
+}
+
+function renderPlaylistsSection(playlists = []) {
+  if (
+    !Array.isArray(playlists) ||
+    !playlists.length
+  ) {
+    return '';
+  }
+
+  return `
+    <section class="cantico-section">
+      <div class="cantico-section__header">
+        <div>
+          <p class="cantico-kicker">
+            Tu biblioteca personal
+          </p>
+
+          <h2>Tus playlists</h2>
+        </div>
+
+        <a href="/?page=playlists">
+          Ver playlists
+        </a>
+      </div>
+
+      <div class="cantico-card-grid">
+        ${playlists
+          .slice(0, 4)
+          .map(playlist => `
+            <article class="cantico-card">
+              <h3>${playlist.name}</h3>
+
+              <p>
+                Tu selección personal de himnos.
+              </p>
+
+              <a
+                class="cantico-button"
+                href="/?page=playlists"
+              >
+                Abrir playlist
+              </a>
+            </article>
+          `)
+          .join('')}
+      </div>
+    </section>
+  `;
+}
 
 export function renderHomeView() {
   const recommendations =
@@ -11,6 +214,28 @@ export function renderHomeView() {
     recommendations.length
       ? recommendations
       : hymnCatalog.slice(0, 4);
+
+  const favoriteIds =
+    getFavorites();
+
+  const favoriteHymns =
+    favoriteIds
+      .map(id => findHymnById(id))
+      .filter(Boolean)
+      .slice(0, 4);
+
+  const mostPlayedHymns =
+    resolveHistoryHymns(
+      HistoryService.getMostPlayed(4)
+    );
+
+  const recentHymns =
+    resolveHistoryHymns(
+      HistoryService.getRecent(4)
+    );
+
+  const playlists =
+    getPlaylists();
 
   return `
     <section class="cantico-hero">
@@ -44,33 +269,44 @@ export function renderHomeView() {
       </div>
     </section>
 
-    <section class="cantico-section">
-      <div class="cantico-section__header">
-        <div>
-          <p class="cantico-kicker">
-            Selección musical
-          </p>
+    ${renderContinueListening()}
 
-          <h2>
-            ${
-              recommendations.length
-                ? 'Recomendados para ti'
-                : 'Himnos destacados'
-            }
-          </h2>
-        </div>
+    ${renderHymnSection({
+      kicker: 'Selección personalizada',
+      title:
+        recommendations.length
+          ? 'Recomendados para ti'
+          : 'Himnos destacados',
+      hymns: featuredHymns,
+      link: '/?page=recomendados',
+      linkText: 'Ver recomendaciones'
+    })}
 
-        <a href="/?page=recomendados">
-          Ver recomendaciones
-        </a>
-      </div>
+    ${renderHymnSection({
+      kicker: 'Tu biblioteca personal',
+      title: 'Tus favoritos',
+      hymns: favoriteHymns,
+      link: '/?page=favoritos',
+      linkText: 'Ver favoritos'
+    })}
 
-      <div class="hymn-library-grid">
-        ${featuredHymns
-          .map(hymn => renderHymnCard(hymn))
-          .join('')}
-      </div>
-    </section>
+    ${renderHymnSection({
+      kicker: 'Basado en tu actividad',
+      title: 'Más escuchados',
+      hymns: mostPlayedHymns,
+      link: '/?page=historial',
+      linkText: 'Ver historial'
+    })}
+
+    ${renderHymnSection({
+      kicker: 'Vuelve a escuchar',
+      title: 'Escuchados recientemente',
+      hymns: recentHymns,
+      link: '/?page=historial',
+      linkText: 'Ver historial'
+    })}
+
+    ${renderPlaylistsSection(playlists)}
 
     <section class="cantico-section">
       <h2>Devocional</h2>
@@ -82,7 +318,9 @@ export function renderHomeView() {
               <h3>${devotional.title}</h3>
 
               <p>
-                <strong>${devotional.scripture}</strong>
+                <strong>
+                  ${devotional.scripture}
+                </strong>
               </p>
 
               <p>${devotional.content}</p>
