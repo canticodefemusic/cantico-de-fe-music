@@ -7,17 +7,62 @@ import { HistoryEngine } from '../../history-engine/index.js';
 import { QueueService } from '../../queue-engine/index.js';
 import { MediaSessionService } from '../../media-session/index.js';
 
+import {
+  PlayerPersistenceService
+} from '../../player-persistence/index.js';
+
 const queueService = new QueueService();
 
 export class MusicPlayerService {
   constructor(tracks = []) {
     playerState.tracks = tracks;
     playerState.audio.volume = playerState.volume;
+    playerState.audio.preload = 'metadata';
 
-    syncPlayerApplicationState({
-      source: 'music-player-service',
-      action: 'initialize'
-    });
+    const restoredSession =
+      PlayerPersistenceService.restore(this);
+
+    let restoredTrack = null;
+    this.pendingRestoreTime = null;
+
+    if (restoredSession) {
+      const savedVolume = Number(
+        restoredSession.volume
+      );
+
+      if (
+        Number.isFinite(savedVolume) &&
+        savedVolume >= 0 &&
+        savedVolume <= 1
+      ) {
+        playerState.volume = savedVolume;
+        playerState.audio.volume = savedVolume;
+      }
+
+      const restoredIndex =
+        playerState.tracks.findIndex(
+          track =>
+            track.id === restoredSession.trackId
+        );
+
+      if (restoredIndex >= 0) {
+        playerState.currentIndex = restoredIndex;
+        restoredTrack = this.getCurrentTrack();
+
+        const savedTime = Number(
+          restoredSession.currentTime
+        );
+
+        if (
+          Number.isFinite(savedTime) &&
+          savedTime > 0
+        ) {
+          this.pendingRestoreTime = savedTime;
+        }
+
+        playerState.isPlaying = false;
+      }
+    }
 
     /*
      * Usamos onended en lugar de addEventListener
@@ -28,21 +73,129 @@ export class MusicPlayerService {
       this.next();
     };
 
+    window.addEventListener('pagehide', () => {
+      PlayerPersistenceService.save({
+        trackId:
+          this.getCurrentTrack()?.id ??
+          null,
+        currentIndex:
+          playerState.currentIndex,
+        currentTime:
+          playerState.audio.currentTime,
+        volume:
+          playerState.volume,
+        isPlaying:
+          playerState.isPlaying
+      });
+    });
+
+    let lastSavedSecond = -1;
+
     playerState.audio.ontimeupdate = () => {
-      MediaSessionService.updatePosition(playerState.audio);
-      
+      MediaSessionService.updatePosition(
+        playerState.audio
+      );
+
       syncPlayerApplicationState({
         source: 'music-player-service',
         action: 'time-update'
       });
+
+      const currentSecond = Math.floor(
+        playerState.audio.currentTime
+      );
+
+      if (
+        currentSecond > 0 &&
+        currentSecond % 5 === 0 &&
+        currentSecond !== lastSavedSecond
+      ) {
+        lastSavedSecond = currentSecond;
+
+        PlayerPersistenceService.save({
+          trackId:
+            this.getCurrentTrack()?.id ??
+            null,
+          currentIndex:
+            playerState.currentIndex,
+          currentTime:
+            playerState.audio.currentTime,
+          volume:
+            playerState.volume,
+          isPlaying:
+            playerState.isPlaying
+        });
+      }
     };
 
-    playerState.audio.onloadedmetadata = () => {
-      syncPlayerApplicationState({
+    const restorePendingPosition = () => {
+  if (
+    !Number.isFinite(this.pendingRestoreTime) ||
+    this.pendingRestoreTime <= 0
+  ) {
+    return;
+  }
+
+  const duration = playerState.audio.duration;
+
+  if (
+    !Number.isFinite(duration) ||
+    duration <= 0
+  ) {
+    return;
+  }
+
+  const safePosition = Math.min(
+    this.pendingRestoreTime,
+    Math.max(0, duration - 0.1)
+  );
+
+  /*
+   * Eliminamos la restauración pendiente antes
+   * de cambiar currentTime, para impedir que
+   * loadedmetadata o canplay la repitan.
+   */
+  this.pendingRestoreTime = null;
+
+  playerState.audio.currentTime =
+    safePosition;
+
+  syncPlayerApplicationState({
+    source: 'music-player-service',
+    action: 'restore-position'
+  });
+};
+
+      playerState.audio.onloadedmetadata =
+       restorePendingPosition;
+
+     playerState.audio.oncanplay =
+      restorePendingPosition;
+
+    playerState.audio.onseeked = () => {
+     syncPlayerApplicationState({
         source: 'music-player-service',
-        action: 'metadata-loaded'
+        action: 'position-restored'
       });
     };
+
+    if (restoredTrack) {
+      playerState.audio.src =
+        restoredTrack.src ||
+        restoredTrack.audio ||
+        '';
+
+      playerState.audio.load();
+
+      MediaSessionService.update(
+        restoredTrack
+      );
+    }
+
+    syncPlayerApplicationState({
+      source: 'music-player-service',
+      action: 'initialize'
+    });
   }
 
   getState() {
@@ -51,8 +204,9 @@ export class MusicPlayerService {
 
   getCurrentTrack() {
     return (
-      playerState.tracks[playerState.currentIndex] ||
-      null
+      playerState.tracks[
+        playerState.currentIndex
+      ] || null
     );
   }
 
@@ -69,9 +223,9 @@ export class MusicPlayerService {
       track.src ||
       track.audio ||
       '';
-    
+
     MediaSessionService.update(track);
-    
+
     syncPlayerApplicationState({
       source: 'music-player-service',
       action: 'load',
@@ -81,12 +235,19 @@ export class MusicPlayerService {
     return track;
   }
 
-  loadTrack(track, queue = null, index = null) {
+  loadTrack(
+    track,
+    queue = null,
+    index = null
+  ) {
     if (!track) {
       return null;
     }
 
-    if (Array.isArray(queue) && queue.length) {
+    if (
+      Array.isArray(queue) &&
+      queue.length
+    ) {
       playerState.tracks = queue;
     }
 
@@ -103,7 +264,8 @@ export class MusicPlayerService {
         );
 
       if (trackIndex >= 0) {
-        playerState.currentIndex = trackIndex;
+        playerState.currentIndex =
+          trackIndex;
       }
     }
 
@@ -111,9 +273,9 @@ export class MusicPlayerService {
       track.src ||
       track.audio ||
       '';
-    
+
     MediaSessionService.update(track);
-    
+
     syncPlayerApplicationState({
       source: 'music-player-service',
       action: 'load-track',
@@ -124,9 +286,10 @@ export class MusicPlayerService {
   }
 
   loadById(id) {
-    const index = playerState.tracks.findIndex(
-      track => track.id === id
-    );
+    const index =
+      playerState.tracks.findIndex(
+        track => track.id === id
+      );
 
     if (index === -1) {
       return null;
@@ -162,21 +325,47 @@ export class MusicPlayerService {
       return false;
     }
 
-    try {
+      try {
+       if (
+        Number.isFinite(
+          this.pendingRestoreTime
+        ) &&
+        this.pendingRestoreTime > 0 &&
+        Number.isFinite(
+          playerState.audio.duration
+        ) &&
+        playerState.audio.duration > 0
+      ) {
+        playerState.audio.currentTime =
+          Math.min(
+            this.pendingRestoreTime,
+            Math.max(
+              0,
+              playerState.audio.duration - 0.1
+            )
+          );
+      }
+
       await playerState.audio.play();
 
+      this.pendingRestoreTime = null;
+
       playerState.isPlaying = true;
+        
       MediaSessionService.update(track);
 
-      MediaSessionService.setPlaybackState('playing');
+      MediaSessionService.setPlaybackState(
+        'playing'
+      );
 
       MediaSessionService.registerHandlers({
         play: () => this.play(),
         pause: () => this.pause(),
         nexttrack: () => this.next(),
-        previoustrack: () => this.previous()
+        previoustrack: () =>
+          this.previous()
       });
-      
+
       syncPlayerApplicationState({
         source: 'music-player-service',
         action: 'play',
@@ -185,8 +374,19 @@ export class MusicPlayerService {
 
       HistoryEngine.addPlay(track);
 
+      PlayerPersistenceService.save({
+        trackId: track.id ?? null,
+        currentIndex:
+          playerState.currentIndex,
+        volume:
+          playerState.volume,
+        isPlaying:
+          playerState.isPlaying
+      });
+
       return true;
     } catch (error) {
+        
       playerState.isPlaying = false;
 
       syncPlayerApplicationState({
@@ -207,12 +407,27 @@ export class MusicPlayerService {
   pause() {
     playerState.audio.pause();
     playerState.isPlaying = false;
-    
-    MediaSessionService.setPlaybackState('paused');
-    
+
+    MediaSessionService.setPlaybackState(
+      'paused'
+    );
+
     syncPlayerApplicationState({
       source: 'music-player-service',
       action: 'pause'
+    });
+
+    PlayerPersistenceService.save({
+      trackId:
+        this.getCurrentTrack()?.id ??
+        null,
+      currentIndex:
+        playerState.currentIndex,
+      currentTime:
+        playerState.audio.currentTime,
+      volume:
+        playerState.volume,
+      isPlaying: false
     });
   }
 
@@ -234,7 +449,7 @@ export class MusicPlayerService {
       playerState.isPlaying = false;
 
       MediaSessionService.clear();
-      
+
       syncPlayerApplicationState({
         source: 'music-player-service',
         action: 'queue-ended'
@@ -253,7 +468,8 @@ export class MusicPlayerService {
   }
 
   previous() {
-    const track = queueService.previous();
+    const track =
+      queueService.previous();
 
     if (!track) {
       return null;
@@ -269,18 +485,89 @@ export class MusicPlayerService {
   }
 
   seek(percent) {
-    if (!playerState.audio.duration) {
-      return;
-    }
+  const duration =
+    playerState.audio.duration;
 
-    playerState.audio.currentTime =
-      playerState.audio.duration * percent;
-
-    syncPlayerApplicationState({
-      source: 'music-player-service',
-      action: 'seek'
-    });
+  if (
+    !Number.isFinite(duration) ||
+    duration <= 0
+  ) {
+    return;
   }
+
+  const numericPercent =
+    Number(percent);
+
+  if (!Number.isFinite(numericPercent)) {
+    return;
+  }
+
+  const safePercent = Math.max(
+    0,
+    Math.min(1, numericPercent)
+  );
+
+  this.pendingRestoreTime = null;
+
+  const targetTime =
+  duration * safePercent;
+
+console.log(
+  '[Seek Diagnostic] before assign',
+  {
+    currentTime:
+      playerState.audio.currentTime,
+    targetTime,
+    duration,
+    readyState:
+      playerState.audio.readyState,
+    networkState:
+      playerState.audio.networkState,
+    paused:
+      playerState.audio.paused
+  }
+);
+
+playerState.audio.currentTime =
+  targetTime;
+
+console.log(
+  '[Seek Diagnostic] after assign',
+  {
+    currentTime:
+      playerState.audio.currentTime,
+    targetTime,
+    readyState:
+      playerState.audio.readyState,
+    networkState:
+      playerState.audio.networkState,
+    paused:
+      playerState.audio.paused
+  }
+);
+
+setTimeout(() => {
+  console.log(
+    '[Seek Diagnostic] after 500ms',
+    {
+      currentTime:
+        playerState.audio.currentTime,
+      targetTime,
+      readyState:
+        playerState.audio.readyState,
+      networkState:
+        playerState.audio.networkState,
+      paused:
+        playerState.audio.paused
+    }
+  );
+}, 500);
+
+  syncPlayerApplicationState({
+    source: 'music-player-service',
+    action: 'seek'
+  });
+}
 
   setVolume(value) {
     const volume = Math.max(
@@ -294,6 +581,11 @@ export class MusicPlayerService {
     syncPlayerApplicationState({
       source: 'music-player-service',
       action: 'set-volume'
+    });
+
+    PlayerPersistenceService.save({
+      volume:
+        playerState.volume
     });
   }
 }

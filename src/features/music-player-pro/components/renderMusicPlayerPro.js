@@ -10,10 +10,10 @@ let service = null;
 let progressIntervalId = null;
 let removeQueueTrackListener = null;
 let hymnPlayHandler = null;
+let isSeeking = false;
 
 export function renderMusicPlayerPro() {
   service = new MusicPlayerService(playerTracks);
-  service.load(0);
 
   const track = service.getCurrentTrack();
 
@@ -149,13 +149,104 @@ export function initMusicPlayerPro() {
   );
 
   progress?.addEventListener(
-    'input',
-    event => {
-      service.seek(
-        Number(event.target.value) / 100
-      );
-    }
-  );
+  'pointerdown',
+  event => {
+    isSeeking = true;
+
+    console.log(
+      '[Progress Diagnostic] pointerdown',
+      {
+        value: event.currentTarget.value,
+        isSeeking
+      }
+    );
+  }
+);
+
+progress?.addEventListener(
+  'input',
+  event => {
+    isSeeking = true;
+
+    const value =
+      Number(event.currentTarget.value);
+
+    const percent =
+      value / 100;
+
+    console.log(
+      '[Progress Diagnostic] input',
+      {
+        value,
+        percent,
+        isSeeking
+      }
+    );
+
+    service.seek(percent);
+
+    console.log(
+      '[Progress Diagnostic] after seek',
+      {
+        currentTime:
+          service.getState().audio.currentTime,
+        duration:
+          service.getState().audio.duration
+      }
+    );
+  }
+);
+
+progress?.addEventListener(
+  'change',
+  event => {
+    const value =
+      Number(event.currentTarget.value);
+
+    const percent =
+      value / 100;
+
+    console.log(
+      '[Progress Diagnostic] change',
+      {
+        value,
+        percent
+      }
+    );
+
+    service.seek(percent);
+
+    isSeeking = false;
+  }
+);
+
+progress?.addEventListener(
+  'pointerup',
+  () => {
+    isSeeking = false;
+
+    console.log(
+      '[Progress Diagnostic] pointerup',
+      {
+        currentTime:
+          service.getState().audio.currentTime,
+        duration:
+          service.getState().audio.duration
+      }
+    );
+  }
+);
+
+progress?.addEventListener(
+  'pointercancel',
+  () => {
+    isSeeking = false;
+
+    console.log(
+      '[Progress Diagnostic] pointercancel'
+    );
+  }
+);
 
   volume?.addEventListener(
     'input',
@@ -244,10 +335,11 @@ export function initMusicPlayerPro() {
     () => {
       const state = service.getState();
 
-      if (
-        state.audio.duration &&
-        progress
-      ) {
+  if (
+    state.audio.duration &&
+    progress &&
+    !isSeeking
+  ) {
         progress.value = String(
           (
             state.audio.currentTime /
