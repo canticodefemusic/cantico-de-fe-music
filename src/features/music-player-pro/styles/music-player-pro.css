@@ -97,3 +97,235 @@
     width: 100%;
   }
 }
+
+/* ==================================================
+   V10.4 — Music Player Pro UI Polish
+   ================================================== */
+
+.music-player-pro {
+  border: 1px solid rgba(255, 255, 255, .08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    border-color .25s ease;
+}
+
+.music-player-pro:hover {
+  transform: translateY(-2px);
+  border-color: rgba(244, 208, 111, .24);
+
+  box-shadow:
+    0 24px 54px rgba(0, 0, 0, .34),
+    0 4px 14px rgba(0, 0, 0, .18);
+}
+
+.mpp-cover {
+  box-shadow:
+    0 8px 18px rgba(217, 154, 0, .28);
+
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease;
+}
+
+.music-player-pro:hover .mpp-cover {
+  transform: scale(1.04) rotate(-2deg);
+
+  box-shadow:
+    0 12px 24px rgba(217, 154, 0, .34);
+}
+
+.mpp-track strong {
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.mpp-track span {
+  margin-top: 3px;
+  color: rgba(255, 255, 255, .78);
+}
+
+.mpp-controls button {
+  display: inline-grid;
+  place-items: center;
+
+  transition:
+    transform .2s ease,
+    background-color .2s ease,
+    color .2s ease,
+    box-shadow .2s ease;
+}
+
+.mpp-controls button:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, .2);
+}
+
+.mpp-controls button:active {
+  transform: scale(.94);
+}
+
+.mpp-controls button:focus-visible {
+  outline: 3px solid rgba(244, 208, 111, .4);
+  outline-offset: 3px;
+}
+
+.mpp-controls .mpp-play {
+  box-shadow:
+    0 8px 18px rgba(244, 208, 111, .28);
+}
+
+.mpp-controls .mpp-play:hover {
+  background: #ffe28a;
+  color: #06233f;
+
+  box-shadow:
+    0 12px 24px rgba(244, 208, 111, .38);
+}
+
+.mpp-progress-wrap {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.mpp-progress-wrap input,
+.mpp-volume input {
+  appearance: none;
+  -webkit-appearance: none;
+
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .2);
+
+  cursor: pointer;
+}
+
+.mpp-progress-wrap input::-webkit-slider-thumb,
+.mpp-volume input::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+
+  width: 16px;
+  height: 16px;
+  border: 3px solid #06233f;
+  border-radius: 50%;
+
+  background: #f4d06f;
+
+  box-shadow:
+    0 0 0 2px rgba(244, 208, 111, .35);
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+
+.mpp-progress-wrap input::-webkit-slider-thumb:hover,
+.mpp-volume input::-webkit-slider-thumb:hover {
+  transform: scale(1.14);
+
+  box-shadow:
+    0 0 0 5px rgba(244, 208, 111, .2);
+}
+
+.mpp-progress-wrap input::-moz-range-thumb,
+.mpp-volume input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 3px solid #06233f;
+  border-radius: 50%;
+
+  background: #f4d06f;
+
+  box-shadow:
+    0 0 0 2px rgba(244, 208, 111, .35);
+}
+
+.mpp-progress-wrap input:focus-visible,
+.mpp-volume input:focus-visible {
+  outline: 3px solid rgba(244, 208, 111, .35);
+  outline-offset: 4px;
+}
+
+.mpp-volume span {
+  color: rgba(255, 255, 255, .82);
+  font-size: .86rem;
+  font-weight: 800;
+}
+
+@media (max-width: 850px) {
+  .music-player-pro {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+
+    gap: 12px;
+    padding: 14px;
+
+    border-radius: 20px;
+  }
+
+  .mpp-track {
+    justify-content: center;
+  }
+
+  .mpp-track > div:last-child {
+    min-width: 0;
+    text-align: center;
+  }
+
+  .mpp-progress-wrap {
+    width: 100%;
+  }
+
+  .mpp-volume {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .music-player-pro {
+    padding: 12px;
+  }
+
+  .mpp-cover {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border-radius: 12px;
+  }
+
+  .mpp-controls {
+    gap: 10px;
+  }
+
+  .mpp-controls button {
+    min-width: 42px;
+    min-height: 42px;
+  }
+
+  .mpp-controls .mpp-play {
+    min-width: 50px;
+    min-height: 50px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .music-player-pro,
+  .mpp-cover,
+  .mpp-controls button,
+  .mpp-progress-wrap input::-webkit-slider-thumb,
+  .mpp-volume input::-webkit-slider-thumb {
+    transition: none;
+  }
+
+  .music-player-pro:hover,
+  .music-player-pro:hover .mpp-cover,
+  .mpp-controls button:hover {
+    transform: none;
+  }
+}
