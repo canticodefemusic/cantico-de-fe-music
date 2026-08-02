@@ -210,6 +210,13 @@ function renderManualPlaylistCard(playlist) {
 
       <button
         type="button"
+        data-playlist-duplicate="${escapeHtml(playlist.id)}"
+      >
+        Duplicar playlist
+      </button>
+
+      <button
+        type="button"
         data-playlist-delete="${escapeHtml(playlist.id)}"
       >
         Eliminar playlist
