@@ -3,7 +3,9 @@ import {
   renamePlaylist,
   deletePlaylist,
   removeHymnFromPlaylist,
-  duplicatePlaylist
+  duplicatePlaylist,
+  exportPlaylists,
+  importPlaylists
 } from '../../../features/playlist-engine/index.js';
 
 export function initPlaylistsView() {
@@ -12,6 +14,8 @@ export function initPlaylistsView() {
   bindRenamePlaylistButtons();
   bindDuplicatePlaylistButtons();
   bindDeletePlaylistButtons();
+  bindExportPlaylistsButton();
+  bindImportPlaylistsButton();
 }
 
 function bindCreatePlaylistButton() {
@@ -129,4 +133,101 @@ function bindDeletePlaylistButtons() {
         window.location.reload();
       });
     });
+}
+
+function bindExportPlaylistsButton() {
+  const button = document.querySelector(
+    '#export-playlists-button'
+  );
+
+  if (!button) {
+    return;
+  }
+
+  button.addEventListener('click', () => {
+    const jsonText =
+      exportPlaylists();
+
+    const blob = new Blob(
+      [jsonText],
+      {
+        type: 'application/json'
+      }
+    );
+
+    const downloadUrl =
+      URL.createObjectURL(blob);
+
+    const link =
+      document.createElement('a');
+
+    const date =
+      new Date()
+        .toISOString()
+        .slice(0, 10);
+
+    link.href = downloadUrl;
+    link.download =
+      `cantico-de-fe-playlists-${date}.json`;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(downloadUrl);
+  });
+}
+
+function bindImportPlaylistsButton() {
+  const button = document.querySelector(
+    '#import-playlists-button'
+  );
+
+  const fileInput = document.querySelector(
+    '#import-playlists-file'
+  );
+
+  if (!button || !fileInput) {
+    return;
+  }
+
+  button.addEventListener('click', () => {
+    fileInput.value = '';
+    fileInput.click();
+  });
+
+  fileInput.addEventListener(
+    'change',
+    async event => {
+      const file =
+        event.target.files?.[0];
+
+      if (!file) {
+        return;
+      }
+
+      try {
+        const jsonText =
+          await file.text();
+
+        const result =
+          importPlaylists(jsonText);
+
+        window.alert(result.message);
+
+        if (result.success) {
+          window.location.reload();
+        }
+      } catch (error) {
+        console.error(
+          'No se pudo leer el archivo de playlists:',
+          error
+        );
+
+        window.alert(
+          'No se pudo leer el archivo seleccionado.'
+        );
+      }
+    }
+  );
 }
