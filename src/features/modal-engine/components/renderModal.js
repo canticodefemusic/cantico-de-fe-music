@@ -1,59 +1,30 @@
-export function renderModal(modal) {
-  if (!modal) {
-    return '';
-  }
+/**
+ * Cántico de Fe Music
+ * V10.7 Modal Renderer
+ */
 
+export function renderModal({
+  title = '',
+  message = '',
+  actions = ''
+} = {}) {
   return `
-    <div
-      class="cantico-modal-overlay"
-      data-modal-overlay
-    >
+    <div class="cantico-modal-backdrop">
       <div
-        class="cantico-modal ${modal.destructive ? 'cantico-modal--danger' : ''}"
+        class="cantico-modal"
         role="dialog"
         aria-modal="true"
       >
         <header class="cantico-modal__header">
-          <h2>
-            ${modal.title || ''}
-          </h2>
+          <h2>${title}</h2>
         </header>
 
-        <div class="cantico-modal__body">
-          ${
-            modal.message
-              ? `<p>${modal.message}</p>`
-              : ''
-          }
-
-          ${
-            modal.type === 'prompt'
-              ? `
-                <input
-                  id="canticoModalInput"
-                  type="text"
-                  value="${modal.value || ''}"
-                  placeholder="${modal.placeholder || ''}"
-                >
-              `
-              : ''
-          }
+        <div class="cantico-modal__content">
+          ${message}
         </div>
 
-        <footer class="cantico-modal__footer">
-          <button
-            type="button"
-            data-modal-cancel
-          >
-            ${modal.cancelText}
-          </button>
-
-          <button
-            type="button"
-            data-modal-confirm
-          >
-            ${modal.confirmText}
-          </button>
+        <footer class="cantico-modal__actions">
+          ${actions}
         </footer>
       </div>
     </div>
