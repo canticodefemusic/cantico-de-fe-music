@@ -8,6 +8,10 @@ import {
   importPlaylists
 } from '../../../features/playlist-engine/index.js';
 
+import {
+  ModalService
+} from '../../../features/modal-engine/index.js';
+
 export function initPlaylistsView() {
   bindCreatePlaylistButton();
   bindRemoveHymnButtons();
@@ -19,22 +23,115 @@ export function initPlaylistsView() {
 }
 
 function bindCreatePlaylistButton() {
-  const button = document.querySelector('#create-playlist-button');
+  const button = document.querySelector(
+    '#create-playlist-button'
+  );
 
   if (!button) {
     return;
   }
 
   button.addEventListener('click', () => {
-    const name = window.prompt('Nombre de la nueva playlist');
+    ModalService.open({
+      title: 'Nueva playlist',
 
-    if (!name) {
+      message: `
+        <label for="newPlaylistName">
+          Nombre de la playlist
+        </label>
+
+        <input
+          id="newPlaylistName"
+          type="text"
+          maxlength="80"
+          autocomplete="off"
+          placeholder="Ejemplo: Himnos de esperanza"
+        >
+      `,
+
+      actions: `
+        <button
+          type="button"
+          data-modal-cancel
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="button"
+          data-modal-create-playlist
+        >
+          Crear playlist
+        </button>
+      `
+    });
+
+    const input = document.querySelector(
+      '#newPlaylistName'
+    );
+
+    const cancelButton = document.querySelector(
+      '[data-modal-cancel]'
+    );
+
+    const createButton = document.querySelector(
+      '[data-modal-create-playlist]'
+    );
+
+    if (!input || !cancelButton || !createButton) {
+      ModalService.close();
       return;
     }
 
-    createPlaylist(name);
+    const createNewPlaylist = () => {
+      const name = input.value.trim();
 
-    window.location.reload();
+      if (!name) {
+        input.focus();
+        return;
+      }
+
+      const playlist =
+        createPlaylist(name);
+
+      if (!playlist) {
+        input.focus();
+        return;
+      }
+
+      ModalService.close();
+      window.location.reload();
+    };
+
+    cancelButton.addEventListener(
+      'click',
+      () => {
+        ModalService.close();
+      }
+    );
+
+    createButton.addEventListener(
+      'click',
+      createNewPlaylist
+    );
+
+    input.addEventListener(
+      'keydown',
+      event => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          createNewPlaylist();
+        }
+
+        if (event.key === 'Escape') {
+          ModalService.close();
+        }
+      }
+    );
+
+    window.setTimeout(() => {
+      input.focus();
+    }, 0);
   });
 }
 
