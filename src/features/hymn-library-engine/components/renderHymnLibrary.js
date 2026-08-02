@@ -13,6 +13,7 @@ import {
 } from '../../playlist-engine/index.js';
 
 const service = new HymnLibraryService();
+const RENDER_BATCH_SIZE = 24;
 
 function debounce(callback, delay = 200) {
   let timeoutId;
@@ -27,8 +28,6 @@ function debounce(callback, delay = 200) {
 }
 
 export function renderHymnLibrary() {
-  const hymns = service.list();
-
   return `
     <section class="hymn-library">
       <div class="hymn-library__header">
@@ -61,10 +60,17 @@ export function renderHymnLibrary() {
       <div
         class="hymn-library__grid"
         id="hymnLibraryGrid"
-      >
-        ${hymns
-          .map(hymn => renderHymnCard(hymn))
-          .join('')}
+      ></div>
+
+      <div class="hymn-library__load-more">
+        <button
+          id="hymnLibraryLoadMore"
+          type="button"
+          class="cantico-button"
+          hidden
+        >
+          Cargar más himnos
+        </button>
       </div>
     </section>
   `;
@@ -83,32 +89,74 @@ export function initHymnLibrary({ onPlay } = {}) {
     'hymnLibrarySort'
   );
 
+  const loadMoreButton = document.getElementById(
+    'hymnLibraryLoadMore'
+  );
+
   if (!grid) {
     return;
   }
 
   let currentQuery = '';
+  let currentResults = [];
+  let visibleCount = RENDER_BATCH_SIZE;
 
-  function renderResults(hymns = []) {
-    grid.innerHTML = hymns.length
-      ? hymns
-          .map(hymn =>
-            renderHymnCard(
-              hymn,
-              currentQuery
-            )
-          )
-          .join('')
-      : `
+  function renderVisibleResults() {
+    if (!currentResults.length) {
+      grid.innerHTML = `
         <p class="hymn-library__empty">
           No se encontraron himnos.
         </p>
       `;
 
+      if (loadMoreButton) {
+        loadMoreButton.hidden = true;
+      }
+
+      return;
+    }
+
+    const visibleHymns =
+      currentResults.slice(0, visibleCount);
+
+    grid.innerHTML = visibleHymns
+      .map(hymn =>
+        renderHymnCard(
+          hymn,
+          currentQuery
+        )
+      )
+      .join('');
+
+    if (loadMoreButton) {
+      loadMoreButton.hidden =
+        visibleCount >= currentResults.length;
+    }
+
     initHymnCardInteractions({
-  onPlay
-});
+      onPlay
+    });
   }
+
+  function renderResults(hymns = []) {
+    currentResults =
+      Array.isArray(hymns)
+        ? hymns
+        : [];
+
+    visibleCount = RENDER_BATCH_SIZE;
+
+    renderVisibleResults();
+  }
+
+  loadMoreButton?.addEventListener(
+    'click',
+    () => {
+      visibleCount += RENDER_BATCH_SIZE;
+
+      renderVisibleResults();
+    }
+  );
 
   if (sortContainer) {
     SortEngine.init({
@@ -129,7 +177,8 @@ export function initHymnLibrary({ onPlay } = {}) {
 
   if (search) {
     const handleSearch = debounce(event => {
-      currentQuery = event.target.value.trim();
+      currentQuery =
+        event.target.value.trim();
 
       const results = currentQuery
         ? service.search(currentQuery)
