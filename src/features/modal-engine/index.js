@@ -3,7 +3,7 @@
  * V10.7 Modal Engine
  */
 
-export { ModalService }
+export { default as ModalService }
   from './services/ModalService.js';
 
 export { renderModal }
