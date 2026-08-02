@@ -268,9 +268,35 @@ export function renderPlaylistsView(route = {}) {
     <section class="cantico-section">
       <h1>Playlists</h1>
 
-      <button id="create-playlist-button">
-        Nueva playlist
-      </button>
+      <div class="playlist-management-actions">
+  <button
+    id="create-playlist-button"
+    type="button"
+  >
+    Nueva playlist
+  </button>
+
+  <button
+    id="export-playlists-button"
+    type="button"
+  >
+    Exportar playlists
+  </button>
+
+  <button
+    id="import-playlists-button"
+    type="button"
+  >
+    Importar playlists
+  </button>
+
+  <input
+    id="import-playlists-file"
+    type="file"
+    accept=".json,application/json"
+    hidden
+  >
+</div>
 
       <h2>
         Playlists inteligentes
