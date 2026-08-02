@@ -1,6 +1,7 @@
 /**
  * Cántico de Fe Music
  * V10.7 Modal Engine
+ * Public API
  */
 
 export { default as ModalService }
