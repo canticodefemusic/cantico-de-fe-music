@@ -9,7 +9,11 @@ export {
   renamePlaylist,
   deletePlaylist,
   addHymnToPlaylist,
-  removeHymnFromPlaylist
+  removeHymnFromPlaylist,
+  isHymnInPlaylist,
+  duplicatePlaylist,
+  exportPlaylists,
+  importPlaylists
 } from './services/playlistService.js';
 
 export {
