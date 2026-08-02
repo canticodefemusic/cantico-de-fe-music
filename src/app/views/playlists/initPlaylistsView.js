@@ -2,13 +2,15 @@ import {
   createPlaylist,
   renamePlaylist,
   deletePlaylist,
-  removeHymnFromPlaylist
+  removeHymnFromPlaylist,
+  duplicatePlaylist
 } from '../../../features/playlist-engine/index.js';
 
 export function initPlaylistsView() {
   bindCreatePlaylistButton();
   bindRemoveHymnButtons();
   bindRenamePlaylistButtons();
+  bindDuplicatePlaylistButtons();
   bindDeletePlaylistButtons();
 }
 
@@ -73,6 +75,34 @@ function bindRenamePlaylistButtons() {
         }
 
         renamePlaylist(playlistId, newName);
+
+        window.location.reload();
+      });
+    });
+}
+
+function bindDuplicatePlaylistButtons() {
+  document
+    .querySelectorAll('[data-playlist-duplicate]')
+    .forEach(button => {
+      button.addEventListener('click', () => {
+        const playlistId =
+          button.dataset.playlistDuplicate;
+
+        const duplicate =
+          duplicatePlaylist(playlistId);
+
+        if (!duplicate) {
+          window.alert(
+            'No se pudo duplicar la playlist.'
+          );
+
+          return;
+        }
+
+        window.alert(
+          `"${duplicate.name}" fue creada correctamente.`
+        );
 
         window.location.reload();
       });
