@@ -354,6 +354,72 @@ class ModalService {
       }, 0);
     });
   }
+  static alert({
+    title = 'Mensaje',
+    message = '',
+    buttonText = 'Aceptar'
+  } = {}) {
+    return new Promise(resolve => {
+      let finished = false;
+
+      const finish = () => {
+        if (finished) {
+          return;
+        }
+
+        finished = true;
+
+        this.close(false);
+        resolve();
+      };
+
+      const backdrop = this.open(
+        {
+          title,
+
+          message: `
+            <p>
+              ${escapeHtml(message)}
+            </p>
+          `,
+
+          actions: `
+            <button
+              type="button"
+              data-modal-alert
+            >
+              ${escapeHtml(buttonText)}
+            </button>
+          `
+        },
+        {
+          onDismiss: finish
+        }
+      );
+
+      if (!backdrop) {
+        finish();
+        return;
+      }
+
+      const button =
+        backdrop.querySelector(
+          '[data-modal-alert]'
+        );
+
+      button?.addEventListener(
+        'click',
+        finish,
+        {
+          once: true
+        }
+      );
+
+      window.setTimeout(() => {
+        button?.focus();
+      }, 0);
+    });
+  }
 }
 
 export default ModalService;
