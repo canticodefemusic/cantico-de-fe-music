@@ -81,8 +81,11 @@ const views = {
 };
 
 const queueService = new QueueService();
+
 const hymnLibraryService =
   new HymnLibraryService();
+
+let playlistRefreshHandler = null;
 
 export function startUnifiedCanticoApp(rootSelector = '#app') {
   const root = document.querySelector(rootSelector);
@@ -120,6 +123,48 @@ export function startUnifiedCanticoApp(rootSelector = '#app') {
     </div>
   `;
 
+    if (playlistRefreshHandler) {
+    window.removeEventListener(
+      'cantico:playlists-refresh',
+      playlistRefreshHandler
+    );
+  }
+
+  playlistRefreshHandler = () => {
+    const currentRoute =
+      resolveRoute();
+
+    if (
+      currentRoute.page !==
+      'playlists'
+    ) {
+      return;
+    }
+
+    const main =
+      root.querySelector(
+        '.cantico-main'
+      );
+
+    if (!main) {
+      return;
+    }
+
+    setPageSEO(currentRoute);
+
+    main.innerHTML =
+      renderPlaylistsView(
+        currentRoute
+      );
+
+    initPlaylistsView();
+  };
+
+  window.addEventListener(
+    'cantico:playlists-refresh',
+    playlistRefreshHandler
+  );
+  
   setTimeout(() => {
   initMusicPlayerPro();
   queueService.restore();
