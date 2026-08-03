@@ -137,24 +137,41 @@ function bindCreatePlaylistButton() {
 
 function bindRemoveHymnButtons() {
   document
-    .querySelectorAll('[data-playlist-remove-hymn]')
+    .querySelectorAll(
+      '[data-playlist-remove-hymn]'
+    )
     .forEach(button => {
-      button.addEventListener('click', () => {
-        const hymnId = button.dataset.playlistRemoveHymn;
-        const playlistId = button.dataset.playlistId;
+      button.addEventListener(
+        'click',
+        async () => {
+          const hymnId =
+            button.dataset.playlistRemoveHymn;
 
-        const confirmed = window.confirm(
-          '¿Deseas quitar este himno de la playlist?'
-        );
+          const playlistId =
+            button.dataset.playlistId;
 
-        if (!confirmed) {
-          return;
+          const confirmed =
+            await ModalService.confirm({
+              title: 'Quitar himno',
+              message:
+                '¿Deseas quitar este himno de la playlist?',
+              confirmText: 'Quitar',
+              cancelText: 'Cancelar',
+              destructive: true
+            });
+
+          if (!confirmed) {
+            return;
+          }
+
+          removeHymnFromPlaylist(
+            playlistId,
+            hymnId
+          );
+
+          window.location.reload();
         }
-
-        removeHymnFromPlaylist(playlistId, hymnId);
-
-        window.location.reload();
-      });
+      );
     });
 }
 
@@ -212,23 +229,35 @@ function bindDuplicatePlaylistButtons() {
 
 function bindDeletePlaylistButtons() {
   document
-    .querySelectorAll('[data-playlist-delete]')
+    .querySelectorAll(
+      '[data-playlist-delete]'
+    )
     .forEach(button => {
-      button.addEventListener('click', () => {
-        const playlistId = button.dataset.playlistDelete;
+      button.addEventListener(
+        'click',
+        async () => {
+          const playlistId =
+            button.dataset.playlistDelete;
 
-        const confirmed = window.confirm(
-          '¿Deseas eliminar esta playlist? Esta acción no se puede deshacer.'
-        );
+          const confirmed =
+            await ModalService.confirm({
+              title: 'Eliminar playlist',
+              message:
+                '¿Deseas eliminar esta playlist? Esta acción no se puede deshacer.',
+              confirmText: 'Eliminar',
+              cancelText: 'Cancelar',
+              destructive: true
+            });
 
-        if (!confirmed) {
-          return;
+          if (!confirmed) {
+            return;
+          }
+
+          deletePlaylist(playlistId);
+
+          window.location.reload();
         }
-
-        deletePlaylist(playlistId);
-
-        window.location.reload();
-      });
+      );
     });
 }
 
