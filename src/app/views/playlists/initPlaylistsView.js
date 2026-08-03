@@ -238,7 +238,7 @@ function bindDuplicatePlaylistButtons() {
     .forEach(button => {
       button.addEventListener(
         'click',
-        () => {
+        async () => {
           const playlistId =
             button.dataset.playlistDuplicate;
 
@@ -246,16 +246,20 @@ function bindDuplicatePlaylistButtons() {
             duplicatePlaylist(playlistId);
 
           if (!duplicate) {
-            window.alert(
-              'No se pudo duplicar la playlist.'
-            );
+            await ModalService.alert({
+              title: 'Error',
+              message:
+                'No se pudo duplicar la playlist.'
+            });
 
             return;
           }
 
-          window.alert(
-            `"${duplicate.name}" fue creada correctamente.`
-          );
+          await ModalService.alert({
+            title: 'Playlist duplicada',
+            message:
+              `"${duplicate.name}" fue creada correctamente.`
+          });
 
           refreshPlaylistsView();
         }
@@ -328,6 +332,7 @@ function bindExportPlaylistsButton() {
         .slice(0, 10);
 
     link.href = downloadUrl;
+
     link.download =
       `cantico-de-fe-playlists-${date}.json`;
 
@@ -335,7 +340,9 @@ function bindExportPlaylistsButton() {
     link.click();
     link.remove();
 
-    URL.revokeObjectURL(downloadUrl);
+    URL.revokeObjectURL(
+      downloadUrl
+    );
   });
 }
 
@@ -374,7 +381,12 @@ function bindImportPlaylistsButton() {
         const result =
           importPlaylists(jsonText);
 
-        window.alert(result.message);
+        await ModalService.alert({
+          title: result.success
+            ? 'Importación completada'
+            : 'Importación',
+          message: result.message
+        });
 
         if (result.success) {
           refreshPlaylistsView();
@@ -385,9 +397,11 @@ function bindImportPlaylistsButton() {
           error
         );
 
-        window.alert(
-          'No se pudo leer el archivo seleccionado.'
-        );
+        await ModalService.alert({
+          title: 'Error',
+          message:
+            'No se pudo leer el archivo seleccionado.'
+        });
       }
     }
   );
