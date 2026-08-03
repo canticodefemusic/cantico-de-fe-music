@@ -1,0 +1,77 @@
+.cantico-toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 10000;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  pointer-events: none;
+}
+
+.cantico-toast {
+  min-width: 320px;
+  max-width: 420px;
+
+  padding: 16px 18px;
+
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  border: 1px solid #e6e6e6;
+
+  box-shadow:
+    0 14px 40px rgba(0,0,0,.18);
+
+  animation:
+    cantico-toast-enter .25s ease;
+
+  pointer-events: auto;
+}
+
+.cantico-toast__title {
+  margin: 0 0 6px;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cantico-toast__message {
+  margin: 0;
+
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.cantico-toast--success {
+  border-left: 6px solid #2e9d57;
+}
+
+.cantico-toast--error {
+  border-left: 6px solid #d33b3b;
+}
+
+.cantico-toast--warning {
+  border-left: 6px solid #d48d00;
+}
+
+.cantico-toast--info {
+  border-left: 6px solid #1f6fd6;
+}
+
+@keyframes cantico-toast-enter {
+  from {
+    opacity: 0;
+    transform:
+      translateX(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateX(0);
+  }
+}
