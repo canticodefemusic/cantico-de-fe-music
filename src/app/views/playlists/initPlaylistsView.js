@@ -179,26 +179,42 @@ function bindRenamePlaylistButtons() {
   document
     .querySelectorAll('[data-playlist-rename]')
     .forEach(button => {
-      button.addEventListener('click', () => {
-        const playlistId = button.dataset.playlistRename;
-        const currentName = button.dataset.playlistName;
+      button.addEventListener(
+        'click',
+        async () => {
+          const playlistId =
+            button.dataset.playlistRename;
 
-        const newName = window.prompt(
-          'Nuevo nombre de la playlist:',
-          currentName
-        );
+          const currentName =
+            button.dataset.playlistName;
 
-        if (!newName) {
-          return;
+          const newName =
+            await ModalService.prompt({
+              title: 'Renombrar playlist',
+              message:
+                'Escribe el nuevo nombre de la playlist.',
+              value: currentName,
+              placeholder:
+                'Nombre de la playlist',
+              confirmText: 'Guardar',
+              cancelText: 'Cancelar',
+              maxLength: 80
+            });
+
+          if (!newName) {
+            return;
+          }
+
+          renamePlaylist(
+            playlistId,
+            newName
+          );
+
+          window.location.reload();
         }
-
-        renamePlaylist(playlistId, newName);
-
-        window.location.reload();
-      });
+      );
     });
 }
-
 function bindDuplicatePlaylistButtons() {
   document
     .querySelectorAll('[data-playlist-duplicate]')
