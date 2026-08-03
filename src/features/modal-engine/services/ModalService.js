@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V10.7 Modal Service
+ * V10.7.1 — Modal Service
  */
 
 import {
@@ -9,16 +9,36 @@ import {
 
 let previousBodyOverflow = '';
 let keydownHandler = null;
+let dismissHandler = null;
+
+function escapeHtml(value = '') {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
 class ModalService {
-  static open(options = {}) {
-    this.close();
+  static open(
+    options = {},
+    {
+      onDismiss = null
+    } = {}
+  ) {
+    this.close(false);
 
     previousBodyOverflow =
       document.body.style.overflow;
 
     document.body.style.overflow =
       'hidden';
+
+    dismissHandler =
+      typeof onDismiss === 'function'
+        ? onDismiss
+        : null;
 
     document.body.insertAdjacentHTML(
       'beforeend',
@@ -36,7 +56,7 @@ class ModalService {
       );
 
     if (!backdrop || !modal) {
-      this.close();
+      this.close(false);
       return null;
     }
 
@@ -70,7 +90,7 @@ class ModalService {
     return backdrop;
   }
 
-  static close() {
+  static close(notifyDismiss = true) {
     document
       .querySelector(
         '.cantico-modal-backdrop'
@@ -88,6 +108,17 @@ class ModalService {
 
     document.body.style.overflow =
       previousBodyOverflow;
+
+    const handler = dismissHandler;
+
+    dismissHandler = null;
+
+    if (
+      notifyDismiss &&
+      typeof handler === 'function'
+    ) {
+      handler();
+    }
   }
 
   static confirm({
@@ -98,34 +129,54 @@ class ModalService {
     destructive = false
   } = {}) {
     return new Promise(resolve => {
-      const backdrop = this.open({
-        title,
-        message,
+      let finished = false;
 
-        actions: `
-          <button
-            type="button"
-            data-modal-cancel
-          >
-            ${cancelText}
-          </button>
+      const finish = result => {
+        if (finished) {
+          return;
+        }
 
-          <button
-            type="button"
-            data-modal-confirm
-            ${
-              destructive
-                ? 'data-modal-destructive'
-                : ''
-            }
-          >
-            ${confirmText}
-          </button>
-        `
-      });
+        finished = true;
+
+        this.close(false);
+        resolve(result);
+      };
+
+      const backdrop = this.open(
+        {
+          title,
+          message,
+
+          actions: `
+            <button
+              type="button"
+              data-modal-cancel
+            >
+              ${escapeHtml(cancelText)}
+            </button>
+
+            <button
+              type="button"
+              data-modal-confirm
+              ${
+                destructive
+                  ? 'data-modal-destructive'
+                  : ''
+              }
+            >
+              ${escapeHtml(confirmText)}
+            </button>
+          `
+        },
+        {
+          onDismiss: () => {
+            finish(false);
+          }
+        }
+      );
 
       if (!backdrop) {
-        resolve(false);
+        finish(false);
         return;
       }
 
@@ -138,11 +189,6 @@ class ModalService {
         backdrop.querySelector(
           '[data-modal-confirm]'
         );
-
-      const finish = result => {
-        this.close();
-        resolve(result);
-      };
 
       cancelButton?.addEventListener(
         'click',
@@ -162,6 +208,149 @@ class ModalService {
 
       window.setTimeout(() => {
         confirmButton?.focus();
+      }, 0);
+    });
+  }
+
+  static prompt({
+    title = 'Escribe un valor',
+    message = '',
+    value = '',
+    placeholder = '',
+    confirmText = 'Aceptar',
+    cancelText = 'Cancelar',
+    maxLength = 80
+  } = {}) {
+    return new Promise(resolve => {
+      let finished = false;
+
+      const finish = result => {
+        if (finished) {
+          return;
+        }
+
+        finished = true;
+
+        this.close(false);
+        resolve(result);
+      };
+
+      const safeMaxLength =
+        Number.isFinite(Number(maxLength))
+          ? Math.max(1, Number(maxLength))
+          : 80;
+
+      const backdrop = this.open(
+        {
+          title,
+
+          message: `
+            ${
+              message
+                ? `
+                  <p>
+                    ${escapeHtml(message)}
+                  </p>
+                `
+                : ''
+            }
+
+            <input
+              type="text"
+              data-modal-prompt-input
+              value="${escapeHtml(value)}"
+              placeholder="${escapeHtml(
+                placeholder
+              )}"
+              maxlength="${safeMaxLength}"
+              autocomplete="off"
+            >
+          `,
+
+          actions: `
+            <button
+              type="button"
+              data-modal-cancel
+            >
+              ${escapeHtml(cancelText)}
+            </button>
+
+            <button
+              type="button"
+              data-modal-confirm
+            >
+              ${escapeHtml(confirmText)}
+            </button>
+          `
+        },
+        {
+          onDismiss: () => {
+            finish(null);
+          }
+        }
+      );
+
+      if (!backdrop) {
+        finish(null);
+        return;
+      }
+
+      const input =
+        backdrop.querySelector(
+          '[data-modal-prompt-input]'
+        );
+
+      const cancelButton =
+        backdrop.querySelector(
+          '[data-modal-cancel]'
+        );
+
+      const confirmButton =
+        backdrop.querySelector(
+          '[data-modal-confirm]'
+        );
+
+      const submit = () => {
+        const result =
+          input?.value.trim() || '';
+
+        if (!result) {
+          input?.focus();
+          return;
+        }
+
+        finish(result);
+      };
+
+      cancelButton?.addEventListener(
+        'click',
+        () => finish(null),
+        {
+          once: true
+        }
+      );
+
+      confirmButton?.addEventListener(
+        'click',
+        submit,
+        {
+          once: true
+        }
+      );
+
+      input?.addEventListener(
+        'keydown',
+        event => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            submit();
+          }
+        }
+      );
+
+      window.setTimeout(() => {
+        input?.focus();
+        input?.select();
       }, 0);
     });
   }
