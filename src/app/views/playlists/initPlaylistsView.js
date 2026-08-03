@@ -12,6 +12,10 @@ import {
   ModalService
 } from '../../../features/modal-engine/index.js';
 
+import {
+  ToastService
+} from '../../../features/toast-engine/index.js';
+
 function refreshPlaylistsView() {
   window.dispatchEvent(
     new CustomEvent(
@@ -113,6 +117,13 @@ function bindCreatePlaylistButton() {
 
       ModalService.close();
       refreshPlaylistsView();
+
+      ToastService.success(
+        `"${playlist.name}" fue creada correctamente.`,
+        {
+          title: 'Playlist creada'
+        }
+      );
     };
 
     cancelButton.addEventListener(
@@ -182,6 +193,13 @@ function bindRemoveHymnButtons() {
           );
 
           refreshPlaylistsView();
+
+          ToastService.success(
+            'El himno fue quitado de la playlist.',
+            {
+              title: 'Playlist actualizada'
+            }
+          );
         }
       );
     });
@@ -225,6 +243,13 @@ function bindRenamePlaylistButtons() {
           );
 
           refreshPlaylistsView();
+
+          ToastService.success(
+            `La playlist ahora se llama "${newName}".`,
+            {
+              title: 'Nombre actualizado'
+            }
+          );
         }
       );
     });
@@ -238,7 +263,7 @@ function bindDuplicatePlaylistButtons() {
     .forEach(button => {
       button.addEventListener(
         'click',
-        async () => {
+        () => {
           const playlistId =
             button.dataset.playlistDuplicate;
 
@@ -246,22 +271,24 @@ function bindDuplicatePlaylistButtons() {
             duplicatePlaylist(playlistId);
 
           if (!duplicate) {
-            await ModalService.alert({
-              title: 'Error',
-              message:
-                'No se pudo duplicar la playlist.'
-            });
+            ToastService.error(
+              'No se pudo duplicar la playlist.',
+              {
+                title: 'Error'
+              }
+            );
 
             return;
           }
 
-          await ModalService.alert({
-            title: 'Playlist duplicada',
-            message:
-              `"${duplicate.name}" fue creada correctamente.`
-          });
-
           refreshPlaylistsView();
+
+          ToastService.success(
+            `"${duplicate.name}" fue creada correctamente.`,
+            {
+              title: 'Playlist duplicada'
+            }
+          );
         }
       );
     });
@@ -295,6 +322,13 @@ function bindDeletePlaylistButtons() {
 
           deletePlaylist(playlistId);
           refreshPlaylistsView();
+
+          ToastService.success(
+            'La playlist fue eliminada.',
+            {
+              title: 'Playlist eliminada'
+            }
+          );
         }
       );
     });
@@ -310,39 +344,60 @@ function bindExportPlaylistsButton() {
   }
 
   button.addEventListener('click', () => {
-    const jsonText =
-      exportPlaylists();
+    try {
+      const jsonText =
+        exportPlaylists();
 
-    const blob = new Blob(
-      [jsonText],
-      {
-        type: 'application/json'
-      }
-    );
+      const blob = new Blob(
+        [jsonText],
+        {
+          type: 'application/json'
+        }
+      );
 
-    const downloadUrl =
-      URL.createObjectURL(blob);
+      const downloadUrl =
+        URL.createObjectURL(blob);
 
-    const link =
-      document.createElement('a');
+      const link =
+        document.createElement('a');
 
-    const date =
-      new Date()
-        .toISOString()
-        .slice(0, 10);
+      const date =
+        new Date()
+          .toISOString()
+          .slice(0, 10);
 
-    link.href = downloadUrl;
+      link.href = downloadUrl;
 
-    link.download =
-      `cantico-de-fe-playlists-${date}.json`;
+      link.download =
+        `cantico-de-fe-playlists-${date}.json`;
 
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
 
-    URL.revokeObjectURL(
-      downloadUrl
-    );
+      URL.revokeObjectURL(
+        downloadUrl
+      );
+
+      ToastService.success(
+        'La copia de seguridad fue descargada.',
+        {
+          title: 'Exportación completada'
+        }
+      );
+    } catch (error) {
+      console.error(
+        'No se pudieron exportar las playlists:',
+        error
+      );
+
+      ToastService.error(
+        'No se pudieron exportar las playlists.',
+        {
+          title: 'Error'
+        }
+      );
+    }
   });
 }
 
@@ -381,27 +436,37 @@ function bindImportPlaylistsButton() {
         const result =
           importPlaylists(jsonText);
 
-        await ModalService.alert({
-          title: result.success
-            ? 'Importación completada'
-            : 'Importación',
-          message: result.message
-        });
+        if (!result.success) {
+          ToastService.warning(
+            result.message,
+            {
+              title: 'Importación'
+            }
+          );
 
-        if (result.success) {
-          refreshPlaylistsView();
+          return;
         }
+
+        refreshPlaylistsView();
+
+        ToastService.success(
+          result.message,
+          {
+            title: 'Importación completada'
+          }
+        );
       } catch (error) {
         console.error(
           'No se pudo leer el archivo de playlists:',
           error
         );
 
-        await ModalService.alert({
-          title: 'Error',
-          message:
-            'No se pudo leer el archivo seleccionado.'
-        });
+        ToastService.error(
+          'No se pudo leer el archivo seleccionado.',
+          {
+            title: 'Error'
+          }
+        );
       }
     }
   );
