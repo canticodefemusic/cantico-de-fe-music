@@ -12,6 +12,14 @@ import {
   ModalService
 } from '../../../features/modal-engine/index.js';
 
+function refreshPlaylistsView() {
+  window.dispatchEvent(
+    new CustomEvent(
+      'cantico:playlists-refresh'
+    )
+  );
+}
+
 export function initPlaylistsView() {
   bindCreatePlaylistButton();
   bindRemoveHymnButtons();
@@ -78,7 +86,11 @@ function bindCreatePlaylistButton() {
       '[data-modal-create-playlist]'
     );
 
-    if (!input || !cancelButton || !createButton) {
+    if (
+      !input ||
+      !cancelButton ||
+      !createButton
+    ) {
       ModalService.close();
       return;
     }
@@ -100,7 +112,7 @@ function bindCreatePlaylistButton() {
       }
 
       ModalService.close();
-      window.location.reload();
+      refreshPlaylistsView();
     };
 
     cancelButton.addEventListener(
@@ -169,7 +181,7 @@ function bindRemoveHymnButtons() {
             hymnId
           );
 
-          window.location.reload();
+          refreshPlaylistsView();
         }
       );
     });
@@ -177,7 +189,9 @@ function bindRemoveHymnButtons() {
 
 function bindRenamePlaylistButtons() {
   document
-    .querySelectorAll('[data-playlist-rename]')
+    .querySelectorAll(
+      '[data-playlist-rename]'
+    )
     .forEach(button => {
       button.addEventListener(
         'click',
@@ -210,36 +224,42 @@ function bindRenamePlaylistButtons() {
             newName
           );
 
-          window.location.reload();
+          refreshPlaylistsView();
         }
       );
     });
 }
+
 function bindDuplicatePlaylistButtons() {
   document
-    .querySelectorAll('[data-playlist-duplicate]')
+    .querySelectorAll(
+      '[data-playlist-duplicate]'
+    )
     .forEach(button => {
-      button.addEventListener('click', () => {
-        const playlistId =
-          button.dataset.playlistDuplicate;
+      button.addEventListener(
+        'click',
+        () => {
+          const playlistId =
+            button.dataset.playlistDuplicate;
 
-        const duplicate =
-          duplicatePlaylist(playlistId);
+          const duplicate =
+            duplicatePlaylist(playlistId);
 
-        if (!duplicate) {
+          if (!duplicate) {
+            window.alert(
+              'No se pudo duplicar la playlist.'
+            );
+
+            return;
+          }
+
           window.alert(
-            'No se pudo duplicar la playlist.'
+            `"${duplicate.name}" fue creada correctamente.`
           );
 
-          return;
+          refreshPlaylistsView();
         }
-
-        window.alert(
-          `"${duplicate.name}" fue creada correctamente.`
-        );
-
-        window.location.reload();
-      });
+      );
     });
 }
 
@@ -270,8 +290,7 @@ function bindDeletePlaylistButtons() {
           }
 
           deletePlaylist(playlistId);
-
-          window.location.reload();
+          refreshPlaylistsView();
         }
       );
     });
@@ -358,7 +377,7 @@ function bindImportPlaylistsButton() {
         window.alert(result.message);
 
         if (result.success) {
-          window.location.reload();
+          refreshPlaylistsView();
         }
       } catch (error) {
         console.error(
