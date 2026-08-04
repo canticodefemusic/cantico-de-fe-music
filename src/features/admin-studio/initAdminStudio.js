@@ -6,6 +6,9 @@
 import AdminExportController
   from './controllers/AdminExportController.js';
 
+import AdminImportController
+  from './controllers/AdminImportController.js';
+
 import AdminRouter
   from './services/AdminRouter.js';
 
@@ -912,6 +915,13 @@ function handleCreateButton(
 }
 
 async function handleAdminClick(event) {
+  if (
+    AdminImportController.handleClick(
+      event
+    )
+  ) {
+    return;
+  }
   
   if (
     AdminExportController.handleClick(
