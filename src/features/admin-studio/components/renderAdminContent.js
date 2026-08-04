@@ -671,23 +671,30 @@ export function renderAdminContent(
     return renderDashboard();
   }
 
-  if (
-    currentSection ===
-    'hymns'
-  ) {
-    
-    if (state.selectedItem) {
-      return renderHymnEditor(
-        state.selectedItem
-      );
-    }
+if (
+  currentSection ===
+  'hymns'
+) {
 
-    return renderHymnManager();
+  if (state.selectedItem) {
+    return renderHymnEditor(
+      state.selectedItem
+    );
   }
 
-  return renderSectionPlaceholder(
-    currentSection
-  );
+  return renderHymnManager();
+}
+
+if (
+  currentSection ===
+  'officialPlaylists'
+) {
+  return renderOfficialPlaylistManager();
+}
+
+return renderSectionPlaceholder(
+  currentSection
+);
 }
 
 export default renderAdminContent;
