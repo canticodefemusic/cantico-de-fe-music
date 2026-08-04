@@ -1,10 +1,13 @@
 /**
  * Cántico de Fe Music
- * V12.1 — Admin Content Renderer
+ * V12.2 — Admin Content Renderer
  */
 
 import renderDashboard
   from './renderDashboard.js';
+
+import renderHymnEditor
+  from './renderHymnEditor.js';
 
 import AdminState
   from '../services/AdminState.js';
@@ -644,6 +647,12 @@ export function renderAdminContent(
     currentSection ===
     'hymns'
   ) {
+    if (state.selectedItem) {
+      return renderHymnEditor(
+        state.selectedItem
+      );
+    }
+
     return renderHymnManager();
   }
 
