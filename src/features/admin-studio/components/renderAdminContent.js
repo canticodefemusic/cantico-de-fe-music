@@ -12,6 +12,9 @@ import renderHymnEditor
 import renderOfficialPlaylistManager
   from './renderOfficialPlaylistManager.js';
 
+import renderOfficialPlaylistEditor
+  from './renderOfficialPlaylistEditor.js';
+
 import AdminState
   from '../services/AdminState.js';
 
@@ -689,7 +692,21 @@ if (
   currentSection ===
   'officialPlaylists'
 ) {
-  return renderOfficialPlaylistManager();
+  if (state.selectedItem) {
+    return renderOfficialPlaylistEditor();
+  }
+
+  return renderOfficialPlaylistManager({
+    query:
+      state.filters
+        ?.officialPlaylistSearch ||
+      '',
+
+    status:
+      state.filters
+        ?.officialPlaylistStatus ||
+      'all'
+  });
 }
 
 return renderSectionPlaceholder(
