@@ -3,6 +3,9 @@
  * V12.3 — Admin Studio Initializer
  */
 
+import AdminExportController
+  from './controllers/AdminExportController.js';
+
 import AdminRouter
   from './services/AdminRouter.js';
 
@@ -909,6 +912,15 @@ function handleCreateButton(
 }
 
 async function handleAdminClick(event) {
+  
+  if (
+    AdminExportController.handleClick(
+      event
+    )
+  ) {
+    return;
+  }
+  
   const editorBackButton =
     event.target.closest(
       '[data-admin-hymn-editor-back]'
