@@ -13,8 +13,14 @@ import AdminState
 import AdminStorage
   from './services/AdminStorage.js';
 
+import initAdminStudio
+  from './initAdminStudio.js';
+
 import renderAdminLayout
   from './components/renderAdminLayout.js';
+
+import renderAdminContent
+  from './components/renderAdminContent.js';
 
 import renderDashboard
   from './components/renderDashboard.js';
@@ -29,7 +35,9 @@ export {
   AdminRouter,
   AdminState,
   AdminStorage,
+  initAdminStudio,
   renderAdminLayout,
+  renderAdminContent,
   renderDashboard,
   renderSidebar,
   renderToolbar
@@ -39,7 +47,9 @@ export default {
   AdminRouter,
   AdminState,
   AdminStorage,
+  initAdminStudio,
   renderAdminLayout,
+  renderAdminContent,
   renderDashboard,
   renderSidebar,
   renderToolbar
