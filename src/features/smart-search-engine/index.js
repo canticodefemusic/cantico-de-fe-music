@@ -1,8 +1,12 @@
 /**
- * Smart Search Engine
+ * Cántico de Fe Music
+ * V11.0 — Smart Search Engine
  * Public API
  */
 
 export {
-  searchItems
+  normalize,
+  scoreItem,
+  searchItems,
+  searchGroups
 } from './services/searchEngine.js';
