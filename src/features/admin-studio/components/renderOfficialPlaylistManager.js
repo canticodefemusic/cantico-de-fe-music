@@ -389,7 +389,7 @@ export function renderOfficialPlaylistManager({
           <button
             type="button"
             class="admin-section__primary-action"
-            data-admin-create="official-playlists"
+            data-admin-create="officialPlaylists"
           >
             <span
               aria-hidden="true"
