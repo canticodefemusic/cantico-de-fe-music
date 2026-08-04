@@ -9,33 +9,28 @@ import renderSidebar
 import renderToolbar
   from './renderToolbar.js';
 
-import renderDashboard
-  from './renderDashboard.js';
+import renderAdminContent
+  from './renderAdminContent.js';
 
 export function renderAdminLayout() {
   return `
     <section
       class="admin-layout"
     >
-
       ${renderSidebar()}
 
       <main
         class="admin-layout__main"
       >
-
         ${renderToolbar()}
 
         <section
           class="admin-layout__content"
+          data-admin-content
         >
-
-          ${renderDashboard()}
-
+          ${renderAdminContent()}
         </section>
-
       </main>
-
     </section>
   `;
 }
