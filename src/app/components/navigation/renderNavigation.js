@@ -1,24 +1,96 @@
-import { appConfig } from '../../config/appConfig.js';
+import {
+  appConfig
+} from '../../config/appConfig.js';
 
-export function renderNavigation(items, activePage) {
-  const links = items.map(item => {
-    const active = item.id === activePage ? 'is-active' : '';
-    return `<a class="${active}" href="${item.href}">${item.label}</a>`;
-  }).join('');
+function escapeHtml(value = '') {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+export function renderNavigation(
+  items = [],
+  activePage = 'home'
+) {
+  const safeItems =
+    Array.isArray(items)
+      ? items
+      : [];
+
+  const links = safeItems
+    .map(item => {
+      const active =
+        item.id === activePage
+          ? 'is-active'
+          : '';
+
+      return `
+        <a
+          class="${active}"
+          href="${escapeHtml(item.href)}"
+        >
+          ${escapeHtml(item.label)}
+        </a>
+      `;
+    })
+    .join('');
 
   return `
     <header class="cantico-header">
-      <a class="cantico-brand" href="/">
-        <span class="cantico-logo">♪</span>
+      <a
+        class="cantico-brand"
+        href="/"
+        aria-label="Ir al inicio"
+      >
+        <span
+          class="cantico-logo"
+          aria-hidden="true"
+        >
+          ♪
+        </span>
+
         <span>
-          <strong>${appConfig.brand.name}</strong>
-          <small>${appConfig.brand.subtitle}</small>
+          <strong>
+            ${escapeHtml(
+              appConfig.brand.name
+            )}
+          </strong>
+
+          <small>
+            ${escapeHtml(
+              appConfig.brand.subtitle
+            )}
+          </small>
         </span>
       </a>
 
-      <nav class="cantico-nav">
-        ${links}
-      </nav>
+      <div class="cantico-header__actions">
+        <nav
+          class="cantico-nav"
+          aria-label="Navegación principal"
+        >
+          ${links}
+        </nav>
+
+        <button
+          type="button"
+          class="cantico-search-trigger"
+          data-global-search-open
+          aria-label="Abrir búsqueda global"
+          title="Buscar"
+        >
+          <span aria-hidden="true">
+            🔍
+          </span>
+
+          <span>
+            Buscar
+          </span>
+        </button>
+      </div>
     </header>
   `;
 }
