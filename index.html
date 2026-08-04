@@ -2,56 +2,184 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Cántico de Fe Music | Plataforma Cristiana V8.0</title>
-  <meta name="description" content="Cántico de Fe Music: plataforma completa con Admin Fácil para crear himnos sin editar JSON manualmente.">
-  <meta name="keywords" content="himnos cristianos, música cristiana, alabanzas, letras cristianas, Cántico de Fe Music">
-  <meta name="author" content="Cántico de Fe Music">
-  <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#06233f">
-  <meta property="og:title" content="Cántico de Fe Music">
-  <meta property="og:description" content="Plataforma completa de himnos cristianos originales con Admin Fácil.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://canticodefemusic.com">
-  <meta property="og:site_name" content="Cántico de Fe Music">
-  <meta property="og:locale" content="es_US">
-  <meta property="og:image" content="https://canticodefemusic.com/assets/img/covers/default-social-cover.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Cántico de Fe Music">
-  <meta name="twitter:description" content="Himnos cristianos originales para fortalecer el alma.">
-  <link rel="canonical" href="https://canticodefemusic.com">
-  <link rel="icon" href="/assets/icons/favicon.svg">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="preconnect" href="https://canticodefemusic.com">
-  <link rel="dns-prefetch" href="//canticodefemusic.com">
-  <link rel="modulepreload" href="/src/app/main.js">
-  <link rel="stylesheet" href="/src/app/styles/unified-app.css">
-  <link rel="stylesheet" href="/src/features/music-player-pro/styles/music-player-pro.css">
-  <link rel="stylesheet" href="/src/features/hymn-library-engine/styles/hymn-library.css">
-  <link rel="stylesheet" href="/src/features/hymn-detail-engine/styles/hymn-detail.css">
-  <link rel="stylesheet" href="/src/features/toast-engine/styles/toast-engine.css">
-  <link rel="stylesheet" href="/src/features/modal-engine/styles/modal.css">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>
+    Cántico de Fe Music | Himnos cristianos originales
+  </title>
+
+  <meta
+    name="description"
+    content="Cántico de Fe Music ofrece himnos cristianos originales, letras, devocionales, playlists y música para fortalecer la fe."
+  >
+
+  <meta
+    name="keywords"
+    content="himnos cristianos, música cristiana, alabanzas, letras cristianas, Cántico de Fe Music"
+  >
+
+  <meta
+    name="author"
+    content="Cántico de Fe Music"
+  >
+
+  <meta
+    name="robots"
+    content="index, follow"
+  >
+
+  <meta
+    name="theme-color"
+    content="#06233f"
+  >
+
+  <meta
+    property="og:title"
+    content="Cántico de Fe Music"
+  >
+
+  <meta
+    property="og:description"
+    content="Himnos cristianos originales, letras, devocionales y música para fortalecer la fe."
+  >
+
+  <meta
+    property="og:type"
+    content="website"
+  >
+
+  <meta
+    property="og:url"
+    content="https://canticodefemusic.com"
+  >
+
+  <meta
+    property="og:site_name"
+    content="Cántico de Fe Music"
+  >
+
+  <meta
+    property="og:locale"
+    content="es_US"
+  >
+
+  <meta
+    property="og:image"
+    content="https://canticodefemusic.com/assets/img/covers/default-social-cover.png"
+  >
+
+  <meta
+    name="twitter:card"
+    content="summary_large_image"
+  >
+
+  <meta
+    name="twitter:title"
+    content="Cántico de Fe Music"
+  >
+
+  <meta
+    name="twitter:description"
+    content="Himnos cristianos originales para fortalecer el alma."
+  >
+
   <link
-  rel="stylesheet"
-  href="/src/features/toast-engine/styles/toast-engine.css"
-><script type="application/ld+json" id="schemaData"></script>
+    rel="canonical"
+    href="https://canticodefemusic.com"
+  >
+
+  <link
+    rel="icon"
+    href="/assets/icons/favicon.svg"
+  >
+
+  <link
+    rel="manifest"
+    href="/manifest.json"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://canticodefemusic.com"
+  >
+
+  <link
+    rel="dns-prefetch"
+    href="//canticodefemusic.com"
+  >
+
+  <link
+    rel="modulepreload"
+    href="/src/app/main.js"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/src/app/styles/unified-app.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/src/features/music-player-pro/styles/music-player-pro.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/src/features/hymn-library-engine/styles/hymn-library.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/src/features/hymn-detail-engine/styles/hymn-detail.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/src/features/modal-engine/styles/modal.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/src/features/toast-engine/styles/toast-engine.css"
+  >
+
+  <script
+    type="application/ld+json"
+    id="schemaData"
+  ></script>
 </head>
+
 <body>
   <div id="app"></div>
-  <script type="module" src="/src/app/main.js"></script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/service-worker.js')
-      .then(registration => {
-        console.log('Service Worker registrado:', registration.scope);
-      })
-      .catch(error => {
-        console.error('Error registrando Service Worker:', error);
+
+  <script
+    type="module"
+    src="/src/app/main.js"
+  ></script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker
+          .register('/service-worker.js')
+          .then(registration => {
+            console.log(
+              'Service Worker registrado:',
+              registration.scope
+            );
+          })
+          .catch(error => {
+            console.error(
+              'Error registrando Service Worker:',
+              error
+            );
+          });
       });
-  });
-}
-</script>
+    }
+  </script>
 </body>
 </html>
