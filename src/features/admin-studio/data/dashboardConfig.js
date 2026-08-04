@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V12.0 — Dashboard Configuration
+ * V12.6 — Dashboard Configuration
  */
 
 export const dashboardConfig = [
@@ -13,11 +13,11 @@ export const dashboardConfig = [
   },
 
   {
-    id: 'albums',
-    title: 'Álbumes',
+    id: 'officialPlaylists',
+    title: 'Playlists oficiales',
     description:
-      'Administrar álbumes.',
-    icon: '💿'
+      'Crear y organizar playlists visibles para todos los visitantes.',
+    icon: '🎶'
   },
 
   {
