@@ -429,21 +429,39 @@ function renderHymnManager() {
           </p>
         </div>
 
-        <button
-          type="button"
-          class="admin-section__primary-action"
-          data-admin-create="hymns"
-        >
-          <span
-            aria-hidden="true"
-          >
-            +
-          </span>
+        <div
+  class="admin-section__actions"
+>
+  <button
+    type="button"
+    data-admin-hymn-export
+  >
+    Exportar catálogo
+  </button>
 
-          <span>
-            Nuevo himno
-          </span>
-        </button>
+  <button
+    type="button"
+    data-admin-hymn-backup
+  >
+    Descargar respaldo
+  </button>
+
+  <button
+    type="button"
+    class="admin-section__primary-action"
+    data-admin-create="hymns"
+  >
+    <span
+      aria-hidden="true"
+    >
+      +
+    </span>
+
+    <span>
+      Nuevo himno
+    </span>
+  </button>
+</div>
       </header>
 
       ${renderHymnStats()}
