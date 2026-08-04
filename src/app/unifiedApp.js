@@ -89,7 +89,8 @@ import {
 } from '../features/global-search-engine/index.js';
 
 import {
-  renderAdminLayout
+  renderAdminLayout,
+  initAdminStudio
 } from '../features/admin-studio/index.js';
 
 const views = {
@@ -250,6 +251,12 @@ function initializeCurrentView({
     route.page === 'recomendados'
   ) {
     initRecommendationsView();
+  }
+
+  if (
+    route.page === 'admin'
+  ) {
+    initAdminStudio();
   }
 }
 
