@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V12.1 — Admin Studio Initializer
+ * V12.3 — Admin Studio Initializer
  */
 
 import AdminRouter
@@ -32,6 +32,16 @@ const initializedRoots =
   new WeakSet();
 
 let searchTimeout = null;
+let keyboardShortcutsInitialized = false;
+
+function escapeHtml(value = '') {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
 function getAdminRoot() {
   return document.querySelector(
@@ -43,6 +53,18 @@ function getContentContainer() {
   return document.querySelector(
     '[data-admin-content]'
   );
+}
+
+function getHymnEditorForm() {
+  return document.querySelector(
+    '[data-admin-hymn-editor-form]'
+  );
+}
+
+function getSelectedHymnId() {
+  return AdminState
+    .getState()
+    .selectedItem;
 }
 
 function updateActiveSidebar(section) {
@@ -64,12 +86,16 @@ function updateActiveSidebar(section) {
         active
       );
 
-      button.setAttribute(
-        'aria-current',
-        active
-          ? 'page'
-          : 'false'
-      );
+      if (active) {
+        button.setAttribute(
+          'aria-current',
+          'page'
+        );
+      } else {
+        button.removeAttribute(
+          'aria-current'
+        );
+      }
     });
 }
 
@@ -112,10 +138,21 @@ function restoreSearchFocus(
   }, 0);
 }
 
+function focusFirstEditorField() {
+  window.setTimeout(() => {
+    document
+      .querySelector(
+        '[data-admin-hymn-editor-form] input[name="title"]'
+      )
+      ?.focus();
+  }, 0);
+}
+
 function renderSection(
   section,
   {
-    preserveSearchFocus = false
+    preserveSearchFocus = false,
+    focusEditor = false
   } = {}
 ) {
   const container =
@@ -161,6 +198,329 @@ function renderSection(
         .search
     );
   }
+
+  if (
+    focusEditor &&
+    targetSection === 'hymns'
+  ) {
+    focusFirstEditorField();
+  }
+}
+
+function openHymnEditor(
+  hymnId,
+  {
+    focusEditor = true
+  } = {}
+) {
+  const hymn =
+    AdminHymnService.findById(
+      hymnId
+    );
+
+  if (!hymn) {
+    ToastService.error(
+      'No se encontró el himno seleccionado.',
+      {
+        title: 'Error'
+      }
+    );
+
+    return;
+  }
+
+  AdminState.setSelectedItem(
+    hymn.id
+  );
+
+  AdminState.setDirty(false);
+
+  renderSection(
+    'hymns',
+    {
+      focusEditor
+    }
+  );
+}
+
+function returnToHymnManager() {
+  AdminState.setSelectedItem(
+    null
+  );
+
+  AdminState.setDirty(false);
+
+  renderSection('hymns');
+}
+
+async function confirmDiscardChanges() {
+  const state =
+    AdminState.getState();
+
+  if (!state.dirty) {
+    return true;
+  }
+
+  return ModalService.confirm({
+    title: 'Cambios sin guardar',
+    message:
+      'Hay cambios sin guardar. ¿Deseas salir del editor y descartarlos?',
+    confirmText:
+      'Descartar cambios',
+    cancelText:
+      'Continuar editando',
+    destructive: true
+  });
+}
+
+async function returnFromEditor() {
+  const confirmed =
+    await confirmDiscardChanges();
+
+  if (!confirmed) {
+    return;
+  }
+
+  returnToHymnManager();
+}
+
+function getFormText(
+  formData,
+  fieldName
+) {
+  return String(
+    formData.get(fieldName) ||
+    ''
+  ).trim();
+}
+
+function getHymnFormValues(form) {
+  const formData =
+    new FormData(form);
+
+  const audio =
+    getFormText(
+      formData,
+      'audio'
+    );
+
+  return {
+    title:
+      getFormText(
+        formData,
+        'title'
+      ),
+
+    subtitle:
+      getFormText(
+        formData,
+        'subtitle'
+      ),
+
+    category:
+      getFormText(
+        formData,
+        'category'
+      ),
+
+    theme:
+      getFormText(
+        formData,
+        'theme'
+      ),
+
+    artist:
+      getFormText(
+        formData,
+        'artist'
+      ),
+
+    scriptures:
+      getFormText(
+        formData,
+        'scriptures'
+      ),
+
+    description:
+      getFormText(
+        formData,
+        'description'
+      ),
+
+    lyrics:
+      String(
+        formData.get('lyrics') ||
+        ''
+      ).replace(
+        /\r\n/g,
+        '\n'
+      ),
+
+    tags:
+      getFormText(
+        formData,
+        'tags'
+      ),
+
+    audio,
+
+    src: audio,
+
+    cover:
+      getFormText(
+        formData,
+        'cover'
+      ),
+
+    duration:
+      getFormText(
+        formData,
+        'duration'
+      ),
+
+    copyright: {
+      holder:
+        getFormText(
+          formData,
+          'copyrightHolder'
+        ),
+
+      license:
+        getFormText(
+          formData,
+          'copyrightLicense'
+        )
+    }
+  };
+}
+
+function validateHymnValues(
+  values
+) {
+  if (!values.title) {
+    return {
+      valid: false,
+      field: 'title',
+      message:
+        'El título del himno es obligatorio.'
+    };
+  }
+
+  return {
+    valid: true,
+    field: null,
+    message: ''
+  };
+}
+
+function focusInvalidField(
+  form,
+  fieldName
+) {
+  if (!fieldName) {
+    return;
+  }
+
+  form
+    .querySelector(
+      `[name="${fieldName}"]`
+    )
+    ?.focus();
+}
+
+function saveHymnEditor({
+  returnToList = false
+} = {}) {
+  const form =
+    getHymnEditorForm();
+
+  const hymnId =
+    getSelectedHymnId();
+
+  if (!form || !hymnId) {
+    ToastService.error(
+      'No se pudo encontrar el formulario del himno.',
+      {
+        title:
+          'No se pudo guardar'
+      }
+    );
+
+    return false;
+  }
+
+  const values =
+    getHymnFormValues(
+      form
+    );
+
+  const validation =
+    validateHymnValues(
+      values
+    );
+
+  if (!validation.valid) {
+    focusInvalidField(
+      form,
+      validation.field
+    );
+
+    ToastService.warning(
+      validation.message,
+      {
+        title:
+          'Revisa el formulario'
+      }
+    );
+
+    return false;
+  }
+
+  AdminState.setSaving(true);
+
+  const result =
+    AdminHymnService.updateDraft(
+      hymnId,
+      values
+    );
+
+  if (!result.success) {
+    AdminState.setSaving(false);
+
+    ToastService.error(
+      result.message,
+      {
+        title:
+          'No se pudo guardar'
+      }
+    );
+
+    updateToolbar();
+
+    return false;
+  }
+
+  AdminState.setSelectedItem(
+    result.hymn.id
+  );
+
+  AdminState.markSaved();
+
+  ToastService.success(
+    result.message,
+    {
+      title:
+        'Borrador guardado'
+    }
+  );
+
+  if (returnToList) {
+    returnToHymnManager();
+  } else {
+    renderSection('hymns');
+  }
+
+  return true;
 }
 
 async function createHymnDraft() {
@@ -199,14 +559,6 @@ async function createHymnDraft() {
     return;
   }
 
-  AdminState.setSelectedItem(
-    result.hymn.id
-  );
-
-  AdminState.setDirty(true);
-
-  renderSection('hymns');
-
   ToastService.success(
     result.message,
     {
@@ -214,86 +566,17 @@ async function createHymnDraft() {
         'Borrador creado'
     }
   );
-}
 
-async function editHymnDraft(
-  hymnId
-) {
-  const hymn =
-    AdminHymnService.findById(
-      hymnId
-    );
-
-  if (!hymn) {
-    ToastService.error(
-      'No se encontró el himno seleccionado.',
-      {
-        title: 'Error'
-      }
-    );
-
-    return;
-  }
-
-  const newTitle =
-    await ModalService.prompt({
-      title: 'Editar himno',
-      message:
-        'Edita el título del himno. El editor completo se añadirá en la siguiente etapa.',
-      value:
-        hymn.title,
-      placeholder:
-        'Título del himno',
-      confirmText:
-        'Guardar cambios',
-      cancelText:
-        'Cancelar',
-      maxLength: 120
-    });
-
-  if (!newTitle) {
-    return;
-  }
-
-  const result =
-    AdminHymnService.updateDraft(
-      hymnId,
-      {
-        title: newTitle
-      }
-    );
-
-  if (!result.success) {
-    ToastService.error(
-      result.message,
-      {
-        title:
-          'No se pudo guardar'
-      }
-    );
-
-    return;
-  }
-
-  AdminState.setSelectedItem(
+  openHymnEditor(
     result.hymn.id
-  );
-
-  AdminState.setDirty(true);
-
-  renderSection('hymns');
-
-  ToastService.success(
-    result.message,
-    {
-      title:
-        'Himno actualizado'
-    }
   );
 }
 
 function duplicateHymn(
-  hymnId
+  hymnId,
+  {
+    openEditor = false
+  } = {}
 ) {
   const result =
     AdminHymnService.duplicate(
@@ -312,14 +595,6 @@ function duplicateHymn(
     return;
   }
 
-  AdminState.setSelectedItem(
-    result.hymn.id
-  );
-
-  AdminState.setDirty(true);
-
-  renderSection('hymns');
-
   ToastService.success(
     result.message,
     {
@@ -327,20 +602,29 @@ function duplicateHymn(
         'Himno duplicado'
     }
   );
+
+  if (openEditor) {
+    openHymnEditor(
+      result.hymn.id
+    );
+
+    return;
+  }
+
+  AdminState.setSelectedItem(
+    null
+  );
+
+  AdminState.setDirty(false);
+
+  renderSection('hymns');
 }
 
-async function removeHymnDraft(
-  button
-) {
-  const hymnId =
-    button.dataset
-      .adminHymnRemoveDraft;
-
-  const restorePublished =
-    button.dataset
-      .adminHymnRestore ===
-    'true';
-
+async function removeHymnDraft({
+  hymnId,
+  restorePublished = false,
+  returnToList = true
+}) {
   const hymn =
     AdminHymnService.findById(
       hymnId
@@ -412,9 +696,7 @@ async function removeHymnDraft(
     null
   );
 
-  AdminState.setDirty(true);
-
-  renderSection('hymns');
+  AdminState.setDirty(false);
 
   ToastService.success(
     result.message,
@@ -425,22 +707,284 @@ async function removeHymnDraft(
           : 'Borrador eliminado'
     }
   );
+
+  if (returnToList) {
+    renderSection('hymns');
+  }
 }
 
-function handleAdminClick(event) {
+function renderPreviewLine(
+  label,
+  value
+) {
+  if (!value) {
+    return '';
+  }
+
+  return `
+    <p>
+      <strong>
+        ${escapeHtml(label)}:
+      </strong>
+
+      ${escapeHtml(value)}
+    </p>
+  `;
+}
+
+function renderLyricsPreview(
+  lyrics = ''
+) {
+  const cleanLyrics =
+    String(lyrics || '').trim();
+
+  if (!cleanLyrics) {
+    return `
+      <p>
+        La letra del himno todavía
+        está vacía.
+      </p>
+    `;
+  }
+
+  return cleanLyrics
+    .split('\n')
+    .map(line =>
+      line.trim()
+        ? `
+          <p>
+            ${escapeHtml(line)}
+          </p>
+        `
+        : '<br>'
+    )
+    .join('');
+}
+
+function previewHymnEditor() {
+  const form =
+    getHymnEditorForm();
+
+  if (!form) {
+    return;
+  }
+
+  const values =
+    getHymnFormValues(
+      form
+    );
+
+  ModalService.open({
+    title:
+      values.title ||
+      'Vista previa del himno',
+
+    message: `
+      <section
+        class="admin-hymn-preview"
+      >
+        ${
+          values.subtitle
+            ? `
+              <p>
+                <strong>
+                  ${escapeHtml(
+                    values.subtitle
+                  )}
+                </strong>
+              </p>
+            `
+            : ''
+        }
+
+        ${renderPreviewLine(
+          'Categoría',
+          values.category
+        )}
+
+        ${renderPreviewLine(
+          'Tema',
+          values.theme
+        )}
+
+        ${renderPreviewLine(
+          'Artista',
+          values.artist
+        )}
+
+        ${renderPreviewLine(
+          'Referencias bíblicas',
+          values.scriptures
+        )}
+
+        ${
+          values.description
+            ? `
+              <hr>
+
+              <p>
+                ${escapeHtml(
+                  values.description
+                )}
+              </p>
+            `
+            : ''
+        }
+
+        <hr>
+
+        <div
+          class="admin-hymn-preview__lyrics"
+        >
+          ${renderLyricsPreview(
+            values.lyrics
+          )}
+        </div>
+      </section>
+    `,
+
+    actions: `
+      <button
+        type="button"
+        data-modal-cancel
+      >
+        Cerrar
+      </button>
+    `
+  });
+
+  document
+    .querySelector(
+      '[data-modal-cancel]'
+    )
+    ?.addEventListener(
+      'click',
+      () => {
+        ModalService.close();
+      },
+      {
+        once: true
+      }
+    );
+}
+
+function handleNavigationButton(
+  button
+) {
+  const section =
+    button.dataset.adminOpen;
+
+  if (!section) {
+    return;
+  }
+
+  AdminState.setSelectedItem(
+    null
+  );
+
+  AdminState.setDirty(false);
+
+  renderSection(section);
+}
+
+function handleCreateButton(
+  button
+) {
+  const section =
+    button.dataset.adminCreate;
+
+  if (section === 'hymns') {
+    createHymnDraft();
+
+    return;
+  }
+
+  ToastService.info(
+    'Este módulo se habilitará en una próxima etapa.',
+    {
+      title:
+        'Sección preparada'
+    }
+  );
+}
+
+async function handleAdminClick(event) {
+  const editorBackButton =
+    event.target.closest(
+      '[data-admin-hymn-editor-back]'
+    );
+
+  if (editorBackButton) {
+    await returnFromEditor();
+    return;
+  }
+
+  const editorPreviewButton =
+    event.target.closest(
+      '[data-admin-hymn-editor-preview]'
+    );
+
+  if (editorPreviewButton) {
+    previewHymnEditor();
+    return;
+  }
+
+  const editorDuplicateButton =
+    event.target.closest(
+      '[data-admin-hymn-editor-duplicate]'
+    );
+
+  if (editorDuplicateButton) {
+    const hymnId =
+      getSelectedHymnId();
+
+    if (hymnId) {
+      duplicateHymn(
+        hymnId,
+        {
+          openEditor: true
+        }
+      );
+    }
+
+    return;
+  }
+
+  const editorRemoveButton =
+    event.target.closest(
+      '[data-admin-hymn-editor-remove-draft]'
+    );
+
+  if (editorRemoveButton) {
+    const hymnId =
+      getSelectedHymnId();
+
+    if (!hymnId) {
+      return;
+    }
+
+    await removeHymnDraft({
+      hymnId,
+
+      restorePublished:
+        editorRemoveButton
+          .dataset
+          .adminHymnEditorRestore ===
+        'true'
+    });
+
+    return;
+  }
+
   const navigationButton =
     event.target.closest(
       '[data-admin-open]'
     );
 
   if (navigationButton) {
-    const section =
-      navigationButton.dataset
-        .adminOpen;
-
-    if (section) {
-      renderSection(section);
-    }
+    handleNavigationButton(
+      navigationButton
+    );
 
     return;
   }
@@ -451,21 +995,9 @@ function handleAdminClick(event) {
     );
 
   if (createButton) {
-    const section =
-      createButton.dataset
-        .adminCreate;
-
-    if (section === 'hymns') {
-      createHymnDraft();
-    } else {
-      ToastService.info(
-        'Este módulo se habilitará en una próxima etapa.',
-        {
-          title:
-            'Sección preparada'
-        }
-      );
-    }
+    handleCreateButton(
+      createButton
+    );
 
     return;
   }
@@ -476,7 +1008,7 @@ function handleAdminClick(event) {
     );
 
   if (editButton) {
-    editHymnDraft(
+    openHymnEditor(
       editButton.dataset
         .adminHymnEdit
     );
@@ -504,13 +1036,34 @@ function handleAdminClick(event) {
     );
 
   if (removeDraftButton) {
-    removeHymnDraft(
-      removeDraftButton
-    );
+    await removeHymnDraft({
+      hymnId:
+        removeDraftButton
+          .dataset
+          .adminHymnRemoveDraft,
+
+      restorePublished:
+        removeDraftButton
+          .dataset
+          .adminHymnRestore ===
+        'true'
+    });
   }
 }
 
 function handleAdminInput(event) {
+  const editorForm =
+    event.target.closest(
+      '[data-admin-hymn-editor-form]'
+    );
+
+  if (editorForm) {
+    AdminState.setDirty(true);
+    updateToolbar();
+
+    return;
+  }
+
   const searchInput =
     event.target.closest(
       '[data-admin-hymn-search]'
@@ -549,25 +1102,86 @@ function handleAdminChange(event) {
       '[data-admin-hymn-status]'
     );
 
-  if (!statusSelect) {
+  if (statusSelect) {
+    const currentState =
+      AdminState.getState();
+
+    AdminState.setFilters({
+      ...currentState.filters,
+
+      hymnStatus:
+        statusSelect.value
+    });
+
+    renderSection('hymns');
+
     return;
   }
 
-  const currentState =
-    AdminState.getState();
+  const editorForm =
+    event.target.closest(
+      '[data-admin-hymn-editor-form]'
+    );
 
-  AdminState.setFilters({
-    ...currentState.filters,
-    hymnStatus:
-      statusSelect.value
-  });
-
-  renderSection('hymns');
+  if (editorForm) {
+    AdminState.setDirty(true);
+    updateToolbar();
+  }
 }
 
-function bindAdminEvents(
-  root
-) {
+function handleAdminSubmit(event) {
+  const form =
+    event.target.closest(
+      '[data-admin-hymn-editor-form]'
+    );
+
+  if (!form) {
+    return;
+  }
+
+  event.preventDefault();
+
+  saveHymnEditor();
+}
+
+function handleKeyboardShortcut(event) {
+  const usesSaveShortcut =
+    (
+      event.ctrlKey ||
+      event.metaKey
+    ) &&
+    event.key.toLowerCase() === 's';
+
+  if (!usesSaveShortcut) {
+    return;
+  }
+
+  const form =
+    getHymnEditorForm();
+
+  if (!form) {
+    return;
+  }
+
+  event.preventDefault();
+
+  saveHymnEditor();
+}
+
+function bindKeyboardShortcuts() {
+  if (keyboardShortcutsInitialized) {
+    return;
+  }
+
+  document.addEventListener(
+    'keydown',
+    handleKeyboardShortcut
+  );
+
+  keyboardShortcutsInitialized = true;
+}
+
+function bindAdminEvents(root) {
   if (
     initializedRoots.has(root)
   ) {
@@ -589,6 +1203,11 @@ function bindAdminEvents(
     handleAdminChange
   );
 
+  root.addEventListener(
+    'submit',
+    handleAdminSubmit
+  );
+
   initializedRoots.add(root);
 }
 
@@ -601,6 +1220,7 @@ export function initAdminStudio() {
   }
 
   bindAdminEvents(root);
+  bindKeyboardShortcuts();
 
   const currentSection =
     AdminState
