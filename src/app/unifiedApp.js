@@ -88,6 +88,10 @@ import {
   initGlobalSearch
 } from '../features/global-search-engine/index.js';
 
+import {
+  renderAdminLayout
+} from '../features/admin-studio/index.js';
+
 const views = {
   home: renderHomeView,
 
@@ -103,7 +107,8 @@ const views = {
   recomendados: renderRecommendationsView,
   devocionales: renderDevotionalsView,
   videos: renderVideosView,
-  contacto: renderContactView
+  contacto: renderContactView,
+  admin: renderAdminLayout
 };
 
 const queueService =
