@@ -9,6 +9,9 @@ import renderDashboard
 import renderHymnEditor
   from './renderHymnEditor.js';
 
+import renderOfficialPlaylistManager
+  from './renderOfficialPlaylistManager.js';
+
 import AdminState
   from '../services/AdminState.js';
 
@@ -25,13 +28,13 @@ const SECTION_CONFIG = {
     actionLabel: 'Nuevo himno'
   },
 
-  albums: {
-    eyebrow: 'COLECCIONES MUSICALES',
-    title: 'Administrador de álbumes',
+  officialPlaylists: {
+    eyebrow: 'PLAYLISTS OFICIALES',
+    title: 'Administrador de playlists',
     description:
-      'Organiza himnos en álbumes y administra sus portadas y metadatos.',
-    icon: '💿',
-    actionLabel: 'Nuevo álbum'
+      'Organiza playlists oficiales visibles para todos los visitantes.',
+    icon: '🎶',
+    actionLabel: 'Nueva playlist'
   },
 
   videos: {
@@ -672,6 +675,7 @@ export function renderAdminContent(
     currentSection ===
     'hymns'
   ) {
+    
     if (state.selectedItem) {
       return renderHymnEditor(
         state.selectedItem
