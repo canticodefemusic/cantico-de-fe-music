@@ -7,8 +7,15 @@
 import GlobalSearchService
   from './services/GlobalSearchService.js';
 
+import initGlobalSearch
+  from './components/initGlobalSearch.js';
+
 export {
-  GlobalSearchService
+  GlobalSearchService,
+  initGlobalSearch
 };
 
-export default GlobalSearchService;
+export default {
+  GlobalSearchService,
+  initGlobalSearch
+};
