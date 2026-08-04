@@ -148,7 +148,8 @@ function createHymnPlayHandler() {
 }
 
 function registerPlaylistRefresh({
-  root
+  root,
+  handleHymnPlay
 }) {
   if (playlistRefreshHandler) {
     window.removeEventListener(
@@ -187,6 +188,10 @@ function registerPlaylistRefresh({
       );
 
     initPlaylistsView();
+
+    initHymnCardInteractions({
+      onPlay: handleHymnPlay
+    });
   };
 
   window.addEventListener(
@@ -253,7 +258,7 @@ export function startUnifiedCanticoApp(
 
   if (!root) {
     console.error(
-      '[Cántico V8.1] Root element not found:',
+      '[Cántico] Root element not found:',
       rootSelector
     );
 
@@ -291,16 +296,17 @@ export function startUnifiedCanticoApp(
     </div>
   `;
 
-  registerPlaylistRefresh({
-    root
-  });
-
   window.setTimeout(() => {
     initMusicPlayerPro();
     queueService.restore();
 
     const handleHymnPlay =
       createHymnPlayHandler();
+
+    registerPlaylistRefresh({
+      root,
+      handleHymnPlay
+    });
 
     initializeCurrentView({
       route,
