@@ -901,6 +901,25 @@ function handleCreateButton(
 
   if (section === 'hymns') {
     createHymnDraft();
+    return;
+  }
+
+  if (
+    section ===
+    'officialPlaylists'
+  ) {
+    AdminState.setSelectedItem(
+      '__new__'
+    );
+
+    AdminState.setDirty(false);
+
+    renderSection(
+      'officialPlaylists',
+      {
+        focusEditor: true
+      }
+    );
 
     return;
   }
