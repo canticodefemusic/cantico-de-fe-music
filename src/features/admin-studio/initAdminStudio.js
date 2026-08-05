@@ -1243,6 +1243,47 @@ function handleAdminSubmit(event) {
   saveHymnEditor();
 }
 
+function handleKeyboardShortcut(event) {
+  const usesSaveShortcut =
+    (
+      event.ctrlKey ||
+      event.metaKey
+    ) &&
+    event.key.toLowerCase() === 's';
+
+  if (!usesSaveShortcut) {
+    return;
+  }
+
+  const playlistForm =
+    document.querySelector(
+      '[data-admin-official-playlist-editor-form]'
+    );
+
+  if (playlistForm) {
+    event.preventDefault();
+
+    AdminOfficialPlaylistController
+      .handleSubmit({
+        target: playlistForm,
+        preventDefault() {}
+      });
+
+    return;
+  }
+
+  const hymnForm =
+    getHymnEditorForm();
+
+  if (!hymnForm) {
+    return;
+  }
+
+  event.preventDefault();
+
+  saveHymnEditor();
+}
+
 function bindKeyboardShortcuts() {
   if (keyboardShortcutsInitialized) {
     return;
