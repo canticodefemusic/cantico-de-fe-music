@@ -954,14 +954,23 @@ async function handleAdminClick(event) {
     )
   ) {
     return;
-  }
+}
 
-  if (
+if (
     await AdminOfficialPlaylistController.handleClick(
       event
-  )
+    )
   ) {
     return;
+  }
+
+if (
+  AdminOfficialPlaylistHymnSelectorController.handleClick(
+    event
+  )
+) {
+  updateToolbar();
+  return;
 }
   
   const editorBackButton =
