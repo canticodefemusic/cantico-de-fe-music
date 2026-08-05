@@ -954,9 +954,9 @@ async function handleAdminClick(event) {
     )
   ) {
     return;
-}
+  }
 
-if (
+  if (
     await AdminOfficialPlaylistController.handleClick(
       event
     )
@@ -964,12 +964,43 @@ if (
     return;
   }
 
-if (
-  AdminOfficialPlaylistHymnSelectorController.handleClick(
+  if (
+   AdminOfficialPlaylistHymnSelectorController.handleClick(
     event
-  )
-) {
-  updateToolbar();
+    )
+  ) {
+    updateToolbar();
+    return;
+  }
+
+  const officialPlaylistEditButton =
+    event.target.closest(
+     '[data-admin-official-playlist-edit]'
+  );
+
+if (officialPlaylistEditButton) {
+  const playlistId =
+    officialPlaylistEditButton
+      .dataset
+      .adminOfficialPlaylistEdit;
+
+  if (!playlistId) {
+    return;
+  }
+
+  AdminState.setSelectedItem(
+    playlistId
+  );
+
+  AdminState.setDirty(false);
+
+  renderSection(
+    'officialPlaylists',
+    {
+      focusEditor: true
+    }
+  );
+
   return;
 }
   
@@ -1116,14 +1147,22 @@ if (
 }
 
 function handleAdminInput(event) {
+  if (
+    AdminOfficialPlaylistHymnSelectorController.handleInput(
+      event
+    )
+  ) {
+    return;
+  }
 
-if (
-  AdminOfficialPlaylistHymnSelectorController.handleInput(
-    event
-  )
-) {
-  return;
-}
+  if (
+    AdminOfficialPlaylistController.handleInput(
+      event
+    )
+  ) {
+    updateToolbar();
+    return;
+  }
 
   const editorForm =
     event.target.closest(
