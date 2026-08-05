@@ -12,6 +12,9 @@ import AdminImportController
 import AdminOfficialPlaylistController
   from './controllers/AdminOfficialPlaylistController.js';
 
+import AdminOfficialPlaylistHymnSelectorController
+  from './controllers/AdminOfficialPlaylistHymnSelectorController.js';
+
 import AdminRouter
   from './services/AdminRouter.js';
 
