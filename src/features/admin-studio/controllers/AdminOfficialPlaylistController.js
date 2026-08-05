@@ -9,6 +9,9 @@ import AdminState
 import AdminOfficialPlaylistService
   from '../services/AdminOfficialPlaylistService.js';
 
+import AdminOfficialPlaylistHymnSelectorController
+  from './AdminOfficialPlaylistHymnSelectorController.js';
+
 import {
   ModalService
 } from '../../modal-engine/index.js';
@@ -140,7 +143,13 @@ function getFormValues(form) {
       getFormText(
         formData,
         'originalId'
-      )
+     ),
+
+hymnIds:
+  AdminOfficialPlaylistHymnSelectorController
+    .getSelectedIds(
+      form
+    )
   };
 }
 
@@ -393,7 +402,8 @@ function savePlaylist({
             cover:
               values.cover,
 
-            hymnIds: [],
+            hymnIds:
+              values.hymnIds,
 
             featured:
               values.featured,
@@ -414,6 +424,9 @@ function savePlaylist({
               cover:
                 values.cover,
 
+              hymnIds:
+                values.hymnIds,
+              
               featured:
                 values.featured,
 
