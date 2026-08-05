@@ -1158,6 +1158,15 @@ function handleAdminInput(event) {
 }
 
 function handleAdminChange(event) {
+  if (
+    AdminOfficialPlaylistController.handleChange(
+      event
+    )
+  ) {
+    updateToolbar();
+    return;
+  }
+
   const statusSelect =
     event.target.closest(
       '[data-admin-hymn-status]'
