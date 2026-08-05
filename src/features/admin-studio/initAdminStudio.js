@@ -1117,14 +1117,13 @@ if (
 
 function handleAdminInput(event) {
 
-  if (
-    AdminOfficialPlaylistController.handleInput(
-      event
-    )
-  ) {
-    updateToolbar();
-    return;
-  }
+if (
+  AdminOfficialPlaylistHymnSelectorController.handleInput(
+    event
+  )
+) {
+  return;
+}
 
   const editorForm =
     event.target.closest(
