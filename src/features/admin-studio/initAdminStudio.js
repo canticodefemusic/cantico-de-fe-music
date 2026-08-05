@@ -1200,34 +1200,19 @@ function handleAdminChange(event) {
 }
 
 function handleAdminSubmit(event) {
+  if (
+    AdminOfficialPlaylistController.handleSubmit(
+      event
+    )
+  ) {
+    updateToolbar();
+    return;
+  }
+
   const form =
     event.target.closest(
       '[data-admin-hymn-editor-form]'
     );
-
-  if (!form) {
-    return;
-  }
-
-  event.preventDefault();
-
-  saveHymnEditor();
-}
-
-function handleKeyboardShortcut(event) {
-  const usesSaveShortcut =
-    (
-      event.ctrlKey ||
-      event.metaKey
-    ) &&
-    event.key.toLowerCase() === 's';
-
-  if (!usesSaveShortcut) {
-    return;
-  }
-
-  const form =
-    getHymnEditorForm();
 
   if (!form) {
     return;
