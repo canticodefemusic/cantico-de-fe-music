@@ -6,6 +6,9 @@
 import renderAdminContentEditor
   from '../core/renderAdminContentEditor.js';
 
+import renderOfficialPlaylistHymnSelector
+  from './renderOfficialPlaylistHymnSelector.js';
+
 import AdminState
   from '../services/AdminState.js';
 
@@ -190,31 +193,14 @@ function renderGeneralPanel(
 function renderHymnsPanel(
   playlist = {}
 ) {
-  const hymnCount =
-    Array.isArray(
-      playlist.hymnIds
-    )
-      ? playlist.hymnIds.length
-      : 0;
-
-  return `
-    <div
-      class="admin-official-playlist-editor__hymns"
-    >
-      <p>
-        Himnos seleccionados:
-        <strong>
-          ${hymnCount}
-        </strong>
-      </p>
-
-      <p>
-        En la siguiente etapa agregaremos
-        el buscador, la selección y el
-        ordenamiento de himnos.
-      </p>
-    </div>
-  `;
+  return renderOfficialPlaylistHymnSelector({
+    selectedIds:
+      Array.isArray(
+        playlist.hymnIds
+      )
+        ? playlist.hymnIds
+        : []
+  });
 }
 
 function renderAppearancePanel(
