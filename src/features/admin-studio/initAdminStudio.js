@@ -1104,6 +1104,16 @@ async function handleAdminClick(event) {
 }
 
 function handleAdminInput(event) {
+
+  if (
+    AdminOfficialPlaylistController.handleInput(
+      event
+    )
+  ) {
+    updateToolbar();
+    return;
+  }
+
   const editorForm =
     event.target.closest(
       '[data-admin-hymn-editor-form]'
@@ -1141,8 +1151,7 @@ function handleAdminInput(event) {
       renderSection(
         'hymns',
         {
-          preserveSearchFocus:
-            true
+          preserveSearchFocus: true
         }
       );
     }, SEARCH_DELAY);
