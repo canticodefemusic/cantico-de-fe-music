@@ -9,6 +9,9 @@ import AdminExportController
 import AdminImportController
   from './controllers/AdminImportController.js';
 
+import AdminOfficialPlaylistController
+  from './controllers/AdminOfficialPlaylistController.js';
+
 import AdminRouter
   from './services/AdminRouter.js';
 
@@ -949,6 +952,14 @@ async function handleAdminClick(event) {
   ) {
     return;
   }
+
+  if (
+    await AdminOfficialPlaylistController.handleClick(
+      event
+  )
+  ) {
+    return;
+}
   
   const editorBackButton =
     event.target.closest(
