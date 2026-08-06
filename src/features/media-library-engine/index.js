@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V12.9.3 — Media Library Engine Public API
+ * V13.0.8 — Media Library Engine Public API
  */
 
 import mediaLibraryData
@@ -14,6 +14,9 @@ import MediaSelectionService
 
 import MediaFilterService
   from './services/MediaFilterService.js';
+
+import MediaMetadataService
+  from './services/MediaMetadataService.js';
 
 import MediaLibraryState
   from './state/MediaLibraryState.js';
@@ -33,21 +36,38 @@ import renderMediaBrowser
 import renderMediaPreview
   from './components/renderMediaPreview.js';
 
+import renderMediaCardMenu
+  from './components/renderMediaCardMenu.js';
+
+import renderMediaMetadataEditor
+  from './components/renderMediaMetadataEditor.js';
+
 import MediaBrowserController
   from './controllers/MediaBrowserController.js';
+
+import MediaCardMenuController
+  from './controllers/MediaCardMenuController.js';
+
+import MediaMetadataController
+  from './controllers/MediaMetadataController.js';
 
 export {
   mediaLibraryData,
   MediaLibraryService,
   MediaSelectionService,
   MediaFilterService,
+  MediaMetadataService,
   MediaLibraryState,
   renderMediaCard,
   renderMediaGrid,
   renderMediaToolbar,
   renderMediaBrowser,
   renderMediaPreview,
-  MediaBrowserController
+  renderMediaCardMenu,
+  renderMediaMetadataEditor,
+  MediaBrowserController,
+  MediaCardMenuController,
+  MediaMetadataController
 };
 
 export default {
@@ -55,11 +75,16 @@ export default {
   MediaLibraryService,
   MediaSelectionService,
   MediaFilterService,
+  MediaMetadataService,
   MediaLibraryState,
   renderMediaCard,
   renderMediaGrid,
   renderMediaToolbar,
   renderMediaBrowser,
   renderMediaPreview,
-  MediaBrowserController
+  renderMediaCardMenu,
+  renderMediaMetadataEditor,
+  MediaBrowserController,
+  MediaCardMenuController,
+  MediaMetadataController
 };
