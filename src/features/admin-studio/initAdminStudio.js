@@ -1296,6 +1296,14 @@ function handleAdminChange(event) {
 
 function handleAdminSubmit(event) {
   if (
+    AdminMediaLibraryController.handleSubmit(
+      event
+    )
+  ) {
+    return;
+  }
+
+  if (
     AdminOfficialPlaylistController.handleSubmit(
       event
     )
