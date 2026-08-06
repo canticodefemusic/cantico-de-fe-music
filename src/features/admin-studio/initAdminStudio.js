@@ -15,6 +15,9 @@ import AdminOfficialPlaylistController
 import AdminOfficialPlaylistHymnSelectorController
   from './controllers/AdminOfficialPlaylistHymnSelectorController.js';
 
+import AdminMediaLibraryController
+  from './controllers/AdminMediaLibraryController.js';
+
 import AdminRouter
   from './services/AdminRouter.js';
 
@@ -194,6 +197,15 @@ function renderSection(
       targetSection
     );
 
+  if (
+    targetSection ===
+    'media'
+  ) {
+    AdminMediaLibraryController.initialize(
+      container
+    );
+  }
+  
   updateActiveSidebar(
     targetSection
   );
@@ -965,6 +977,14 @@ async function handleAdminClick(event) {
   }
 
   if (
+    AdminMediaLibraryController.handleClick(
+      event
+    )
+  ) {
+    return;
+  }
+  
+  if (
    AdminOfficialPlaylistHymnSelectorController.handleClick(
     event
     )
@@ -1164,6 +1184,14 @@ function handleAdminInput(event) {
     return;
   }
 
+  if (
+    AdminMediaLibraryController.handleInput(
+      event
+    )
+  ) {
+    return;
+  }
+  
   const editorForm =
     event.target.closest(
       '[data-admin-hymn-editor-form]'
@@ -1217,6 +1245,14 @@ function handleAdminChange(event) {
     return;
   }
 
+  if (
+    AdminMediaLibraryController.handleChange(
+      event
+    )
+  ) {
+    return;
+  }
+  
   if (
     AdminOfficialPlaylistHymnSelectorController.handleChange(
       event
