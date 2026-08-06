@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V12.9.2 — Admin Media Library View
+ * V13.0.4 — Admin Media Library View
  */
 
 import {
@@ -18,28 +18,39 @@ export function renderAdminMediaLibrary() {
       data-admin-current-section="media"
       data-admin-media-library
     >
-      ${renderMediaBrowser({
-        query:
-          state.query,
+      <div
+        class="admin-media-library__browser"
+        data-admin-media-library-browser
+      >
+        ${renderMediaBrowser({
+          query:
+            state.query,
 
-        type:
-          state.type,
+          type:
+            state.type,
 
-        category:
-          state.category,
+          category:
+            state.category,
 
-        sort:
-          state.sort,
+          sort:
+            state.sort,
 
-        selectable:
-          true,
+          selectable:
+            true,
 
-        title:
-          'Biblioteca multimedia',
+          title:
+            'Biblioteca multimedia',
 
-        description:
-          'Explora y selecciona imágenes, audios, videos y otros recursos de Cántico de Fe Music.'
-      })}
+          description:
+            'Explora, selecciona y administra imágenes, audios, videos y otros recursos de Cántico de Fe Music.'
+        })}
+      </div>
+
+      <div
+        class="admin-media-library__metadata-host"
+        data-media-metadata-host
+        hidden
+      ></div>
     </section>
   `;
 }
