@@ -15,9 +15,11 @@ import renderOfficialPlaylistManager
 import renderOfficialPlaylistEditor
   from './renderOfficialPlaylistEditor.js';
 
+import renderAdminMediaLibrary
+  from './renderAdminMediaLibrary.js';
+
 import AdminState
   from '../services/AdminState.js';
-
 import AdminHymnService
   from '../services/AdminHymnService.js';
 
@@ -707,6 +709,13 @@ if (
         ?.officialPlaylistStatus ||
       'all'
   });
+}
+
+if (
+  currentSection ===
+  'media'
+) {
+  return renderAdminMediaLibrary();
 }
 
 return renderSectionPlaceholder(
