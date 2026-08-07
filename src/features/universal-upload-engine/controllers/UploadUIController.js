@@ -7,6 +7,10 @@ import {
 } from '../state/uploadState.js';
 
 import {
+  UPLOAD_STATUS
+} from '../constants/uploadStatus.js';
+
+import {
   renderUploadQueue
 } from '../components/renderUploadQueue.js';
 
@@ -34,6 +38,9 @@ export class UploadUIController {
 
     this.handleFileInput =
       this.handleFileInput.bind(this);
+
+    this.handleQueueClick =
+      this.handleQueueClick.bind(this);
   }
 
   init() {
@@ -67,9 +74,8 @@ export class UploadUIController {
       );
 
     this.bindFileSelector();
-
     this.bindDragDrop();
-
+    this.bindQueueActions();
     this.bindEvents();
 
     this.render();
@@ -135,6 +141,56 @@ export class UploadUIController {
     });
   }
 
+  bindQueueActions() {
+    if (!this.queueContainer) {
+      return;
+    }
+
+    this.queueContainer.addEventListener(
+      'click',
+      this.handleQueueClick
+    );
+  }
+
+  handleQueueClick(event) {
+    const removeButton =
+      event.target.closest(
+        '[data-upload-remove]'
+      );
+
+    if (removeButton) {
+      const id =
+        removeButton.getAttribute(
+          'data-upload-remove'
+        );
+
+      if (id) {
+        this.engine.remove(id);
+      }
+
+      return;
+    }
+
+    const cancelButton =
+      event.target.closest(
+        '[data-upload-cancel]'
+      );
+
+    if (cancelButton) {
+      const id =
+        cancelButton.getAttribute(
+          'data-upload-cancel'
+        );
+
+      if (id) {
+        this.engine.updateStatus(
+          id,
+          UPLOAD_STATUS.CANCELLED
+        );
+      }
+    }
+  }
+
   bindEvents() {
     const events = [
       'upload:added',
@@ -192,6 +248,13 @@ export class UploadUIController {
       this.fileInput.removeEventListener(
         'change',
         this.handleFileInput
+      );
+    }
+
+    if (this.queueContainer) {
+      this.queueContainer.removeEventListener(
+        'click',
+        this.handleQueueClick
       );
     }
 
