@@ -7,6 +7,14 @@ export * from './services/DragDropService.js';
 
 export * from './events/UploadEventBus.js';
 
+export * from './controllers/UploadUIController.js';
+
+export * from './components/renderUploadDropZone.js';
+export * from './components/renderUploadItem.js';
+export * from './components/renderUploadQueue.js';
+export * from './components/renderUploadProgress.js';
+export * from './components/renderUploadPanel.js';
+
 export * from './state/uploadState.js';
 
 export * from './utils/uploadValidator.js';
