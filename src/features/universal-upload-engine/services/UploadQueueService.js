@@ -138,14 +138,88 @@ export class UploadQueueService {
   }
 
   update(id, updates = {}) {
-    const item =
-      this.getById(id);
+  const item =
+    this.getById(id);
 
-    if (!item) {
-      return null;
-    }
+  if (!item) {
+    return null;
+  }
 
-    cancel(id) {
+  Object.assign(
+    item,
+    updates
+  );
+
+  this.progressService.sync();
+
+  uploadEventBus.emit(
+    'upload:updated',
+    item
+  );
+
+  uploadEventBus.emit(
+    'queue:changed',
+    this.getAll()
+  );
+
+  return item;
+}
+
+updateStatus(id, status) {
+  const item =
+    this.update(
+      id,
+      { status }
+    );
+
+  if (!item) {
+    return null;
+  }
+
+  if (
+    status ===
+    UPLOAD_STATUS.UPLOADING
+  ) {
+    uploadEventBus.emit(
+      'upload:started',
+      item
+    );
+  }
+
+  if (
+    status ===
+    UPLOAD_STATUS.COMPLETED
+  ) {
+    uploadEventBus.emit(
+      'upload:completed',
+      item
+    );
+  }
+
+  if (
+    status ===
+    UPLOAD_STATUS.FAILED
+  ) {
+    uploadEventBus.emit(
+      'upload:failed',
+      item
+    );
+  }
+
+  if (
+    status ===
+    UPLOAD_STATUS.CANCELLED
+  ) {
+    uploadEventBus.emit(
+      'upload:cancelled',
+      item
+    );
+  }
+
+  return item;
+}
+
+cancel(id) {
   const item =
     this.getById(id);
 
@@ -175,80 +249,6 @@ export class UploadQueueService {
 
   return item;
 }
-    
-    Object.assign(
-      item,
-      updates
-    );
-
-    this.progressService.sync();
-
-    uploadEventBus.emit(
-      'upload:updated',
-      item
-    );
-
-    uploadEventBus.emit(
-      'queue:changed',
-      this.getAll()
-    );
-
-    return item;
-  }
-
-  updateStatus(id, status) {
-    const item =
-      this.update(
-        id,
-        { status }
-      );
-
-    if (!item) {
-      return null;
-    }
-
-    if (
-      status ===
-      UPLOAD_STATUS.UPLOADING
-    ) {
-      uploadEventBus.emit(
-        'upload:started',
-        item
-      );
-    }
-
-    if (
-      status ===
-      UPLOAD_STATUS.COMPLETED
-    ) {
-      uploadEventBus.emit(
-        'upload:completed',
-        item
-      );
-    }
-
-    if (
-      status ===
-      UPLOAD_STATUS.FAILED
-    ) {
-      uploadEventBus.emit(
-        'upload:failed',
-        item
-      );
-    }
-
-    if (
-      status ===
-      UPLOAD_STATUS.CANCELLED
-    ) {
-      uploadEventBus.emit(
-        'upload:cancelled',
-        item
-      );
-    }
-
-    return item;
-  }
 
   updateProgress(id, progress) {
     const normalizedProgress =
