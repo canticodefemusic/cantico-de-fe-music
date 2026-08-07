@@ -119,6 +119,10 @@ export class UploadService {
     );
   }
 
+  cancel(id) {
+    return this.queue.cancel(id);
+  }
+  
   updateProgress(id, progress) {
     return this.queue.updateProgress(
       id,
