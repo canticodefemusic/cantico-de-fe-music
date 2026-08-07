@@ -70,6 +70,10 @@ export class UploadEngine {
     );
   }
 
+  cancel(id) {
+    return this.service.cancel(id);
+  }
+  
   updateProgress(id, progress) {
     return this.service.updateProgress(
       id,
