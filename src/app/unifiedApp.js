@@ -64,6 +64,11 @@ import {
 } from './views/contact/renderContactView.js';
 
 import {
+  renderUploadView,
+  initUploadView
+} from './views/upload/renderUploadView.js';
+
+import {
   renderMusicPlayerPro,
   initMusicPlayerPro
 } from '../features/music-player-pro/index.js';
@@ -109,6 +114,7 @@ const views = {
   devocionales: renderDevotionalsView,
   videos: renderVideosView,
   contacto: renderContactView,
+  upload: renderUploadView,
   admin: renderAdminLayout
 };
 
@@ -253,10 +259,16 @@ function initializeCurrentView({
     initRecommendationsView();
   }
 
-  if (
+    if (
     route.page === 'admin'
   ) {
     initAdminStudio();
+  }
+
+  if (
+    route.page === 'upload'
+  ) {
+    initUploadView();
   }
 }
 
