@@ -2,7 +2,10 @@ export * from './UploadEngine.js';
 
 export * from './services/UploadService.js';
 export * from './services/UploadQueueService.js';
+export * from './services/ProgressService.js';
 export * from './services/DragDropService.js';
+
+export * from './events/UploadEventBus.js';
 
 export * from './state/uploadState.js';
 
