@@ -1,42 +1,78 @@
 import {
-  uploadState
-} from '../state/uploadState.js';
-
-import {
   validateFile
 } from '../utils/uploadValidator.js';
 
+import {
+  createUploadItem
+} from '../utils/createUploadItem.js';
+
+import {
+  UploadQueueService
+} from './UploadQueueService.js';
+
 export class UploadService {
+
+  constructor() {
+
+    this.queue =
+      new UploadQueueService();
+
+  }
 
   add(file) {
 
     if (!validateFile(file)) {
-      return false;
+
+      return {
+
+        success: false,
+
+        file,
+
+        item: null
+
+      };
+
     }
 
-    uploadState.queue.push(file);
+    const item =
+      createUploadItem(file);
 
-    return true;
+    this.queue.add(item);
+
+    return {
+
+      success: true,
+
+      file,
+
+      item
+
+    };
 
   }
 
   addMany(files = []) {
 
-    const addedFiles = [];
+    const addedItems = [];
     const rejectedFiles = [];
 
     files.forEach(file => {
 
-      const added =
+      const result =
         this.add(file);
 
-      if (added) {
+      if (result.success) {
 
-        addedFiles.push(file);
+        addedItems.push(
+          result.item
+        );
 
       } else {
 
-        rejectedFiles.push(file);
+        rejectedFiles.push(
+          file
+        );
 
       }
 
@@ -44,7 +80,7 @@ export class UploadService {
 
     return {
 
-      addedFiles,
+      addedItems,
 
       rejectedFiles
 
@@ -52,40 +88,81 @@ export class UploadService {
 
   }
 
-  remove(index) {
+  remove(id) {
 
-    if (
-      index < 0 ||
-      index >= uploadState.queue.length
-    ) {
-      return null;
-    }
-
-    const [removedFile] =
-      uploadState.queue.splice(
-        index,
-        1
-      );
-
-    return removedFile || null;
+    return this.queue.remove(id);
 
   }
 
   clear() {
 
-    uploadState.queue.length = 0;
+    this.queue.clear();
 
   }
 
   getQueue() {
 
-    return [...uploadState.queue];
+    return this.queue.getAll();
+
+  }
+
+  getById(id) {
+
+    return this.queue.getById(id);
+
+  }
+
+  getPending() {
+
+    return this.queue.getPending();
+
+  }
+
+  getUploading() {
+
+    return this.queue.getUploading();
+
+  }
+
+  getCompleted() {
+
+    return this.queue.getCompleted();
+
+  }
+
+  getFailed() {
+
+    return this.queue.getFailed();
+
+  }
+
+  getCancelled() {
+
+    return this.queue.getCancelled();
 
   }
 
   getQueueSize() {
 
-    return uploadState.queue.length;
+    return this.queue.count();
+
+  }
+
+  updateStatus(id, status) {
+
+    return this.queue.updateStatus(
+      id,
+      status
+    );
+
+  }
+
+  updateProgress(id, progress) {
+
+    return this.queue.updateProgress(
+      id,
+      progress
+    );
 
   }
 
