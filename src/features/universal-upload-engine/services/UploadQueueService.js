@@ -145,6 +145,37 @@ export class UploadQueueService {
       return null;
     }
 
+    cancel(id) {
+  const item =
+    this.getById(id);
+
+  if (!item) {
+    return null;
+  }
+
+  item.status =
+    UPLOAD_STATUS.CANCELLED;
+
+  this.progressService.sync();
+
+  uploadEventBus.emit(
+    'upload:cancelled',
+    item
+  );
+
+  uploadEventBus.emit(
+    'upload:updated',
+    item
+  );
+
+  uploadEventBus.emit(
+    'queue:changed',
+    this.getAll()
+  );
+
+  return item;
+}
+    
     Object.assign(
       item,
       updates
