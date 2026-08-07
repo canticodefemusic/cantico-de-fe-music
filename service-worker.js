@@ -1,6 +1,16 @@
-const CACHE_VERSION = 'v10.1.1';
-const STATIC_CACHE = `cantico-static-${CACHE_VERSION}`;
-const RUNTIME_CACHE = `cantico-runtime-${CACHE_VERSION}`;
+/**
+ * Cántico de Fe Music
+ * V13.0.11 — Service Worker Cache Update
+ */
+
+const CACHE_VERSION =
+  'v13.0.11';
+
+const STATIC_CACHE =
+  `cantico-static-${CACHE_VERSION}`;
+
+const RUNTIME_CACHE =
+  `cantico-runtime-${CACHE_VERSION}`;
 
 const APP_SHELL = [
   '/',
@@ -8,90 +18,353 @@ const APP_SHELL = [
   '/manifest.json'
 ];
 
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(STATIC_CACHE).then(async cache => {
-      await Promise.allSettled(
-        APP_SHELL.map(resource => cache.add(resource))
+function isAudioRequest(
+  request,
+  url
+) {
+  return (
+    request.destination ===
+      'audio' ||
+    url.pathname.endsWith(
+      '.mp3'
+    ) ||
+    url.pathname.endsWith(
+      '.m4a'
+    ) ||
+    url.pathname.endsWith(
+      '.wav'
+    ) ||
+    url.pathname.endsWith(
+      '.ogg'
+    )
+  );
+}
+
+function isApplicationCode(
+  request,
+  url
+) {
+  return (
+    request.destination ===
+      'script' ||
+    request.destination ===
+      'style' ||
+    request.destination ===
+      'worker' ||
+    url.pathname.endsWith(
+      '.js'
+    ) ||
+    url.pathname.endsWith(
+      '.css'
+    )
+  );
+}
+
+function canCacheResponse(
+  response
+) {
+  return Boolean(
+    response &&
+    response.status === 200 &&
+    response.type !== 'error'
+  );
+}
+
+async function putInCache(
+  cacheName,
+  request,
+  response
+) {
+  if (
+    !canCacheResponse(
+      response
+    )
+  ) {
+    return;
+  }
+
+  const cache =
+    await caches.open(
+      cacheName
+    );
+
+  await cache.put(
+    request,
+    response.clone()
+  );
+}
+
+async function networkFirst(
+  request,
+  {
+    cacheName =
+      RUNTIME_CACHE,
+    fallbackRequest =
+      null
+  } = {}
+) {
+  try {
+    const response =
+      await fetch(
+        request
       );
-    })
-  );
 
-  self.skipWaiting();
-});
+    await putInCache(
+      cacheName,
+      request,
+      response
+    );
 
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(cacheNames =>
-      Promise.all(
-        cacheNames
-          .filter(
-            cacheName =>
-              cacheName.startsWith('cantico-') &&
-              cacheName !== STATIC_CACHE &&
-              cacheName !== RUNTIME_CACHE
-          )
-          .map(cacheName => caches.delete(cacheName))
-      )
-    ).then(() => self.clients.claim())
-  );
-});
+    return response;
+  } catch (error) {
+    const cached =
+      await caches.match(
+        request
+      );
 
-self.addEventListener('fetch', event => {
-  const request = event.request;
+    if (cached) {
+      return cached;
+    }
 
-  if (request.method !== 'GET') return;
+    if (fallbackRequest) {
+      const fallback =
+        await caches.match(
+          fallbackRequest
+        );
 
-  const requestUrl = new URL(request.url);
+      if (fallback) {
+        return fallback;
+      }
+    }
 
-  if (requestUrl.origin !== self.location.origin) return;
+    throw error;
+  }
+}
 
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then(response => {
-          const copy = response.clone();
+async function staleWhileRevalidate(
+  request
+) {
+  const cached =
+    await caches.match(
+      request
+    );
 
-          caches.open(RUNTIME_CACHE).then(cache => {
-            cache.put(request, copy);
-          });
+  const networkPromise =
+    fetch(
+      request
+    )
+      .then(async response => {
+        await putInCache(
+          RUNTIME_CACHE,
+          request,
+          response
+        );
 
-          return response;
-        })
-        .catch(async () => {
-          return (
-            (await caches.match(request)) ||
-            (await caches.match('/index.html'))
+        return response;
+      })
+      .catch(() => null);
+
+  if (cached) {
+    networkPromise.catch(
+      () => {}
+    );
+
+    return cached;
+  }
+
+  const response =
+    await networkPromise;
+
+  if (response) {
+    return response;
+  }
+
+  return Response.error();
+}
+
+self.addEventListener(
+  'install',
+  event => {
+    event.waitUntil(
+      caches
+        .open(
+          STATIC_CACHE
+        )
+        .then(async cache => {
+          await Promise.allSettled(
+            APP_SHELL.map(
+              resource =>
+                cache.add(
+                  resource
+                )
+            )
           );
         })
     );
 
-    return;
+    self.skipWaiting();
   }
+);
 
-  if (
-  request.destination === 'audio' ||
-  requestUrl.pathname.endsWith('.mp3') ||
-  requestUrl.pathname.endsWith('.m4a')
-) {
-  return;
-}
-  
-  event.respondWith(
-    caches.match(request).then(cached => {
-      if (cached) return cached;
+self.addEventListener(
+  'activate',
+  event => {
+    event.waitUntil(
+      caches
+        .keys()
+        .then(cacheNames =>
+          Promise.all(
+            cacheNames
+              .filter(
+                cacheName =>
+                  cacheName.startsWith(
+                    'cantico-'
+                  ) &&
+                  cacheName !==
+                    STATIC_CACHE &&
+                  cacheName !==
+                    RUNTIME_CACHE
+              )
+              .map(
+                cacheName =>
+                  caches.delete(
+                    cacheName
+                  )
+              )
+          )
+        )
+        .then(() =>
+          self.clients.claim()
+        )
+    );
+  }
+);
 
-      return fetch(request).then(response => {
-        if (!response || response.status !== 200) return response;
+self.addEventListener(
+  'fetch',
+  event => {
+    const request =
+      event.request;
 
-        const copy = response.clone();
+    if (
+      request.method !==
+      'GET'
+    ) {
+      return;
+    }
 
-        caches.open(RUNTIME_CACHE).then(cache => {
-          cache.put(request, copy);
-        });
+    const requestUrl =
+      new URL(
+        request.url
+      );
 
-        return response;
-      });
-    })
-  );
-});
+    if (
+      requestUrl.origin !==
+      self.location.origin
+    ) {
+      return;
+    }
+
+    /*
+     * Navegación:
+     *
+     * Siempre intenta obtener la versión
+     * más reciente de la aplicación.
+     *
+     * Si no hay conexión, utiliza la
+     * versión almacenada.
+     */
+    if (
+      request.mode ===
+      'navigate'
+    ) {
+      event.respondWith(
+        networkFirst(
+          request,
+          {
+            fallbackRequest:
+              '/index.html'
+          }
+        )
+      );
+
+      return;
+    }
+
+    /*
+     * Audio:
+     *
+     * No interceptarlo.
+     *
+     * Esto evita problemas con Range
+     * Requests, streaming y reproducción.
+     */
+    if (
+      isAudioRequest(
+        request,
+        requestUrl
+      )
+    ) {
+      return;
+    }
+
+    /*
+     * JavaScript y CSS:
+     *
+     * NETWORK FIRST.
+     *
+     * Esta es la corrección principal.
+     * Evita que una versión antigua del
+     * sitio permanezca atrapada en caché.
+     */
+    if (
+      isApplicationCode(
+        request,
+        requestUrl
+      )
+    ) {
+      event.respondWith(
+        networkFirst(
+          request
+        )
+      );
+
+      return;
+    }
+
+    /*
+     * Manifest:
+     *
+     * Preferimos la versión más reciente.
+     */
+    if (
+      requestUrl.pathname ===
+      '/manifest.json'
+    ) {
+      event.respondWith(
+        networkFirst(
+          request,
+          {
+            cacheName:
+              STATIC_CACHE
+          }
+        )
+      );
+
+      return;
+    }
+
+    /*
+     * Imágenes, fuentes y otros recursos:
+     *
+     * Se pueden mostrar inmediatamente
+     * desde caché mientras se actualizan
+     * silenciosamente en segundo plano.
+     */
+    event.respondWith(
+      staleWhileRevalidate(
+        request
+      )
+    );
+  }
+);
