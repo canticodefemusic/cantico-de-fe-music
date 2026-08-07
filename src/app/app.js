@@ -48,6 +48,11 @@ import {
 } from './views/contact/renderContactView.js';
 
 import {
+  renderUploadView,
+  initUploadView
+} from './views/upload/renderUploadView.js';
+
+import {
   renderMusicPlayerPro,
   initMusicPlayerPro
 } from '../features/music-player-pro/index.js';
@@ -88,6 +93,7 @@ const views = {
   devocionales: renderDevotionalsView,
   videos: renderVideosView,
   contacto: renderContactView
+  upload: renderUploadView, 
 };
 
 const queueService =
@@ -220,10 +226,17 @@ export function startUnifiedCanticoApp(
       initHistoryView();
     }
 
-    if (
+        if (
       route.page === 'recomendados'
     ) {
       initRecommendationsView();
     }
+
+    if (
+      route.page === 'upload'
+    ) {
+      initUploadView();
+    }
+
   }, 0);
 }
