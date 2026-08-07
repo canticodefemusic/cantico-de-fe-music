@@ -6,7 +6,20 @@ import {
   UPLOAD_STATUS
 } from '../constants/uploadStatus.js';
 
+import {
+  uploadEventBus
+} from '../events/UploadEventBus.js';
+
+import {
+  ProgressService
+} from './ProgressService.js';
+
 export class UploadQueueService {
+
+  constructor() {
+    this.progressService =
+      new ProgressService();
+  }
 
   getAll() {
     return [...uploadState.queue];
@@ -22,6 +35,18 @@ export class UploadQueueService {
 
   add(item) {
     uploadState.queue.push(item);
+
+    this.progressService.sync();
+
+    uploadEventBus.emit(
+      'upload:added',
+      item
+    );
+
+    uploadEventBus.emit(
+      'queue:changed',
+      this.getAll()
+    );
 
     return item;
   }
@@ -42,11 +67,34 @@ export class UploadQueueService {
         1
       );
 
+    this.progressService.sync();
+
+    uploadEventBus.emit(
+      'upload:removed',
+      removedItem
+    );
+
+    uploadEventBus.emit(
+      'queue:changed',
+      this.getAll()
+    );
+
     return removedItem || null;
   }
 
   clear() {
     uploadState.queue.length = 0;
+
+    this.progressService.reset();
+
+    uploadEventBus.emit(
+      'queue:cleared'
+    );
+
+    uploadEventBus.emit(
+      'queue:changed',
+      []
+    );
   }
 
   getPending() {
@@ -102,14 +150,73 @@ export class UploadQueueService {
       updates
     );
 
+    this.progressService.sync();
+
+    uploadEventBus.emit(
+      'upload:updated',
+      item
+    );
+
+    uploadEventBus.emit(
+      'queue:changed',
+      this.getAll()
+    );
+
     return item;
   }
 
   updateStatus(id, status) {
-    return this.update(
-      id,
-      { status }
-    );
+    const item =
+      this.update(
+        id,
+        { status }
+      );
+
+    if (!item) {
+      return null;
+    }
+
+    if (
+      status ===
+      UPLOAD_STATUS.UPLOADING
+    ) {
+      uploadEventBus.emit(
+        'upload:started',
+        item
+      );
+    }
+
+    if (
+      status ===
+      UPLOAD_STATUS.COMPLETED
+    ) {
+      uploadEventBus.emit(
+        'upload:completed',
+        item
+      );
+    }
+
+    if (
+      status ===
+      UPLOAD_STATUS.FAILED
+    ) {
+      uploadEventBus.emit(
+        'upload:failed',
+        item
+      );
+    }
+
+    if (
+      status ===
+      UPLOAD_STATUS.CANCELLED
+    ) {
+      uploadEventBus.emit(
+        'upload:cancelled',
+        item
+      );
+    }
+
+    return item;
   }
 
   updateProgress(id, progress) {
@@ -122,13 +229,29 @@ export class UploadQueueService {
         )
       );
 
-    return this.update(
-      id,
+    const item =
+      this.update(
+        id,
+        {
+          progress:
+            normalizedProgress
+        }
+      );
+
+    if (!item) {
+      return null;
+    }
+
+    uploadEventBus.emit(
+      'upload:progress',
       {
-        progress:
-          normalizedProgress
+        id: item.id,
+        progress: item.progress,
+        item
       }
     );
+
+    return item;
   }
 
   count() {
