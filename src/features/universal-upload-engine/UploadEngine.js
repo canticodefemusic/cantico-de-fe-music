@@ -29,9 +29,9 @@ export class UploadEngine {
 
   }
 
-  remove(index) {
+  remove(id) {
 
-    return this.service.remove(index);
+    return this.service.remove(id);
 
   }
 
@@ -47,9 +47,63 @@ export class UploadEngine {
 
   }
 
+  getById(id) {
+
+    return this.service.getById(id);
+
+  }
+
+  getPending() {
+
+    return this.service.getPending();
+
+  }
+
+  getUploading() {
+
+    return this.service.getUploading();
+
+  }
+
+  getCompleted() {
+
+    return this.service.getCompleted();
+
+  }
+
+  getFailed() {
+
+    return this.service.getFailed();
+
+  }
+
+  getCancelled() {
+
+    return this.service.getCancelled();
+
+  }
+
   getQueueSize() {
 
     return this.service.getQueueSize();
+
+  }
+
+  updateStatus(id, status) {
+
+    return this.service.updateStatus(
+      id,
+      status
+    );
+
+  }
+
+  updateProgress(id, progress) {
+
+    return this.service.updateProgress(
+      id,
+      progress
+    );
 
   }
 
