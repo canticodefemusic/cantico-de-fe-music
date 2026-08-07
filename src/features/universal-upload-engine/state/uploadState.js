@@ -3,11 +3,13 @@ export const uploadState = {
 
   uploading: false,
 
-  progress: 0,
+  activeUploads: 0,
 
-  currentFile: null,
+  totalProgress: 0,
 
   completed: [],
 
-  failed: []
+  failed: [],
+
+  cancelled: []
 };
