@@ -1,13 +1,13 @@
 /**
  * Cántico de Fe Music
- * V13.4.3 — Render R2 Media Item
+ * V13.6.3 — Render R2 Media Item
  *
- * Renderiza vistas previas reales para:
- * - Imágenes
- * - Audio
- * - Video
- * - PDF
- * - Otros archivos
+ * Funciones:
+ * - Vista previa real
+ * - Audio / video / PDF
+ * - Copiar enlace
+ * - Eliminar
+ * - Selección múltiple
  */
 
 function formatFileSize(bytes = 0) {
@@ -332,7 +332,10 @@ function renderPreview({
 }
 
 export function renderR2MediaItem(
-  object
+  object,
+  {
+    selected = false
+  } = {}
 ) {
   if (
     !object ||
@@ -396,10 +399,45 @@ export function renderR2MediaItem(
       class="
         media-library-item
         media-library-item--${mediaType}
+        ${selected
+          ? 'is-selected'
+          : ''}
       "
       data-media-key="${safeKey}"
       data-media-type="${mediaType}"
+      data-media-selected="${
+        selected
+          ? 'true'
+          : 'false'
+      }"
     >
+
+      <label
+        class="media-library-item__selector"
+        title="Seleccionar ${safeName}"
+      >
+        <input
+          type="checkbox"
+          class="media-library-item__checkbox"
+          data-media-select="${safeKey}"
+          ${
+            selected
+              ? 'checked'
+              : ''
+          }
+        />
+
+        <span
+          class="media-library-item__selector-box"
+          aria-hidden="true"
+        ></span>
+
+        <span
+          class="media-library-item__selector-label"
+        >
+          Seleccionar
+        </span>
+      </label>
 
       <div
         class="media-library-item__preview"
