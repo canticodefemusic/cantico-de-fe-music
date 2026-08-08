@@ -146,12 +146,21 @@
     rel="stylesheet"
     href="/src/features/toast-engine/styles/toast-engine.css"
   >
-  
+
   <link
     rel="stylesheet"
     href="/src/features/admin-studio/styles/admin-studio.css"
   >
-  
+
+  <!--
+    V13.7.1
+    Media Manager Pro Layout
+  -->
+  <link
+    rel="stylesheet"
+    href="/src/features/media-library-engine/styles/r2-media-library.css"
+  >
+
   <script
     type="application/ld+json"
     id="schemaData"
@@ -168,22 +177,31 @@
 
   <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker
-          .register('/service-worker.js')
-          .then(registration => {
-            console.log(
-              'Service Worker registrado:',
-              registration.scope
+      window.addEventListener(
+        'load',
+        () => {
+          navigator.serviceWorker
+            .register(
+              '/service-worker.js'
+            )
+            .then(
+              registration => {
+                console.log(
+                  'Service Worker registrado:',
+                  registration.scope
+                );
+              }
+            )
+            .catch(
+              error => {
+                console.error(
+                  'Error registrando Service Worker:',
+                  error
+                );
+              }
             );
-          })
-          .catch(error => {
-            console.error(
-              'Error registrando Service Worker:',
-              error
-            );
-          });
-      });
+        }
+      );
     }
   </script>
 </body>
