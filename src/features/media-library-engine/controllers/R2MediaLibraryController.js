@@ -1,10 +1,11 @@
 /**
  * Cántico de Fe Music
- * V13.5.1 — R2 Media Library Controller
+ * V13.6.0 — R2 Media Library Controller
  *
  * Funciones:
  * - Cargar biblioteca R2
  * - Refrescar biblioteca
+ * - Buscar en memoria
  * - Copiar enlace
  * - Eliminar archivo de R2
  */
@@ -15,6 +16,72 @@ import r2MediaService
 import {
   renderR2MediaLibrary
 } from '../components/renderR2MediaLibrary.js';
+
+function normalizeText(
+  value = ''
+) {
+  return String(value)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(
+      /[\u0300-\u036f]/g,
+      ''
+    )
+    .trim();
+}
+
+function getObjectName(
+  object
+) {
+  return (
+    object
+      ?.customMetadata
+      ?.originalName ||
+    String(
+      object?.key || ''
+    )
+      .split('/')
+      .pop() ||
+    ''
+  );
+}
+
+function getObjectContentType(
+  object
+) {
+  return (
+    object
+      ?.httpMetadata
+      ?.contentType ||
+    ''
+  );
+}
+
+function buildSearchText(
+  object
+) {
+  const metadata =
+    object?.customMetadata || {};
+
+  const metadataValues =
+    Object.values(
+      metadata
+    )
+      .join(' ');
+
+  return normalizeText(
+    [
+      getObjectName(
+        object
+      ),
+      object?.key || '',
+      getObjectContentType(
+        object
+      ),
+      metadataValues
+    ].join(' ')
+  );
+}
 
 export class R2MediaLibraryController {
 
@@ -28,12 +95,18 @@ export class R2MediaLibraryController {
     this.prefix = prefix;
 
     this.objects = [];
+    this.filteredObjects = [];
+
+    this.searchQuery = '';
 
     this.loading = false;
     this.error = null;
 
     this.handleClick =
       this.handleClick.bind(this);
+
+    this.handleInput =
+      this.handleInput.bind(this);
   }
 
   init() {
@@ -44,6 +117,11 @@ export class R2MediaLibraryController {
     this.root.addEventListener(
       'click',
       this.handleClick
+    );
+
+    this.root.addEventListener(
+      'input',
+      this.handleInput
     );
 
     this.load();
@@ -68,6 +146,8 @@ export class R2MediaLibraryController {
             this.prefix
         });
 
+      this.applySearch();
+
       this.error = null;
 
     } catch (error) {
@@ -77,6 +157,7 @@ export class R2MediaLibraryController {
       );
 
       this.objects = [];
+      this.filteredObjects = [];
 
       this.error =
         error?.message ||
@@ -98,12 +179,47 @@ export class R2MediaLibraryController {
     this.prefix =
       String(prefix);
 
+    this.searchQuery = '';
+
     return this.load();
+  }
+
+  handleInput(
+    event
+  ) {
+    const searchInput =
+      event.target.closest(
+        '[data-media-search]'
+      );
+
+    if (!searchInput) {
+      return;
+    }
+
+    this.searchQuery =
+      searchInput.value || '';
+
+    this.applySearch();
+
+    this.render();
+
+    this.restoreSearchFocus();
   }
 
   async handleClick(
     event
   ) {
+    const clearButton =
+      event.target.closest(
+        '[data-media-search-clear]'
+      );
+
+    if (clearButton) {
+      this.clearSearch();
+
+      return;
+    }
+
     const copyButton =
       event.target.closest(
         '[data-media-copy]'
@@ -127,6 +243,70 @@ export class R2MediaLibraryController {
         deleteButton
       );
     }
+  }
+
+  applySearch() {
+    const query =
+      normalizeText(
+        this.searchQuery
+      );
+
+    if (!query) {
+      this.filteredObjects = [
+        ...this.objects
+      ];
+
+      return;
+    }
+
+    this.filteredObjects =
+      this.objects.filter(
+        object =>
+          buildSearchText(
+            object
+          ).includes(
+            query
+          )
+      );
+  }
+
+  clearSearch() {
+    this.searchQuery = '';
+
+    this.applySearch();
+
+    this.render();
+
+    this.restoreSearchFocus();
+  }
+
+  restoreSearchFocus() {
+    window.requestAnimationFrame(
+      () => {
+        if (!this.root) {
+          return;
+        }
+
+        const input =
+          this.root.querySelector(
+            '[data-media-search]'
+          );
+
+        if (!input) {
+          return;
+        }
+
+        input.focus();
+
+        const length =
+          input.value.length;
+
+        input.setSelectionRange?.(
+          length,
+          length
+        );
+      }
+    );
   }
 
   async copyMediaLink(
@@ -222,12 +402,9 @@ export class R2MediaLibraryController {
       );
 
     const originalName =
-      object
-        ?.customMetadata
-        ?.originalName ||
-      key
-        .split('/')
-        .pop() ||
+      getObjectName(
+        object
+      ) ||
       'este archivo';
 
     const confirmed =
@@ -297,6 +474,8 @@ export class R2MediaLibraryController {
             item.key !== key
         );
 
+      this.applySearch();
+
       this.render();
 
       return true;
@@ -343,7 +522,13 @@ export class R2MediaLibraryController {
     this.root.innerHTML =
       renderR2MediaLibrary({
         objects:
-          this.objects,
+          this.filteredObjects,
+
+        totalCount:
+          this.objects.length,
+
+        searchQuery:
+          this.searchQuery,
 
         loading:
           this.loading,
@@ -359,17 +544,31 @@ export class R2MediaLibraryController {
     ];
   }
 
+  getFilteredObjects() {
+    return [
+      ...this.filteredObjects
+    ];
+  }
+
   destroy() {
     if (this.root) {
       this.root.removeEventListener(
         'click',
         this.handleClick
       );
+
+      this.root.removeEventListener(
+        'input',
+        this.handleInput
+      );
     }
 
     this.root = null;
 
     this.objects = [];
+    this.filteredObjects = [];
+
+    this.searchQuery = '';
 
     this.loading = false;
     this.error = null;
