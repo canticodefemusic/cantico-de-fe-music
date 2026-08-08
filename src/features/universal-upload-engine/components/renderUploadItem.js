@@ -22,7 +22,9 @@ function formatFileSize(bytes = 0) {
   }
 
   const decimals =
-    unitIndex === 0 ? 0 : 1;
+    unitIndex === 0
+      ? 0
+      : 1;
 
   return `${size.toFixed(decimals)} ${units[unitIndex]}`;
 }
@@ -38,6 +40,103 @@ function getCategoryLabel(category) {
   return labels[category] || 'Archivo';
 }
 
+function getStatusLabel(status) {
+  const labels = {
+    pending: 'Pendiente',
+    uploading: 'Subiendo',
+    completed: 'Completado',
+    failed: 'Error',
+    cancelled: 'Cancelado'
+  };
+
+  return labels[status] || status;
+}
+
+function renderProgress({
+  id,
+  status,
+  progress
+}) {
+  if (
+    status === 'cancelled'
+  ) {
+    return '';
+  }
+
+  const normalizedProgress =
+    Math.min(
+      100,
+      Math.max(
+        0,
+        Number(progress) || 0
+      )
+    );
+
+  return `
+    <div
+      class="universal-upload-item__progress"
+    >
+
+      <div
+        class="universal-upload-item__progress-track"
+      >
+
+        <div
+          class="universal-upload-item__progress-bar"
+          data-upload-progress-bar="${id}"
+          style="width: ${normalizedProgress}%"
+        ></div>
+
+      </div>
+
+      <span
+        class="universal-upload-item__progress-value"
+        data-upload-progress-value="${id}"
+      >
+        ${normalizedProgress}%
+      </span>
+
+    </div>
+  `;
+}
+
+function renderActions({
+  id,
+  status
+}) {
+  const canCancel =
+    status === 'pending' ||
+    status === 'uploading';
+
+  return `
+    <div
+      class="universal-upload-item__actions"
+    >
+
+      ${
+        canCancel
+          ? `
+            <button
+              type="button"
+              data-upload-cancel="${id}"
+            >
+              Cancelar
+            </button>
+          `
+          : ''
+      }
+
+      <button
+        type="button"
+        data-upload-remove="${id}"
+      >
+        Eliminar
+      </button>
+
+    </div>
+  `;
+}
+
 export function renderUploadItem(item) {
   if (!item) {
     return '';
@@ -48,14 +147,18 @@ export function renderUploadItem(item) {
     name,
     category,
     size,
-    status,
-    progress
+    status = 'pending',
+    progress = 0
   } = item;
 
   return `
     <article
-      class="universal-upload-item"
+      class="
+        universal-upload-item
+        universal-upload-item--${status}
+      "
       data-upload-item="${id}"
+      data-upload-item-status="${status}"
     >
 
       <div
@@ -79,56 +182,25 @@ export function renderUploadItem(item) {
       </div>
 
       <div
-        class="universal-upload-item__status"
+        class="
+          universal-upload-item__status
+          universal-upload-item__status--${status}
+        "
         data-upload-status="${id}"
       >
-        ${status}
+        ${getStatusLabel(status)}
       </div>
 
-      <div
-        class="universal-upload-item__progress"
-      >
+      ${renderProgress({
+        id,
+        status,
+        progress
+      })}
 
-        <div
-          class="universal-upload-item__progress-track"
-        >
-
-          <div
-            class="universal-upload-item__progress-bar"
-            data-upload-progress-bar="${id}"
-            style="width: ${progress || 0}%"
-          ></div>
-
-        </div>
-
-        <span
-          class="universal-upload-item__progress-value"
-          data-upload-progress-value="${id}"
-        >
-          ${progress || 0}%
-        </span>
-
-      </div>
-
-      <div
-        class="universal-upload-item__actions"
-      >
-
-        <button
-          type="button"
-          data-upload-cancel="${id}"
-        >
-          Cancelar
-        </button>
-
-        <button
-          type="button"
-          data-upload-remove="${id}"
-        >
-          Eliminar
-        </button>
-
-      </div>
+      ${renderActions({
+        id,
+        status
+      })}
 
     </article>
   `;
