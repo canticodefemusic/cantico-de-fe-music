@@ -100,20 +100,27 @@ export class UploadUIController {
     );
   }
 
-  handleFileInput(event) {
-    const files =
-      Array.from(
-        event.target?.files || []
-      );
+  async handleFileInput(event) {
+  const files =
+    Array.from(
+      event.target?.files || []
+    );
 
-    if (!files.length) {
-      return;
-    }
+  if (!files.length) {
+    return;
+  }
 
+  const result =
     this.engine.addMany(files);
 
-    this.fileInput.value = '';
+  this.fileInput.value = '';
+
+  if (
+    result?.addedItems?.length
+  ) {
+    await this.engine.startAll();
   }
+}
 
   bindDragDrop() {
     if (!this.dropZone) {
@@ -121,20 +128,31 @@ export class UploadUIController {
     }
 
     this.engine.enableDragDrop({
-      dropZone: this.dropZone,
+  dropZone: this.dropZone,
 
-      onDragEnter: () => {
-        this.dropZone.classList.add(
-          'is-dragging'
-        );
-      },
+  onDragEnter: () => {
+    this.dropZone.classList.add(
+      'is-dragging'
+    );
+  },
 
-      onDragLeave: () => {
-        this.dropZone.classList.remove(
-          'is-dragging'
-        );
-      }
-    });
+  onDragLeave: () => {
+    this.dropZone.classList.remove(
+      'is-dragging'
+    );
+  },
+
+  onFiles: async (
+    files,
+    result
+  ) => {
+    if (
+      result?.addedItems?.length
+    ) {
+      await this.engine.startAll();
+    }
+  }
+});
   }
 
   bindQueueActions() {
