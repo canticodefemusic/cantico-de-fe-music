@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V13.6.1 — R2 Media Library Search + Filters UI
+ * V13.6.2 — R2 Media Library Search + Filters + Sorting UI
  */
 
 import {
@@ -161,9 +161,88 @@ function renderFilters({
   `;
 }
 
+function renderSortControl({
+  sortMode = 'newest'
+} = {}) {
+  return `
+    <div
+      class="media-library-sort"
+    >
+      <label
+        class="media-library-sort__label"
+        for="media-library-sort-select"
+      >
+        Ordenar por
+      </label>
+
+      <select
+        id="media-library-sort-select"
+        class="media-library-sort__select"
+        data-media-sort
+      >
+        <option
+          value="newest"
+          ${
+            sortMode === 'newest'
+              ? 'selected'
+              : ''
+          }
+        >
+          Más recientes
+        </option>
+
+        <option
+          value="oldest"
+          ${
+            sortMode === 'oldest'
+              ? 'selected'
+              : ''
+          }
+        >
+          Más antiguos
+        </option>
+
+        <option
+          value="name"
+          ${
+            sortMode === 'name'
+              ? 'selected'
+              : ''
+          }
+        >
+          Nombre
+        </option>
+
+        <option
+          value="size"
+          ${
+            sortMode === 'size'
+              ? 'selected'
+              : ''
+          }
+        >
+          Tamaño
+        </option>
+
+        <option
+          value="type"
+          ${
+            sortMode === 'type'
+              ? 'selected'
+              : ''
+          }
+        >
+          Tipo
+        </option>
+      </select>
+    </div>
+  `;
+}
+
 function renderToolbar({
   searchQuery = '',
   activeFilter = 'all',
+  sortMode = 'newest',
   totalCount = 0,
   visibleCount = 0
 } = {}) {
@@ -233,6 +312,10 @@ function renderToolbar({
         activeFilter
       })}
 
+      ${renderSortControl({
+        sortMode
+      })}
+
       <div
         class="media-library-toolbar__results"
         aria-live="polite"
@@ -271,6 +354,7 @@ export function renderR2MediaLibrary({
   error = null,
   searchQuery = '',
   activeFilter = 'all',
+  sortMode = 'newest',
   totalCount = null,
   title =
     'Archivos multimedia',
@@ -377,6 +461,7 @@ export function renderR2MediaLibrary({
           ? renderToolbar({
               searchQuery,
               activeFilter,
+              sortMode,
               totalCount:
                 fullCount,
               visibleCount
