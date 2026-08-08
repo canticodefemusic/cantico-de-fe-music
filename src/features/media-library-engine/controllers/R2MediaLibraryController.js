@@ -1,9 +1,10 @@
 /**
  * Cántico de Fe Music
- * V13.6.4 — R2 Media Library Controller
+ * V13.6.5 — R2 Media Library Controller
  *
  * Funciones:
  * - Cargar biblioteca R2
+ * - Estadísticas en tiempo real
  * - Refrescar biblioteca
  * - Buscar en memoria
  * - Filtrar por tipo
@@ -154,13 +155,17 @@ function buildSearchText(
       getObjectName(
         object
       ),
+
       object?.key || '',
+
       getObjectContentType(
         object
       ),
+
       getObjectMediaType(
         object
       ),
+
       metadataValues
     ].join(' ')
   );
@@ -302,13 +307,19 @@ export class R2MediaLibraryController {
     this.error = null;
 
     this.handleClick =
-      this.handleClick.bind(this);
+      this.handleClick.bind(
+        this
+      );
 
     this.handleInput =
-      this.handleInput.bind(this);
+      this.handleInput.bind(
+        this
+      );
 
     this.handleChange =
-      this.handleChange.bind(this);
+      this.handleChange.bind(
+        this
+      );
   }
 
   init() {
@@ -564,7 +575,6 @@ export class R2MediaLibraryController {
     const filtered =
       this.objects.filter(
         object => {
-
           const matchesSearch =
             !query ||
             buildSearchText(
@@ -723,7 +733,9 @@ export class R2MediaLibraryController {
             object =>
               object?.key
           )
-          .filter(Boolean)
+          .filter(
+            Boolean
+          )
       );
 
     this.selectedKeys.forEach(
@@ -792,9 +804,11 @@ export class R2MediaLibraryController {
       button.textContent;
 
     try {
-      await navigator.clipboard.writeText(
-        absoluteUrl
-      );
+      await navigator
+        .clipboard
+        .writeText(
+          absoluteUrl
+        );
 
       button.textContent =
         '✓ Copiado';
@@ -804,7 +818,9 @@ export class R2MediaLibraryController {
 
       window.setTimeout(
         () => {
-          if (!button.isConnected) {
+          if (
+            !button.isConnected
+          ) {
             return;
           }
 
@@ -842,7 +858,9 @@ export class R2MediaLibraryController {
     const selectedObjects =
       this.getSelectedObjects();
 
-    if (!selectedObjects.length) {
+    if (
+      !selectedObjects.length
+    ) {
       return false;
     }
 
@@ -863,9 +881,11 @@ export class R2MediaLibraryController {
       button.textContent;
 
     try {
-      await navigator.clipboard.writeText(
-        text
-      );
+      await navigator
+        .clipboard
+        .writeText(
+          text
+        );
 
       button.textContent =
         '✓ Enlaces copiados';
@@ -875,7 +895,9 @@ export class R2MediaLibraryController {
 
       window.setTimeout(
         () => {
-          if (!button.isConnected) {
+          if (
+            !button.isConnected
+          ) {
             return;
           }
 
@@ -999,7 +1021,9 @@ export class R2MediaLibraryController {
     const selectedObjects =
       this.getSelectedObjects();
 
-    if (!selectedObjects.length) {
+    if (
+      !selectedObjects.length
+    ) {
       return false;
     }
 
@@ -1093,7 +1117,8 @@ export class R2MediaLibraryController {
         await fetch(
           '/api/media/delete',
           {
-            method: 'POST',
+            method:
+              'POST',
 
             headers: {
               'Content-Type':
@@ -1166,6 +1191,16 @@ export class R2MediaLibraryController {
       renderR2MediaLibrary({
         objects:
           this.filteredObjects,
+
+        /*
+         * V13.6.5
+         *
+         * Las estadísticas reciben todos
+         * los archivos, no solamente los
+         * resultados filtrados.
+         */
+        allObjects:
+          this.objects,
 
         totalCount:
           this.objects.length,
