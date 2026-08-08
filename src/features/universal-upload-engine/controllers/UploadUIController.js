@@ -7,10 +7,6 @@ import {
 } from '../state/uploadState.js';
 
 import {
-  UPLOAD_STATUS
-} from '../constants/uploadStatus.js';
-
-import {
   renderUploadQueue
 } from '../components/renderUploadQueue.js';
 
@@ -182,13 +178,10 @@ export class UploadUIController {
           'data-upload-cancel'
         );
 
-      if (id) {
-        this.engine.updateStatus(
-          id,
-          UPLOAD_STATUS.CANCELLED
-        );
-      }
+    if (id) {
+      this.engine.cancel(id);
     }
+   }
   }
 
   bindEvents() {
