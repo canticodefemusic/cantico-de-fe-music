@@ -1,113 +1,217 @@
-import {
-  UPLOAD_STATUS
-} from '../constants/uploadStatus.js';
-
 export class UploadTransportService {
+
   constructor({
+    endpoint = '/api/upload',
     onProgress = null
   } = {}) {
+    this.endpoint = endpoint;
     this.onProgress = onProgress;
-    this.controllers = new Map();
+
+    this.requests =
+      new Map();
   }
 
-  async upload(item) {
-    if (!item?.id || !item?.file) {
-      throw new Error(
-        'Invalid upload item'
+  upload(item) {
+    if (
+      !item?.id ||
+      !item?.file
+    ) {
+      return Promise.reject(
+        new Error(
+          'Invalid upload item'
+        )
       );
     }
 
-    const controller =
-      new AbortController();
+    return new Promise(
+      (resolve, reject) => {
 
-    this.controllers.set(
-      item.id,
-      controller
-    );
+        const xhr =
+          new XMLHttpRequest();
 
-    try {
-      return await this.simulateUpload(
-        item,
-        controller.signal
-      );
-    } finally {
-      this.controllers.delete(
-        item.id
-      );
-    }
-  }
+        const formData =
+          new FormData();
 
-  async simulateUpload(
-    item,
-    signal
-  ) {
-    let progress =
-      Number(item.progress) || 0;
-
-    while (progress < 100) {
-      if (signal.aborted) {
-        const error =
-          new Error(
-            'Upload cancelled'
-          );
-
-        error.name =
-          'AbortError';
-
-        throw error;
-      }
-
-      await new Promise(
-        resolve =>
-          setTimeout(
-            resolve,
-            150
-          )
-      );
-
-      progress =
-        Math.min(
-          100,
-          progress + 10
+        formData.append(
+          'file',
+          item.file,
+          item.file.name
         );
 
-      this.onProgress?.(
-        item.id,
-        progress
-      );
-    }
+        this.requests.set(
+          item.id,
+          xhr
+        );
 
-    return {
-      id: item.id,
-      status:
-        UPLOAD_STATUS.COMPLETED,
-      uploadedAt:
-        new Date().toISOString()
-    };
+        xhr.open(
+          'POST',
+          this.endpoint,
+          true
+        );
+
+        xhr.responseType =
+          'json';
+
+        xhr.upload.addEventListener(
+          'progress',
+          event => {
+            if (
+              !event.lengthComputable
+            ) {
+              return;
+            }
+
+            const progress =
+              Math.min(
+                100,
+                Math.max(
+                  0,
+                  Math.round(
+                    (
+                      event.loaded /
+                      event.total
+                    ) * 100
+                  )
+                )
+              );
+
+            this.onProgress?.(
+              item.id,
+              progress
+            );
+          }
+        );
+
+        xhr.addEventListener(
+          'load',
+          () => {
+            this.requests.delete(
+              item.id
+            );
+
+            const response =
+              xhr.response;
+
+            if (
+              xhr.status >= 200 &&
+              xhr.status < 300 &&
+              response?.success
+            ) {
+              this.onProgress?.(
+                item.id,
+                100
+              );
+
+              resolve(
+                response
+              );
+
+              return;
+            }
+
+            const message =
+              response?.error ||
+              `Upload failed with status ${xhr.status}`;
+
+            reject(
+              new Error(
+                message
+              )
+            );
+          }
+        );
+
+        xhr.addEventListener(
+          'error',
+          () => {
+            this.requests.delete(
+              item.id
+            );
+
+            reject(
+              new Error(
+                'Network error while uploading file.'
+              )
+            );
+          }
+        );
+
+        xhr.addEventListener(
+          'timeout',
+          () => {
+            this.requests.delete(
+              item.id
+            );
+
+            reject(
+              new Error(
+                'Upload request timed out.'
+              )
+            );
+          }
+        );
+
+        xhr.addEventListener(
+          'abort',
+          () => {
+            this.requests.delete(
+              item.id
+            );
+
+            const error =
+              new Error(
+                'Upload cancelled'
+              );
+
+            error.name =
+              'AbortError';
+
+            reject(
+              error
+            );
+          }
+        );
+
+        xhr.send(
+          formData
+        );
+      }
+    );
   }
 
   cancel(id) {
-    const controller =
-      this.controllers.get(id);
+    const xhr =
+      this.requests.get(id);
 
-    if (!controller) {
+    if (!xhr) {
       return false;
     }
 
-    controller.abort();
+    xhr.abort();
 
-    this.controllers.delete(id);
+    this.requests.delete(
+      id
+    );
 
     return true;
   }
 
   cancelAll() {
-    this.controllers.forEach(
-      controller => {
-        controller.abort();
+    this.requests.forEach(
+      xhr => {
+        xhr.abort();
       }
     );
 
-    this.controllers.clear();
+    this.requests.clear();
   }
+
+  isUploading(id) {
+    return this.requests.has(id);
+  }
+
+  getActiveCount() {
+    return this.requests.size;
+  }
+
 }
