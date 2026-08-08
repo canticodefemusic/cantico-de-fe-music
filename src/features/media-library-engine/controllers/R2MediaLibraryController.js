@@ -1,10 +1,13 @@
 /**
  * Cántico de Fe Music
- * V13.6.5 — R2 Media Library Controller
+ * V13.6.6 — R2 Media Library Controller
  *
  * Funciones:
- * - Cargar biblioteca R2
- * - Estadísticas en tiempo real
+ * - Carga paginada desde R2
+ * - Cursor para cargar páginas siguientes
+ * - Cargar más archivos
+ * - Evitar objetos duplicados
+ * - Estadísticas de archivos cargados
  * - Refrescar biblioteca
  * - Buscar en memoria
  * - Filtrar por tipo
@@ -280,16 +283,66 @@ function getAbsoluteMediaUrl(
   ).href;
 }
 
+function mergeUniqueObjects(
+  currentObjects = [],
+  newObjects = []
+) {
+  const map =
+    new Map();
+
+  currentObjects.forEach(
+    object => {
+      if (
+        object?.key
+      ) {
+        map.set(
+          object.key,
+          object
+        );
+      }
+    }
+  );
+
+  newObjects.forEach(
+    object => {
+      if (
+        object?.key
+      ) {
+        map.set(
+          object.key,
+          object
+        );
+      }
+    }
+  );
+
+  return [
+    ...map.values()
+  ];
+}
+
 export class R2MediaLibraryController {
 
   constructor({
     root,
     service = r2MediaService,
-    prefix = ''
+    prefix = '',
+    pageSize = 50
   } = {}) {
     this.root = root;
     this.service = service;
     this.prefix = prefix;
+
+    this.pageSize =
+      Math.max(
+        1,
+        Number(
+          pageSize
+        ) || 50
+      );
+
+    this.cursor = null;
+    this.hasMore = false;
 
     this.objects = [];
     this.filteredObjects = [];
@@ -304,6 +357,8 @@ export class R2MediaLibraryController {
     this.bulkBusy = false;
 
     this.loading = false;
+    this.loadingMore = false;
+
     this.error = null;
 
     this.handleClick =
@@ -348,21 +403,48 @@ export class R2MediaLibraryController {
   }
 
   async load() {
-    if (!this.root) {
+    if (
+      !this.root ||
+      this.loading
+    ) {
       return;
     }
 
     this.loading = true;
+    this.loadingMore = false;
+
     this.error = null;
+
+    this.cursor = null;
+    this.hasMore = false;
 
     this.render();
 
     try {
-      this.objects =
-        await this.service.listAll({
+      const result =
+        await this.service.listFirstPage({
           prefix:
-            this.prefix
+            this.prefix,
+
+          limit:
+            this.pageSize
         });
+
+      this.objects =
+        Array.isArray(
+          result?.objects
+        )
+          ? result.objects
+          : [];
+
+      this.cursor =
+        result?.cursor || null;
+
+      this.hasMore =
+        Boolean(
+          result?.truncated &&
+          this.cursor
+        );
 
       this.pruneSelection();
 
@@ -379,11 +461,15 @@ export class R2MediaLibraryController {
       this.objects = [];
       this.filteredObjects = [];
 
+      this.cursor = null;
+      this.hasMore = false;
+
       this.selectedKeys.clear();
 
       this.error =
         error?.message ||
         'No se pudo cargar la biblioteca multimedia.';
+
     } finally {
       this.loading = false;
 
@@ -391,7 +477,90 @@ export class R2MediaLibraryController {
     }
   }
 
+  async loadMore() {
+    if (
+      !this.root ||
+      this.loading ||
+      this.loadingMore ||
+      !this.hasMore ||
+      !this.cursor
+    ) {
+      return false;
+    }
+
+    this.loadingMore = true;
+    this.error = null;
+
+    this.render();
+
+    try {
+      const result =
+        await this.service.listNextPage({
+          prefix:
+            this.prefix,
+
+          cursor:
+            this.cursor,
+
+          limit:
+            this.pageSize
+        });
+
+      const newObjects =
+        Array.isArray(
+          result?.objects
+        )
+          ? result.objects
+          : [];
+
+      this.objects =
+        mergeUniqueObjects(
+          this.objects,
+          newObjects
+        );
+
+      this.cursor =
+        result?.cursor || null;
+
+      this.hasMore =
+        Boolean(
+          result?.truncated &&
+          this.cursor
+        );
+
+      this.pruneSelection();
+
+      this.applyViewState();
+
+      return true;
+
+    } catch (error) {
+      console.error(
+        '[R2MediaLibraryController] Load more failed:',
+        error
+      );
+
+      this.error =
+        error?.message ||
+        'No se pudieron cargar más archivos.';
+
+      return false;
+
+    } finally {
+      this.loadingMore = false;
+
+      this.render();
+    }
+  }
+
   async refresh() {
+    /*
+     * Una actualización vuelve a empezar
+     * desde la primera página de R2.
+     *
+     * Esto mantiene los datos sincronizados
+     * después de una nueva subida.
+     */
     return this.load();
   }
 
@@ -404,6 +573,9 @@ export class R2MediaLibraryController {
     this.searchQuery = '';
     this.activeFilter = 'all';
     this.sortMode = 'newest';
+
+    this.cursor = null;
+    this.hasMore = false;
 
     this.selectedKeys.clear();
 
@@ -469,6 +641,17 @@ export class R2MediaLibraryController {
   async handleClick(
     event
   ) {
+    const loadMoreButton =
+      event.target.closest(
+        '[data-media-load-more]'
+      );
+
+    if (loadMoreButton) {
+      await this.loadMore();
+
+      return;
+    }
+
     const clearButton =
       event.target.closest(
         '[data-media-search-clear]'
@@ -1047,8 +1230,7 @@ export class R2MediaLibraryController {
       return false;
     }
 
-    this.bulkBusy =
-      true;
+    this.bulkBusy = true;
 
     this.render();
 
@@ -1102,8 +1284,7 @@ export class R2MediaLibraryController {
       );
 
     } finally {
-      this.bulkBusy =
-        false;
+      this.bulkBusy = false;
 
       this.render();
     }
@@ -1193,11 +1374,9 @@ export class R2MediaLibraryController {
           this.filteredObjects,
 
         /*
-         * V13.6.5
-         *
-         * Las estadísticas reciben todos
-         * los archivos, no solamente los
-         * resultados filtrados.
+         * Las estadísticas se calculan
+         * sobre todos los objetos que ya
+         * han sido cargados desde R2.
          */
         allObjects:
           this.objects,
@@ -1222,6 +1401,15 @@ export class R2MediaLibraryController {
 
         bulkBusy:
           this.bulkBusy,
+
+        /*
+         * V13.6.6 — Pagination state
+         */
+        hasMore:
+          this.hasMore,
+
+        loadingMore:
+          this.loadingMore,
 
         loading:
           this.loading,
@@ -1266,6 +1454,25 @@ export class R2MediaLibraryController {
     return this.sortMode;
   }
 
+  getPaginationState() {
+    return {
+      pageSize:
+        this.pageSize,
+
+      cursor:
+        this.cursor,
+
+      hasMore:
+        this.hasMore,
+
+      loadingMore:
+        this.loadingMore,
+
+      loadedCount:
+        this.objects.length
+    };
+  }
+
   destroy() {
     if (this.root) {
       this.root.removeEventListener(
@@ -1295,9 +1502,14 @@ export class R2MediaLibraryController {
     this.activeFilter = 'all';
     this.sortMode = 'newest';
 
+    this.cursor = null;
+    this.hasMore = false;
+
     this.bulkBusy = false;
 
     this.loading = false;
+    this.loadingMore = false;
+
     this.error = null;
   }
 
