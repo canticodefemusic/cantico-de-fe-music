@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V13.6.2 — R2 Media Library Controller
+ * V13.6.3 — R2 Media Library Controller
  *
  * Funciones:
  * - Cargar biblioteca R2
@@ -8,6 +8,9 @@
  * - Buscar en memoria
  * - Filtrar por tipo
  * - Ordenar resultados
+ * - Selección múltiple
+ * - Seleccionar visibles
+ * - Limpiar selección
  * - Copiar enlace
  * - Eliminar archivo de R2
  */
@@ -266,6 +269,9 @@ export class R2MediaLibraryController {
     this.activeFilter = 'all';
     this.sortMode = 'newest';
 
+    this.selectedKeys =
+      new Set();
+
     this.loading = false;
     this.error = null;
 
@@ -321,6 +327,8 @@ export class R2MediaLibraryController {
             this.prefix
         });
 
+      this.pruneSelection();
+
       this.applyViewState();
 
       this.error = null;
@@ -333,6 +341,7 @@ export class R2MediaLibraryController {
 
       this.objects = [];
       this.filteredObjects = [];
+      this.selectedKeys.clear();
 
       this.error =
         error?.message ||
@@ -357,6 +366,8 @@ export class R2MediaLibraryController {
     this.searchQuery = '';
     this.activeFilter = 'all';
     this.sortMode = 'newest';
+
+    this.selectedKeys.clear();
 
     return this.load();
   }
@@ -391,13 +402,30 @@ export class R2MediaLibraryController {
         '[data-media-sort]'
       );
 
-    if (!sortSelect) {
+    if (sortSelect) {
+      this.setSortMode(
+        sortSelect.value
+      );
+
       return;
     }
 
-    this.setSortMode(
-      sortSelect.value
-    );
+    const checkbox =
+      event.target.closest(
+        '[data-media-select]'
+      );
+
+    if (checkbox) {
+      const key =
+        checkbox.getAttribute(
+          'data-media-select'
+        );
+
+      this.setSelected(
+        key,
+        checkbox.checked
+      );
+    }
   }
 
   async handleClick(
@@ -425,6 +453,28 @@ export class R2MediaLibraryController {
           'data-media-filter'
         )
       );
+
+      return;
+    }
+
+    const selectAllButton =
+      event.target.closest(
+        '[data-media-select-all]'
+      );
+
+    if (selectAllButton) {
+      this.selectVisible();
+
+      return;
+    }
+
+    const clearSelectionButton =
+      event.target.closest(
+        '[data-media-selection-clear]'
+      );
+
+    if (clearSelectionButton) {
+      this.clearSelection();
 
       return;
     }
@@ -554,6 +604,75 @@ export class R2MediaLibraryController {
     this.render();
 
     this.restoreSearchFocus();
+  }
+
+  setSelected(
+    key,
+    selected
+  ) {
+    if (!key) {
+      return;
+    }
+
+    if (selected) {
+      this.selectedKeys.add(
+        key
+      );
+    } else {
+      this.selectedKeys.delete(
+        key
+      );
+    }
+
+    this.render();
+  }
+
+  selectVisible() {
+    this.filteredObjects.forEach(
+      object => {
+        if (
+          object?.key
+        ) {
+          this.selectedKeys.add(
+            object.key
+          );
+        }
+      }
+    );
+
+    this.render();
+  }
+
+  clearSelection() {
+    this.selectedKeys.clear();
+
+    this.render();
+  }
+
+  pruneSelection() {
+    const validKeys =
+      new Set(
+        this.objects
+          .map(
+            object =>
+              object?.key
+          )
+          .filter(Boolean)
+      );
+
+    this.selectedKeys.forEach(
+      key => {
+        if (
+          !validKeys.has(
+            key
+          )
+        ) {
+          this.selectedKeys.delete(
+            key
+          );
+        }
+      }
+    );
   }
 
   restoreSearchFocus() {
@@ -750,6 +869,10 @@ export class R2MediaLibraryController {
             item.key !== key
         );
 
+      this.selectedKeys.delete(
+        key
+      );
+
       this.applyViewState();
 
       this.render();
@@ -812,6 +935,12 @@ export class R2MediaLibraryController {
         sortMode:
           this.sortMode,
 
+        selectedKeys:
+          this.selectedKeys,
+
+        selectedCount:
+          this.selectedKeys.size,
+
         loading:
           this.loading,
 
@@ -830,6 +959,21 @@ export class R2MediaLibraryController {
     return [
       ...this.filteredObjects
     ];
+  }
+
+  getSelectedKeys() {
+    return [
+      ...this.selectedKeys
+    ];
+  }
+
+  getSelectedObjects() {
+    return this.objects.filter(
+      object =>
+        this.selectedKeys.has(
+          object.key
+        )
+    );
   }
 
   getActiveFilter() {
@@ -862,6 +1006,8 @@ export class R2MediaLibraryController {
 
     this.objects = [];
     this.filteredObjects = [];
+
+    this.selectedKeys.clear();
 
     this.searchQuery = '';
     this.activeFilter = 'all';
