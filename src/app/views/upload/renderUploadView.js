@@ -4,11 +4,14 @@ import {
 } from '../../../features/universal-upload-engine/index.js';
 
 import {
-  R2MediaLibraryController
+  R2MediaLibraryController,
+  R2MediaMenuController
 } from '../../../features/media-library-engine/index.js';
 
 let uploadController = null;
 let mediaLibraryController = null;
+let mediaMenuController = null;
+
 let unsubscribeUploadCompleted = null;
 
 export function renderUploadView() {
@@ -62,6 +65,12 @@ function cleanupControllers() {
     unsubscribeUploadCompleted();
 
     unsubscribeUploadCompleted = null;
+  }
+
+  if (mediaMenuController) {
+    mediaMenuController.destroy?.();
+
+    mediaMenuController = null;
   }
 
   if (uploadController) {
@@ -132,12 +141,21 @@ export function initUploadView() {
       });
 
     mediaLibraryController.init();
+
+    mediaMenuController =
+      new R2MediaMenuController({
+        root:
+          mediaRoot
+      });
+
+    mediaMenuController.init();
   }
 
   connectUploadRefresh();
 
   return {
     uploadController,
-    mediaLibraryController
+    mediaLibraryController,
+    mediaMenuController
   };
 }
