@@ -108,6 +108,13 @@ export class UploadService {
       return null;
     }
 
+    if (
+      item.status ===
+      UPLOAD_STATUS.UPLOADING
+    ) {
+      return null;
+    }
+
     this.queue.updateStatus(
       id,
       UPLOAD_STATUS.UPLOADING
@@ -119,7 +126,11 @@ export class UploadService {
         startedAt:
           new Date().toISOString(),
 
-        error: null
+        completedAt: null,
+
+        error: null,
+
+        remote: null
       }
     );
 
@@ -129,28 +140,57 @@ export class UploadService {
           item
         );
 
+      const remoteObject =
+        result?.object || null;
+
       this.queue.updateProgress(
         id,
         100
       );
 
-      this.queue.update(
-        id,
-        {
-          status:
-            UPLOAD_STATUS.COMPLETED,
+      const completedItem =
+        this.queue.update(
+          id,
+          {
+            status:
+              UPLOAD_STATUS.COMPLETED,
 
-          completedAt:
-            new Date().toISOString()
-        }
-      );
+            completedAt:
+              new Date().toISOString(),
+
+            error: null,
+
+            remote:
+              remoteObject,
+
+            remoteKey:
+              remoteObject?.key || null,
+
+            remoteName:
+              remoteObject?.name || null,
+
+            remoteType:
+              remoteObject?.type || null,
+
+            remoteSize:
+              remoteObject?.size || null,
+
+            uploadedAt:
+              remoteObject?.uploadedAt ||
+              new Date().toISOString()
+          }
+        );
 
       uploadEventBus.emit(
         'upload:completed',
-        this.queue.getById(id)
+        completedItem
       );
 
-      return result;
+      return {
+        success: true,
+        item: completedItem,
+        response: result
+      };
 
     } catch (error) {
 
@@ -160,33 +200,50 @@ export class UploadService {
       ) {
         this.queue.cancel(id);
 
-        return null;
+        return {
+          success: false,
+          cancelled: true,
+          item:
+            this.queue.getById(id)
+        };
       }
 
-      this.queue.update(
-        id,
-        {
-          status:
-            UPLOAD_STATUS.FAILED,
+      const failedItem =
+        this.queue.update(
+          id,
+          {
+            status:
+              UPLOAD_STATUS.FAILED,
 
-          error:
-            error?.message ||
-            'Upload failed'
-        }
-      );
+            error:
+              error?.message ||
+              'Upload failed',
+
+            completedAt: null
+          }
+        );
 
       uploadEventBus.emit(
         'upload:failed',
-        this.queue.getById(id)
+        failedItem
       );
 
-      return null;
+      return {
+        success: false,
+        cancelled: false,
+        error,
+        item: failedItem
+      };
     }
   }
 
   async startAll() {
     const pending =
       this.queue.getPending();
+
+    if (!pending.length) {
+      return [];
+    }
 
     return Promise.all(
       pending.map(
@@ -197,11 +254,14 @@ export class UploadService {
   }
 
   remove(id) {
+    this.transport.cancel(id);
+
     return this.queue.remove(id);
   }
 
   clear() {
     this.transport.cancelAll();
+
     this.queue.clear();
   }
 
