@@ -64,29 +64,30 @@ export class UploadEngine {
   }
 
   updateStatus(id, status) {
-    return this.service.updateStatus(
-      id,
-      status
-    );
-  }
+  return this.service.updateStatus(
+    id,
+    status
+  );
+}
 
-  cancel(id) {
-    return this.service.cancel(id);
-  }
-  
-  updateProgress(id, progress) {
-    return this.service.updateProgress(
-      id,
-      progress
-    );
-  }
+start(id) {
+  return this.service.start(id);
+}
 
-  on(eventName, callback) {
-    return this.service.on(
-      eventName,
-      callback
-    );
-  }
+startAll() {
+  return this.service.startAll();
+}
+
+cancel(id) {
+  return this.service.cancel(id);
+}
+
+updateProgress(id, progress) {
+  return this.service.updateProgress(
+    id,
+    progress
+  );
+}
 
   once(eventName, callback) {
     return this.service.once(
