@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V13.6.0 — R2 Media Library Search UI
+ * V13.6.1 — R2 Media Library Search + Filters UI
  */
 
 import {
@@ -11,36 +11,20 @@ function escapeHtml(
   value = ''
 ) {
   return String(value)
-    .replace(
-      /&/g,
-      '&amp;'
-    )
-    .replace(
-      /</g,
-      '&lt;'
-    )
-    .replace(
-      />/g,
-      '&gt;'
-    )
-    .replace(
-      /"/g,
-      '&quot;'
-    )
-    .replace(
-      /'/g,
-      '&#039;'
-    );
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 function renderEmptyState({
-  searchQuery = ''
+  searchQuery = '',
+  activeFilter = 'all'
 } = {}) {
   if (searchQuery) {
     return `
-      <div
-        class="media-library-empty"
-      >
+      <div class="media-library-empty">
         <p>
           No se encontraron archivos para
           "<strong>${escapeHtml(
@@ -51,10 +35,21 @@ function renderEmptyState({
     `;
   }
 
+  if (
+    activeFilter &&
+    activeFilter !== 'all'
+  ) {
+    return `
+      <div class="media-library-empty">
+        <p>
+          No hay archivos en este filtro.
+        </p>
+      </div>
+    `;
+  }
+
   return `
-    <div
-      class="media-library-empty"
-    >
+    <div class="media-library-empty">
       <p>
         No hay archivos disponibles.
       </p>
@@ -89,17 +84,96 @@ function renderErrorState(
   `;
 }
 
-function renderSearchToolbar({
+function renderFilterButton({
+  value,
+  label,
+  activeFilter
+}) {
+  const active =
+    value === activeFilter;
+
+  return `
+    <button
+      type="button"
+      class="
+        media-library-filter
+        ${active
+          ? 'is-active'
+          : ''}
+      "
+      data-media-filter="${value}"
+      aria-pressed="${
+        active
+          ? 'true'
+          : 'false'
+      }"
+    >
+      ${label}
+    </button>
+  `;
+}
+
+function renderFilters({
+  activeFilter = 'all'
+} = {}) {
+  const filters = [
+    {
+      value: 'all',
+      label: 'Todos'
+    },
+    {
+      value: 'image',
+      label: 'Imágenes'
+    },
+    {
+      value: 'audio',
+      label: 'Audio'
+    },
+    {
+      value: 'video',
+      label: 'Video'
+    },
+    {
+      value: 'document',
+      label: 'PDF'
+    },
+    {
+      value: 'file',
+      label: 'Otros'
+    }
+  ];
+
+  return `
+    <div
+      class="media-library-filters"
+      aria-label="Filtrar archivos"
+    >
+      ${filters
+        .map(
+          filter =>
+            renderFilterButton({
+              ...filter,
+              activeFilter
+            })
+        )
+        .join('')}
+    </div>
+  `;
+}
+
+function renderToolbar({
   searchQuery = '',
+  activeFilter = 'all',
   totalCount = 0,
   visibleCount = 0
 } = {}) {
   const searching =
     Boolean(
-      String(
-        searchQuery
-      ).trim()
+      String(searchQuery).trim()
     );
+
+  const filtering =
+    activeFilter !== 'all';
 
   return `
     <div
@@ -107,9 +181,7 @@ function renderSearchToolbar({
       data-media-toolbar
     >
 
-      <div
-        class="media-library-search"
-      >
+      <div class="media-library-search">
         <label
           class="media-library-search__label"
           for="media-library-search-input"
@@ -157,12 +229,17 @@ function renderSearchToolbar({
         </div>
       </div>
 
+      ${renderFilters({
+        activeFilter
+      })}
+
       <div
         class="media-library-toolbar__results"
         aria-live="polite"
       >
         ${
-          searching
+          searching ||
+          filtering
             ? `
               ${visibleCount}
               de
@@ -193,6 +270,7 @@ export function renderR2MediaLibrary({
   loading = false,
   error = null,
   searchQuery = '',
+  activeFilter = 'all',
   totalCount = null,
   title =
     'Archivos multimedia',
@@ -296,8 +374,9 @@ export function renderR2MediaLibrary({
 
       ${
         !error
-          ? renderSearchToolbar({
+          ? renderToolbar({
               searchQuery,
+              activeFilter,
               totalCount:
                 fullCount,
               visibleCount
@@ -330,7 +409,8 @@ export function renderR2MediaLibrary({
         !error &&
         !safeObjects.length
           ? renderEmptyState({
-              searchQuery
+              searchQuery,
+              activeFilter
             })
           : ''
       }
