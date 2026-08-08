@@ -1,6 +1,12 @@
 /**
  * Cántico de Fe Music
- * V13.4.5 — R2 Media Library Controller
+ * V13.5.1 — R2 Media Library Controller
+ *
+ * Funciones:
+ * - Cargar biblioteca R2
+ * - Refrescar biblioteca
+ * - Copiar enlace
+ * - Eliminar archivo de R2
  */
 
 import r2MediaService
@@ -22,6 +28,7 @@ export class R2MediaLibraryController {
     this.prefix = prefix;
 
     this.objects = [];
+
     this.loading = false;
     this.error = null;
 
@@ -109,6 +116,17 @@ export class R2MediaLibraryController {
 
       return;
     }
+
+    const deleteButton =
+      event.target.closest(
+        '[data-media-delete]'
+      );
+
+    if (deleteButton) {
+      await this.deleteMedia(
+        deleteButton
+      );
+    }
   }
 
   async copyMediaLink(
@@ -129,13 +147,13 @@ export class R2MediaLibraryController {
         window.location.origin
       ).href;
 
+    const originalText =
+      button.textContent;
+
     try {
       await navigator.clipboard.writeText(
         absoluteUrl
       );
-
-      const originalText =
-        button.textContent;
 
       button.textContent =
         '✓ Copiado';
@@ -176,10 +194,142 @@ export class R2MediaLibraryController {
           }
 
           button.textContent =
-            'Copiar enlace';
+            originalText;
         },
         1800
       );
+
+      return false;
+    }
+  }
+
+  async deleteMedia(
+    button
+  ) {
+    const key =
+      button.getAttribute(
+        'data-media-delete'
+      );
+
+    if (!key) {
+      return false;
+    }
+
+    const object =
+      this.objects.find(
+        item =>
+          item.key === key
+      );
+
+    const originalName =
+      object
+        ?.customMetadata
+        ?.originalName ||
+      key
+        .split('/')
+        .pop() ||
+      'este archivo';
+
+    const confirmed =
+      window.confirm(
+        `¿Eliminar "${originalName}" permanentemente?`
+      );
+
+    if (!confirmed) {
+      return false;
+    }
+
+    const originalText =
+      button.textContent;
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      'Eliminando...';
+
+    try {
+      const response =
+        await fetch(
+          '/api/media/delete',
+          {
+            method: 'POST',
+
+            headers: {
+              'Content-Type':
+                'application/json',
+
+              Accept:
+                'application/json'
+            },
+
+            body:
+              JSON.stringify({
+                key
+              })
+          }
+        );
+
+      let data = null;
+
+      try {
+        data =
+          await response.json();
+      } catch {
+        throw new Error(
+          'La API de eliminación devolvió una respuesta inválida.'
+        );
+      }
+
+      if (
+        !response.ok ||
+        !data?.success
+      ) {
+        throw new Error(
+          data?.error ||
+          `No se pudo eliminar el archivo. HTTP ${response.status}`
+        );
+      }
+
+      this.objects =
+        this.objects.filter(
+          item =>
+            item.key !== key
+        );
+
+      this.render();
+
+      return true;
+
+    } catch (error) {
+      console.error(
+        '[R2MediaLibraryController] Delete failed:',
+        error
+      );
+
+      if (
+        button.isConnected
+      ) {
+        button.disabled =
+          false;
+
+        button.textContent =
+          'Error al eliminar';
+
+        window.setTimeout(
+          () => {
+            if (
+              !button.isConnected
+            ) {
+              return;
+            }
+
+            button.textContent =
+              originalText;
+          },
+          2000
+        );
+      }
 
       return false;
     }
@@ -222,7 +372,6 @@ export class R2MediaLibraryController {
     this.objects = [];
 
     this.loading = false;
-
     this.error = null;
   }
 
