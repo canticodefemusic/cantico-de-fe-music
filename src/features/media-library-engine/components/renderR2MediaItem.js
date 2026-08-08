@@ -1,16 +1,21 @@
 /**
  * Cántico de Fe Music
- * V13.6.3 — Render R2 Media Item
+ * V13.7.2 — Render R2 Media Item
  *
  * Funciones:
  * - Vista previa real
- * - Audio / video / PDF
- * - Copiar enlace
- * - Eliminar
+ * - Imagen / audio / video / PDF
  * - Selección múltiple
+ * - Menú profesional de acciones
+ * - Ver archivo
+ * - Copiar enlace
+ * - Descargar
+ * - Eliminar
  */
 
-function formatFileSize(bytes = 0) {
+function formatFileSize(
+  bytes = 0
+) {
   const size =
     Number(bytes) || 0;
 
@@ -18,7 +23,10 @@ function formatFileSize(bytes = 0) {
     return `${size} B`;
   }
 
-  if (size < 1024 * 1024) {
+  if (
+    size <
+    1024 * 1024
+  ) {
     return `${(
       size / 1024
     ).toFixed(1)} KB`;
@@ -36,7 +44,11 @@ function formatFileSize(bytes = 0) {
 
   return `${(
     size /
-    (1024 * 1024 * 1024)
+    (
+      1024 *
+      1024 *
+      1024
+    )
   ).toFixed(1)} GB`;
 }
 
@@ -48,7 +60,9 @@ function formatDate(
   }
 
   const date =
-    new Date(value);
+    new Date(
+      value
+    );
 
   if (
     Number.isNaN(
@@ -61,19 +75,27 @@ function formatDate(
   return new Intl.DateTimeFormat(
     'es-US',
     {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+      year:
+        'numeric',
+
+      month:
+        'short',
+
+      day:
+        'numeric'
     }
-  ).format(date);
+  ).format(
+    date
+  );
 }
 
 function getFileName(
   key = ''
 ) {
   const parts =
-    String(key)
-      .split('/');
+    String(
+      key
+    ).split('/');
 
   return (
     parts[
@@ -140,7 +162,7 @@ function getMediaType(
 
   if (
     contentType ===
-      'application/pdf'
+    'application/pdf'
   ) {
     return 'document';
   }
@@ -152,11 +174,20 @@ function getMediaIcon(
   type
 ) {
   const icons = {
-    image: '🖼️',
-    audio: '🎵',
-    video: '🎬',
-    document: '📄',
-    file: '📦'
+    image:
+      '🖼️',
+
+    audio:
+      '🎵',
+
+    video:
+      '🎬',
+
+    document:
+      '📄',
+
+    file:
+      '📦'
   };
 
   return (
@@ -185,7 +216,9 @@ function getMediaUrl(
 function escapeHtml(
   value = ''
 ) {
-  return String(value)
+  return String(
+    value
+  )
     .replace(
       /&/g,
       '&amp;'
@@ -208,12 +241,17 @@ function escapeHtml(
     );
 }
 
+/* ------------------------------------------------------------------ */
+/* Preview                                                            */
+/* ------------------------------------------------------------------ */
+
 function renderPreview({
   mediaType,
   mediaUrl,
   safeName,
   safeContentType
 }) {
+
   if (
     mediaType ===
     'image'
@@ -240,6 +278,7 @@ function renderPreview({
           media-library-item__media--audio
         "
       >
+
         <span
           class="media-library-item__icon"
           aria-hidden="true"
@@ -259,6 +298,7 @@ function renderPreview({
 
           Tu navegador no puede reproducir este audio.
         </audio>
+
       </div>
     `;
   }
@@ -294,6 +334,7 @@ function renderPreview({
           media-library-item__media--document
         "
       >
+
         <span
           class="media-library-item__icon"
           aria-hidden="true"
@@ -301,9 +342,12 @@ function renderPreview({
           📄
         </span>
 
-        <span>
+        <span
+          class="media-library-item__media-label"
+        >
           PDF
         </span>
+
       </div>
     `;
   }
@@ -315,6 +359,7 @@ function renderPreview({
         media-library-item__media--file
       "
     >
+
       <span
         class="media-library-item__icon"
         aria-hidden="true"
@@ -324,12 +369,132 @@ function renderPreview({
         )}
       </span>
 
-      <span>
+      <span
+        class="media-library-item__media-label"
+      >
         Archivo
       </span>
+
     </div>
   `;
 }
+
+/* ------------------------------------------------------------------ */
+/* Menú de acciones                                                   */
+/* ------------------------------------------------------------------ */
+
+function renderActionMenu({
+  safeKey,
+  safeName,
+  safeMediaUrl
+}) {
+  return `
+    <details
+      class="media-library-item__menu"
+      data-media-menu
+    >
+
+      <summary
+        class="media-library-item__menu-trigger"
+        aria-label="Acciones para ${safeName}"
+        title="Más acciones"
+      >
+        <span
+          aria-hidden="true"
+        >
+          ⋮
+        </span>
+      </summary>
+
+      <div
+        class="media-library-item__menu-panel"
+      >
+
+        <a
+          href="${safeMediaUrl}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="media-library-item__menu-action"
+          data-media-preview="${safeKey}"
+        >
+          <span
+            aria-hidden="true"
+          >
+            👁
+          </span>
+
+          <span>
+            Ver
+          </span>
+        </a>
+
+        <button
+          type="button"
+          class="media-library-item__menu-action"
+          data-media-copy="${safeKey}"
+          data-media-url="${safeMediaUrl}"
+        >
+          <span
+            aria-hidden="true"
+          >
+            🔗
+          </span>
+
+          <span>
+            Copiar enlace
+          </span>
+        </button>
+
+        <a
+          href="${safeMediaUrl}"
+          download="${safeName}"
+          class="media-library-item__menu-action"
+          data-media-download="${safeKey}"
+        >
+          <span
+            aria-hidden="true"
+          >
+            ↓
+          </span>
+
+          <span>
+            Descargar
+          </span>
+        </a>
+
+        <div
+          class="media-library-item__menu-separator"
+          aria-hidden="true"
+        ></div>
+
+        <button
+          type="button"
+          class="
+            media-library-item__menu-action
+            media-library-item__menu-action--danger
+          "
+          data-media-delete="${safeKey}"
+        >
+          <span
+            aria-hidden="true"
+          >
+            🗑
+          </span>
+
+          <span>
+            Eliminar
+          </span>
+        </button>
+
+      </div>
+
+    </details>
+  `;
+}
+
+/* ------------------------------------------------------------------ */
+/* Render principal                                                   */
+/* ------------------------------------------------------------------ */
 
 export function renderR2MediaItem(
   object,
@@ -399,9 +564,11 @@ export function renderR2MediaItem(
       class="
         media-library-item
         media-library-item--${mediaType}
-        ${selected
-          ? 'is-selected'
-          : ''}
+        ${
+          selected
+            ? 'is-selected'
+            : ''
+        }
       "
       data-media-key="${safeKey}"
       data-media-type="${mediaType}"
@@ -412,41 +579,56 @@ export function renderR2MediaItem(
       }"
     >
 
-      <label
-        class="media-library-item__selector"
-        title="Seleccionar ${safeName}"
+      <div
+        class="media-library-item__topbar"
       >
-        <input
-          type="checkbox"
-          class="media-library-item__checkbox"
-          data-media-select="${safeKey}"
-          ${
-            selected
-              ? 'checked'
-              : ''
-          }
-        />
 
-        <span
-          class="media-library-item__selector-box"
-          aria-hidden="true"
-        ></span>
-
-        <span
-          class="media-library-item__selector-label"
+        <label
+          class="media-library-item__selector"
+          title="Seleccionar ${safeName}"
         >
-          Seleccionar
-        </span>
-      </label>
+          <input
+            type="checkbox"
+            class="media-library-item__checkbox"
+            data-media-select="${safeKey}"
+            ${
+              selected
+                ? 'checked'
+                : ''
+            }
+          />
+
+          <span
+            class="media-library-item__selector-box"
+            aria-hidden="true"
+          ></span>
+
+          <span
+            class="media-library-item__selector-label"
+          >
+            Seleccionar
+          </span>
+        </label>
+
+        ${renderActionMenu({
+          safeKey,
+          safeName,
+          safeMediaUrl
+        })}
+
+      </div>
 
       <div
         class="media-library-item__preview"
       >
         ${renderPreview({
           mediaType,
+
           mediaUrl:
             safeMediaUrl,
+
           safeName,
+
           safeContentType
         })}
       </div>
@@ -465,6 +647,7 @@ export function renderR2MediaItem(
         <div
           class="media-library-item__meta"
         >
+
           <span>
             ${safeContentType}
           </span>
@@ -482,36 +665,6 @@ export function renderR2MediaItem(
               `
               : ''
           }
-        </div>
-
-        <div
-          class="media-library-item__actions"
-        >
-
-          <a
-            href="${safeMediaUrl}"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="media-library-item__action-link"
-            data-media-preview="${safeKey}"
-          >
-            Ver
-          </a>
-
-          <button
-            type="button"
-            data-media-copy="${safeKey}"
-            data-media-url="${safeMediaUrl}"
-          >
-            Copiar enlace
-          </button>
-
-          <button
-            type="button"
-            data-media-delete="${safeKey}"
-          >
-            Eliminar
-          </button>
 
         </div>
 
