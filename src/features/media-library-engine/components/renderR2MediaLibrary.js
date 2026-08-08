@@ -1,13 +1,13 @@
 /**
  * Cántico de Fe Music
- * V13.6.3 — R2 Media Library
+ * V13.6.4 — R2 Media Library
  *
  * Funciones:
  * - Búsqueda
  * - Filtros
  * - Ordenamiento
  * - Selección múltiple
- * - Barra de selección
+ * - Barra de operaciones masivas
  */
 
 import {
@@ -409,12 +409,13 @@ function renderToolbar({
 }
 
 /* ------------------------------------------------------------------ */
-/* Barra de selección                                                 */
+/* Barra de selección / Bulk Operations                               */
 /* ------------------------------------------------------------------ */
 
 function renderSelectionToolbar({
   selectedCount = 0,
-  visibleCount = 0
+  visibleCount = 0,
+  bulkBusy = false
 } = {}) {
 
   if (!selectedCount) {
@@ -423,25 +424,49 @@ function renderSelectionToolbar({
 
   return `
     <section
-      class="media-selection-toolbar"
+      class="
+        media-selection-toolbar
+        ${
+          bulkBusy
+            ? 'is-busy'
+            : ''
+        }
+      "
       data-media-selection-toolbar
     >
 
-      <strong
-        class="media-selection-toolbar__count"
+      <div
+        class="media-selection-toolbar__info"
       >
-        ${selectedCount}
-        archivo${
-          selectedCount === 1
-            ? ''
-            : 's'
+        <strong
+          class="media-selection-toolbar__count"
+        >
+          ${selectedCount}
+          archivo${
+            selectedCount === 1
+              ? ''
+              : 's'
+          }
+          seleccionado${
+            selectedCount === 1
+              ? ''
+              : 's'
+          }
+        </strong>
+
+        ${
+          bulkBusy
+            ? `
+              <span
+                class="media-selection-toolbar__status"
+                aria-live="polite"
+              >
+                Procesando...
+              </span>
+            `
+            : ''
         }
-        seleccionado${
-          selectedCount === 1
-            ? ''
-            : 's'
-        }
-      </strong>
+      </div>
 
       <div
         class="media-selection-toolbar__actions"
@@ -453,6 +478,11 @@ function renderSelectionToolbar({
               <button
                 type="button"
                 data-media-select-all
+                ${
+                  bulkBusy
+                    ? 'disabled'
+                    : ''
+                }
               >
                 Seleccionar visibles
               </button>
@@ -462,7 +492,37 @@ function renderSelectionToolbar({
 
         <button
           type="button"
+          data-media-bulk-copy
+          ${
+            bulkBusy
+              ? 'disabled'
+              : ''
+          }
+        >
+          Copiar enlaces
+        </button>
+
+        <button
+          type="button"
+          data-media-bulk-delete
+          class="media-selection-toolbar__delete"
+          ${
+            bulkBusy
+              ? 'disabled'
+              : ''
+          }
+        >
+          Eliminar seleccionados
+        </button>
+
+        <button
+          type="button"
           data-media-selection-clear
+          ${
+            bulkBusy
+              ? 'disabled'
+              : ''
+          }
         >
           Limpiar selección
         </button>
@@ -488,6 +548,8 @@ export function renderR2MediaLibrary({
 
   selectedKeys = [],
   selectedCount = null,
+
+  bulkBusy = false,
 
   totalCount = null,
 
@@ -640,7 +702,10 @@ export function renderR2MediaLibrary({
           ? renderSelectionToolbar({
               selectedCount:
                 finalSelectedCount,
-              visibleCount
+
+              visibleCount,
+
+              bulkBusy
             })
           : ''
       }
