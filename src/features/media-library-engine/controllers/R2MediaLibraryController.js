@@ -1,11 +1,12 @@
 /**
  * Cántico de Fe Music
- * V13.6.0 — R2 Media Library Controller
+ * V13.6.1 — R2 Media Library Controller
  *
  * Funciones:
  * - Cargar biblioteca R2
  * - Refrescar biblioteca
  * - Buscar en memoria
+ * - Filtrar por tipo
  * - Copiar enlace
  * - Eliminar archivo de R2
  */
@@ -53,8 +54,50 @@ function getObjectContentType(
     object
       ?.httpMetadata
       ?.contentType ||
-    ''
+    'application/octet-stream'
   );
+}
+
+function getObjectMediaType(
+  object
+) {
+  const contentType =
+    getObjectContentType(
+      object
+    );
+
+  if (
+    contentType.startsWith(
+      'image/'
+    )
+  ) {
+    return 'image';
+  }
+
+  if (
+    contentType.startsWith(
+      'audio/'
+    )
+  ) {
+    return 'audio';
+  }
+
+  if (
+    contentType.startsWith(
+      'video/'
+    )
+  ) {
+    return 'video';
+  }
+
+  if (
+    contentType ===
+      'application/pdf'
+  ) {
+    return 'document';
+  }
+
+  return 'file';
 }
 
 function buildSearchText(
@@ -66,8 +109,7 @@ function buildSearchText(
   const metadataValues =
     Object.values(
       metadata
-    )
-      .join(' ');
+    ).join(' ');
 
   return normalizeText(
     [
@@ -76,6 +118,9 @@ function buildSearchText(
       ),
       object?.key || '',
       getObjectContentType(
+        object
+      ),
+      getObjectMediaType(
         object
       ),
       metadataValues
@@ -98,6 +143,7 @@ export class R2MediaLibraryController {
     this.filteredObjects = [];
 
     this.searchQuery = '';
+    this.activeFilter = 'all';
 
     this.loading = false;
     this.error = null;
@@ -146,7 +192,7 @@ export class R2MediaLibraryController {
             this.prefix
         });
 
-      this.applySearch();
+      this.applyFilters();
 
       this.error = null;
 
@@ -180,6 +226,7 @@ export class R2MediaLibraryController {
       String(prefix);
 
     this.searchQuery = '';
+    this.activeFilter = 'all';
 
     return this.load();
   }
@@ -199,7 +246,7 @@ export class R2MediaLibraryController {
     this.searchQuery =
       searchInput.value || '';
 
-    this.applySearch();
+    this.applyFilters();
 
     this.render();
 
@@ -216,6 +263,21 @@ export class R2MediaLibraryController {
 
     if (clearButton) {
       this.clearSearch();
+
+      return;
+    }
+
+    const filterButton =
+      event.target.closest(
+        '[data-media-filter]'
+      );
+
+    if (filterButton) {
+      this.setFilter(
+        filterButton.getAttribute(
+          'data-media-filter'
+        )
+      );
 
       return;
     }
@@ -245,35 +307,73 @@ export class R2MediaLibraryController {
     }
   }
 
-  applySearch() {
+  applyFilters() {
     const query =
       normalizeText(
         this.searchQuery
       );
 
-    if (!query) {
-      this.filteredObjects = [
-        ...this.objects
-      ];
-
-      return;
-    }
-
     this.filteredObjects =
       this.objects.filter(
-        object =>
-          buildSearchText(
-            object
-          ).includes(
-            query
-          )
+        object => {
+
+          const matchesSearch =
+            !query ||
+            buildSearchText(
+              object
+            ).includes(
+              query
+            );
+
+          const mediaType =
+            getObjectMediaType(
+              object
+            );
+
+          const matchesType =
+            this.activeFilter ===
+              'all' ||
+            mediaType ===
+              this.activeFilter;
+
+          return (
+            matchesSearch &&
+            matchesType
+          );
+        }
       );
+  }
+
+  setFilter(
+    filter = 'all'
+  ) {
+    const allowedFilters = [
+      'all',
+      'image',
+      'audio',
+      'video',
+      'document',
+      'file'
+    ];
+
+    this.activeFilter =
+      allowedFilters.includes(
+        filter
+      )
+        ? filter
+        : 'all';
+
+    this.applyFilters();
+
+    this.render();
+
+    this.restoreSearchFocus();
   }
 
   clearSearch() {
     this.searchQuery = '';
 
-    this.applySearch();
+    this.applyFilters();
 
     this.render();
 
@@ -474,7 +574,7 @@ export class R2MediaLibraryController {
             item.key !== key
         );
 
-      this.applySearch();
+      this.applyFilters();
 
       this.render();
 
@@ -530,6 +630,9 @@ export class R2MediaLibraryController {
         searchQuery:
           this.searchQuery,
 
+        activeFilter:
+          this.activeFilter,
+
         loading:
           this.loading,
 
@@ -548,6 +651,10 @@ export class R2MediaLibraryController {
     return [
       ...this.filteredObjects
     ];
+  }
+
+  getActiveFilter() {
+    return this.activeFilter;
   }
 
   destroy() {
@@ -569,6 +676,7 @@ export class R2MediaLibraryController {
     this.filteredObjects = [];
 
     this.searchQuery = '';
+    this.activeFilter = 'all';
 
     this.loading = false;
     this.error = null;
