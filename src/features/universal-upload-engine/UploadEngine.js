@@ -23,8 +23,20 @@ export class UploadEngine {
     return this.service.addMany(files);
   }
 
+  start(id) {
+    return this.service.start(id);
+  }
+
+  startAll() {
+    return this.service.startAll();
+  }
+
   remove(id) {
     return this.service.remove(id);
+  }
+
+  cancel(id) {
+    return this.service.cancel(id);
   }
 
   clear() {
@@ -64,30 +76,25 @@ export class UploadEngine {
   }
 
   updateStatus(id, status) {
-  return this.service.updateStatus(
-    id,
-    status
-  );
-}
+    return this.service.updateStatus(
+      id,
+      status
+    );
+  }
 
-start(id) {
-  return this.service.start(id);
-}
+  updateProgress(id, progress) {
+    return this.service.updateProgress(
+      id,
+      progress
+    );
+  }
 
-startAll() {
-  return this.service.startAll();
-}
-
-cancel(id) {
-  return this.service.cancel(id);
-}
-
-updateProgress(id, progress) {
-  return this.service.updateProgress(
-    id,
-    progress
-  );
-}
+  on(eventName, callback) {
+    return this.service.on(
+      eventName,
+      callback
+    );
+  }
 
   once(eventName, callback) {
     return this.service.once(
