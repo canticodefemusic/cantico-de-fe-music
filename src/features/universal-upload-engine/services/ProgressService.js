@@ -8,74 +8,53 @@ import {
 
 export class ProgressService {
 
-  calculateTotalProgress() {
+  sync() {
+
     const queue =
       uploadState.queue;
 
-    if (!queue.length) {
+    const uploading =
+      queue.filter(item =>
+        item.status ===
+        UPLOAD_STATUS.UPLOADING
+      );
+
+    uploadState.activeUploads =
+      uploading.length;
+
+    uploadState.uploading =
+      uploading.length > 0;
+
+    // Si ya no hay subidas activas,
+    // el progreso global vuelve a cero.
+    if (!uploading.length) {
+
       uploadState.totalProgress = 0;
 
-      return 0;
+      return;
     }
 
     const total =
-      queue.reduce(
-        (sum, item) => {
-          return (
-            sum +
-            (
-              Number(item.progress) || 0
-            )
-          );
-        },
+      uploading.reduce(
+        (sum, item) =>
+          sum +
+          (item.progress || 0),
         0
       );
 
-    const progress =
+    uploadState.totalProgress =
       Math.round(
         total /
-        queue.length
+        uploading.length
       );
-
-    uploadState.totalProgress =
-      progress;
-
-    return progress;
-  }
-
-  updateActiveUploads() {
-    const activeUploads =
-      uploadState.queue.filter(
-        item =>
-          item.status ===
-          UPLOAD_STATUS.UPLOADING
-      ).length;
-
-    uploadState.activeUploads =
-      activeUploads;
-
-    uploadState.uploading =
-      activeUploads > 0;
-
-    return activeUploads;
-  }
-
-  sync() {
-    return {
-      totalProgress:
-        this.calculateTotalProgress(),
-
-      activeUploads:
-        this.updateActiveUploads(),
-
-      uploading:
-        uploadState.uploading
-    };
   }
 
   reset() {
+
     uploadState.totalProgress = 0;
+
     uploadState.activeUploads = 0;
+
     uploadState.uploading = false;
   }
 
