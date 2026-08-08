@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V13.6.5 — R2 Media Library
+ * V13.6.6 — R2 Media Library
  *
  * Funciones:
  * - Estadísticas multimedia
@@ -8,7 +8,9 @@
  * - Filtros
  * - Ordenamiento
  * - Selección múltiple
- * - Barra de operaciones masivas
+ * - Operaciones masivas
+ * - Paginación
+ * - Cargar más archivos
  */
 
 import {
@@ -539,14 +541,101 @@ function renderSelectionToolbar({
 }
 
 /* ------------------------------------------------------------------ */
+/* Paginación                                                         */
+/* ------------------------------------------------------------------ */
+
+function renderLoadMore({
+  hasMore = false,
+  loadingMore = false,
+  loadedCount = 0
+} = {}) {
+
+  if (!hasMore) {
+    return `
+      <div
+        class="media-library-pagination"
+        data-media-pagination
+      >
+        <p
+          class="media-library-pagination__status"
+        >
+          ${loadedCount}
+          archivo${
+            loadedCount === 1
+              ? ''
+              : 's'
+          }
+          cargado${
+            loadedCount === 1
+              ? ''
+              : 's'
+          }.
+        </p>
+
+        <span
+          class="media-library-pagination__complete"
+        >
+          Todos los archivos disponibles han sido cargados.
+        </span>
+      </div>
+    `;
+  }
+
+  return `
+    <div
+      class="media-library-pagination"
+      data-media-pagination
+    >
+      <p
+        class="media-library-pagination__status"
+      >
+        ${loadedCount}
+        archivo${
+          loadedCount === 1
+            ? ''
+            : 's'
+        }
+        cargado${
+          loadedCount === 1
+            ? ''
+            : 's'
+        }.
+      </p>
+
+      <button
+        type="button"
+        class="media-library-pagination__button"
+        data-media-load-more
+        ${
+          loadingMore
+            ? 'disabled'
+            : ''
+        }
+      >
+        ${
+          loadingMore
+            ? 'Cargando...'
+            : 'Cargar más'
+        }
+      </button>
+    </div>
+  `;
+}
+
+/* ------------------------------------------------------------------ */
 /* Render principal                                                   */
 /* ------------------------------------------------------------------ */
 
 export function renderR2MediaLibrary({
   objects = [],
   allObjects = [],
+
   loading = false,
+  loadingMore = false,
+
   error = null,
+
+  hasMore = false,
 
   searchQuery = '',
   activeFilter = 'all',
@@ -604,6 +693,9 @@ export function renderR2MediaLibrary({
 
   const visibleCount =
     safeObjects.length;
+
+  const loadedCount =
+    safeAllObjects.length;
 
   const finalSelectedCount =
     Number.isFinite(
@@ -712,8 +804,10 @@ export function renderR2MediaLibrary({
               searchQuery,
               activeFilter,
               sortMode,
+
               totalCount:
                 fullCount,
+
               visibleCount
             })
           : ''
@@ -765,6 +859,17 @@ export function renderR2MediaLibrary({
           ? renderEmptyState({
               searchQuery,
               activeFilter
+            })
+          : ''
+      }
+
+      ${
+        !error &&
+        safeAllObjects.length
+          ? renderLoadMore({
+              hasMore,
+              loadingMore,
+              loadedCount
             })
           : ''
       }
