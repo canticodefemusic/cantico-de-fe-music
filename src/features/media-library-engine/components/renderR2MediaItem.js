@@ -1,6 +1,13 @@
 /**
  * Cántico de Fe Music
- * V13.3.1 — Render R2 Media Item
+ * V13.4.3 — Render R2 Media Item
+ *
+ * Renderiza vistas previas reales para:
+ * - Imágenes
+ * - Audio
+ * - Video
+ * - PDF
+ * - Otros archivos
  */
 
 function formatFileSize(bytes = 0) {
@@ -133,7 +140,7 @@ function getMediaType(
 
   if (
     contentType ===
-    'application/pdf'
+      'application/pdf'
   ) {
     return 'document';
   }
@@ -155,6 +162,23 @@ function getMediaIcon(
   return (
     icons[type] ||
     icons.file
+  );
+}
+
+function getMediaUrl(
+  object
+) {
+  if (
+    !object?.key
+  ) {
+    return '';
+  }
+
+  return (
+    '/api/media/file?key=' +
+    encodeURIComponent(
+      object.key
+    )
   );
 }
 
@@ -182,6 +206,129 @@ function escapeHtml(
       /'/g,
       '&#039;'
     );
+}
+
+function renderPreview({
+  mediaType,
+  mediaUrl,
+  safeName,
+  safeContentType
+}) {
+  if (
+    mediaType ===
+    'image'
+  ) {
+    return `
+      <img
+        class="media-library-item__image"
+        src="${mediaUrl}"
+        alt="${safeName}"
+        loading="lazy"
+        decoding="async"
+      />
+    `;
+  }
+
+  if (
+    mediaType ===
+    'audio'
+  ) {
+    return `
+      <div
+        class="
+          media-library-item__media
+          media-library-item__media--audio
+        "
+      >
+        <span
+          class="media-library-item__icon"
+          aria-hidden="true"
+        >
+          🎵
+        </span>
+
+        <audio
+          class="media-library-item__audio"
+          controls
+          preload="metadata"
+        >
+          <source
+            src="${mediaUrl}"
+            type="${safeContentType}"
+          />
+
+          Tu navegador no puede reproducir este audio.
+        </audio>
+      </div>
+    `;
+  }
+
+  if (
+    mediaType ===
+    'video'
+  ) {
+    return `
+      <video
+        class="media-library-item__video"
+        controls
+        preload="metadata"
+      >
+        <source
+          src="${mediaUrl}"
+          type="${safeContentType}"
+        />
+
+        Tu navegador no puede reproducir este video.
+      </video>
+    `;
+  }
+
+  if (
+    mediaType ===
+    'document'
+  ) {
+    return `
+      <div
+        class="
+          media-library-item__media
+          media-library-item__media--document
+        "
+      >
+        <span
+          class="media-library-item__icon"
+          aria-hidden="true"
+        >
+          📄
+        </span>
+
+        <span>
+          PDF
+        </span>
+      </div>
+    `;
+  }
+
+  return `
+    <div
+      class="
+        media-library-item__media
+        media-library-item__media--file
+      "
+    >
+      <span
+        class="media-library-item__icon"
+        aria-hidden="true"
+      >
+        ${getMediaIcon(
+          mediaType
+        )}
+      </span>
+
+      <span>
+        Archivo
+      </span>
+    </div>
+  `;
 }
 
 export function renderR2MediaItem(
@@ -219,6 +366,11 @@ export function renderR2MediaItem(
       object.size
     );
 
+  const mediaUrl =
+    getMediaUrl(
+      object
+    );
+
   const safeKey =
     escapeHtml(
       object.key
@@ -234,6 +386,11 @@ export function renderR2MediaItem(
       contentType
     );
 
+  const safeMediaUrl =
+    escapeHtml(
+      mediaUrl
+    );
+
   return `
     <article
       class="
@@ -247,14 +404,13 @@ export function renderR2MediaItem(
       <div
         class="media-library-item__preview"
       >
-        <span
-          class="media-library-item__icon"
-          aria-hidden="true"
-        >
-          ${getMediaIcon(
-            mediaType
-          )}
-        </span>
+        ${renderPreview({
+          mediaType,
+          mediaUrl:
+            safeMediaUrl,
+          safeName,
+          safeContentType
+        })}
       </div>
 
       <div
@@ -294,16 +450,20 @@ export function renderR2MediaItem(
           class="media-library-item__actions"
         >
 
-          <button
-            type="button"
+          <a
+            href="${safeMediaUrl}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="media-library-item__action-link"
             data-media-preview="${safeKey}"
           >
             Ver
-          </button>
+          </a>
 
           <button
             type="button"
             data-media-copy="${safeKey}"
+            data-media-url="${safeMediaUrl}"
           >
             Copiar enlace
           </button>
