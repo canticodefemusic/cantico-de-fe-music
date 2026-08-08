@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V13.4.0 — R2 Media Library Pro
+ * V13.4.4 — R2 Media Library Pro Polish
  */
 
 .media-library-explorer {
@@ -54,7 +54,7 @@
   grid-template-columns:
     repeat(
       auto-fill,
-      minmax(220px, 1fr)
+      minmax(240px, 1fr)
     );
 
   gap: 18px;
@@ -64,17 +64,20 @@
   min-width: 0;
   overflow: hidden;
 
+  display: flex;
+  flex-direction: column;
+
   border: 1px solid
     rgba(255, 255, 255, 0.13);
 
   border-radius: 18px;
 
   background:
-    rgba(14, 20, 24, 0.94);
+    rgba(14, 20, 24, 0.96);
 
   box-shadow:
     0 12px 30px
-    rgba(0, 0, 0, 0.12);
+    rgba(0, 0, 0, 0.14);
 
   transition:
     transform 160ms ease,
@@ -91,7 +94,7 @@
 
   box-shadow:
     0 18px 38px
-    rgba(0, 0, 0, 0.18);
+    rgba(0, 0, 0, 0.2);
 }
 
 .media-library-item__preview {
@@ -100,6 +103,7 @@
   display: grid;
   place-items: center;
 
+  width: 100%;
   aspect-ratio: 16 / 10;
 
   overflow: hidden;
@@ -111,12 +115,52 @@
     rgba(255, 255, 255, 0.08);
 }
 
+.media-library-item__image,
+.media-library-item__video {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  background: #000;
+}
+
+.media-library-item__audio {
+  width: 100%;
+  max-width: 100%;
+}
+
+.media-library-item__media {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  gap: 14px;
+
+  padding: 18px;
+
+  box-sizing: border-box;
+}
+
+.media-library-item__media--audio {
+  justify-content: center;
+}
+
 .media-library-item__icon {
   display: grid;
   place-items: center;
 
   width: 68px;
   height: 68px;
+
+  flex-shrink: 0;
 
   border-radius: 18px;
 
@@ -153,7 +197,11 @@
 }
 
 .media-library-item__content {
-  display: grid;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
   gap: 14px;
 
   padding: 16px;
@@ -200,16 +248,22 @@
 }
 
 .media-library-item__actions {
+  margin-top: auto;
+
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.media-library-item__actions button {
+.media-library-item__actions button,
+.media-library-item__action-link {
   min-height: 36px;
 
-  padding:
-    8px 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px 11px;
 
   border: 1px solid
     rgba(255, 255, 255, 0.16);
@@ -225,6 +279,8 @@
   font-size: 0.82rem;
   font-weight: 700;
 
+  text-decoration: none;
+
   cursor: pointer;
 
   transition:
@@ -233,8 +289,8 @@
     transform 150ms ease;
 }
 
-.media-library-item__actions
-button:hover {
+.media-library-item__actions button:hover,
+.media-library-item__action-link:hover {
   transform:
     translateY(-1px);
 
@@ -245,8 +301,8 @@ button:hover {
     rgba(244, 208, 111, 0.45);
 }
 
-.media-library-item__actions
-button:focus-visible {
+.media-library-item__actions button:focus-visible,
+.media-library-item__action-link:focus-visible {
   outline:
     2px solid #f4d06f;
 
@@ -307,9 +363,6 @@ button:focus-visible {
   opacity: 0.8;
 }
 
-
-/* Upload view integration */
-
 .upload-view__library {
   margin-top: 42px;
 }
@@ -317,9 +370,6 @@ button:focus-visible {
 .upload-view__uploader {
   min-width: 0;
 }
-
-
-/* Responsive */
 
 @media (
   max-width: 760px
@@ -359,7 +409,8 @@ button:focus-visible {
   }
 
   .media-library-item__actions
-  button {
+  button,
+  .media-library-item__action-link {
     width: 100%;
   }
 
@@ -372,7 +423,6 @@ button:focus-visible {
   }
 }
 
-
 @media (
   max-width: 480px
 ) {
@@ -384,6 +434,6 @@ button:focus-visible {
 
   .media-library-item__preview {
     aspect-ratio:
-      16 / 8;
+      16 / 9;
   }
 }
