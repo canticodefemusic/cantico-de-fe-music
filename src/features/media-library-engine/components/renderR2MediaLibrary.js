@@ -1,8 +1,9 @@
 /**
  * Cántico de Fe Music
- * V13.6.4 — R2 Media Library
+ * V13.6.5 — R2 Media Library
  *
  * Funciones:
+ * - Estadísticas multimedia
  * - Búsqueda
  * - Filtros
  * - Ordenamiento
@@ -13,6 +14,10 @@
 import {
   renderR2MediaItem
 } from './renderR2MediaItem.js';
+
+import {
+  renderMediaStatistics
+} from './renderMediaStatistics.js';
 
 /* ------------------------------------------------------------------ */
 /* Utilidades                                                         */
@@ -539,6 +544,7 @@ function renderSelectionToolbar({
 
 export function renderR2MediaLibrary({
   objects = [],
+  allObjects = [],
   loading = false,
   error = null,
 
@@ -567,6 +573,13 @@ export function renderR2MediaLibrary({
       ? objects
       : [];
 
+  const safeAllObjects =
+    Array.isArray(
+      allObjects
+    )
+      ? allObjects
+      : safeObjects;
+
   const safeSelectedKeys =
     selectedKeys instanceof Set
       ? selectedKeys
@@ -587,7 +600,7 @@ export function renderR2MediaLibrary({
       ? Number(
           totalCount
         )
-      : safeObjects.length;
+      : safeAllObjects.length;
 
   const visibleCount =
     safeObjects.length;
@@ -644,6 +657,15 @@ export function renderR2MediaLibrary({
       class="media-library-explorer"
       data-r2-media-library
     >
+
+      ${
+        !error
+          ? renderMediaStatistics({
+              objects:
+                safeAllObjects
+            })
+          : ''
+      }
 
       <div
         class="media-library-explorer__header"
