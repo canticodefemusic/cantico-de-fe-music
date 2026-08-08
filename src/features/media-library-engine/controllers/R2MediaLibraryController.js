@@ -1,12 +1,13 @@
 /**
  * Cántico de Fe Music
- * V13.6.1 — R2 Media Library Controller
+ * V13.6.2 — R2 Media Library Controller
  *
  * Funciones:
  * - Cargar biblioteca R2
  * - Refrescar biblioteca
  * - Buscar en memoria
  * - Filtrar por tipo
+ * - Ordenar resultados
  * - Copiar enlace
  * - Eliminar archivo de R2
  */
@@ -100,6 +101,38 @@ function getObjectMediaType(
   return 'file';
 }
 
+function getUploadedTime(
+  object
+) {
+  const value =
+    object?.uploaded;
+
+  if (!value) {
+    return 0;
+  }
+
+  const time =
+    new Date(
+      value
+    ).getTime();
+
+  return Number.isFinite(
+    time
+  )
+    ? time
+    : 0;
+}
+
+function getObjectSize(
+  object
+) {
+  return (
+    Number(
+      object?.size
+    ) || 0
+  );
+}
+
 function buildSearchText(
   object
 ) {
@@ -128,6 +161,93 @@ function buildSearchText(
   );
 }
 
+function sortObjects(
+  objects,
+  sortMode
+) {
+  const items = [
+    ...objects
+  ];
+
+  if (
+    sortMode === 'oldest'
+  ) {
+    return items.sort(
+      (a, b) =>
+        getUploadedTime(a) -
+        getUploadedTime(b)
+    );
+  }
+
+  if (
+    sortMode === 'name'
+  ) {
+    return items.sort(
+      (a, b) =>
+        getObjectName(a)
+          .localeCompare(
+            getObjectName(b),
+            'es',
+            {
+              sensitivity:
+                'base'
+            }
+          )
+    );
+  }
+
+  if (
+    sortMode === 'size'
+  ) {
+    return items.sort(
+      (a, b) =>
+        getObjectSize(b) -
+        getObjectSize(a)
+    );
+  }
+
+  if (
+    sortMode === 'type'
+  ) {
+    return items.sort(
+      (a, b) => {
+        const typeCompare =
+          getObjectMediaType(a)
+            .localeCompare(
+              getObjectMediaType(b),
+              'es',
+              {
+                sensitivity:
+                  'base'
+              }
+            );
+
+        if (
+          typeCompare !== 0
+        ) {
+          return typeCompare;
+        }
+
+        return getObjectName(a)
+          .localeCompare(
+            getObjectName(b),
+            'es',
+            {
+              sensitivity:
+                'base'
+            }
+          );
+      }
+    );
+  }
+
+  return items.sort(
+    (a, b) =>
+      getUploadedTime(b) -
+      getUploadedTime(a)
+  );
+}
+
 export class R2MediaLibraryController {
 
   constructor({
@@ -144,6 +264,7 @@ export class R2MediaLibraryController {
 
     this.searchQuery = '';
     this.activeFilter = 'all';
+    this.sortMode = 'newest';
 
     this.loading = false;
     this.error = null;
@@ -153,6 +274,9 @@ export class R2MediaLibraryController {
 
     this.handleInput =
       this.handleInput.bind(this);
+
+    this.handleChange =
+      this.handleChange.bind(this);
   }
 
   init() {
@@ -168,6 +292,11 @@ export class R2MediaLibraryController {
     this.root.addEventListener(
       'input',
       this.handleInput
+    );
+
+    this.root.addEventListener(
+      'change',
+      this.handleChange
     );
 
     this.load();
@@ -192,7 +321,7 @@ export class R2MediaLibraryController {
             this.prefix
         });
 
-      this.applyFilters();
+      this.applyViewState();
 
       this.error = null;
 
@@ -227,6 +356,7 @@ export class R2MediaLibraryController {
 
     this.searchQuery = '';
     this.activeFilter = 'all';
+    this.sortMode = 'newest';
 
     return this.load();
   }
@@ -246,11 +376,28 @@ export class R2MediaLibraryController {
     this.searchQuery =
       searchInput.value || '';
 
-    this.applyFilters();
+    this.applyViewState();
 
     this.render();
 
     this.restoreSearchFocus();
+  }
+
+  handleChange(
+    event
+  ) {
+    const sortSelect =
+      event.target.closest(
+        '[data-media-sort]'
+      );
+
+    if (!sortSelect) {
+      return;
+    }
+
+    this.setSortMode(
+      sortSelect.value
+    );
   }
 
   async handleClick(
@@ -307,13 +454,13 @@ export class R2MediaLibraryController {
     }
   }
 
-  applyFilters() {
+  applyViewState() {
     const query =
       normalizeText(
         this.searchQuery
       );
 
-    this.filteredObjects =
+    const filtered =
       this.objects.filter(
         object => {
 
@@ -342,6 +489,12 @@ export class R2MediaLibraryController {
           );
         }
       );
+
+    this.filteredObjects =
+      sortObjects(
+        filtered,
+        this.sortMode
+      );
   }
 
   setFilter(
@@ -363,17 +516,40 @@ export class R2MediaLibraryController {
         ? filter
         : 'all';
 
-    this.applyFilters();
+    this.applyViewState();
 
     this.render();
 
     this.restoreSearchFocus();
   }
 
+  setSortMode(
+    sortMode = 'newest'
+  ) {
+    const allowedSortModes = [
+      'newest',
+      'oldest',
+      'name',
+      'size',
+      'type'
+    ];
+
+    this.sortMode =
+      allowedSortModes.includes(
+        sortMode
+      )
+        ? sortMode
+        : 'newest';
+
+    this.applyViewState();
+
+    this.render();
+  }
+
   clearSearch() {
     this.searchQuery = '';
 
-    this.applyFilters();
+    this.applyViewState();
 
     this.render();
 
@@ -574,7 +750,7 @@ export class R2MediaLibraryController {
             item.key !== key
         );
 
-      this.applyFilters();
+      this.applyViewState();
 
       this.render();
 
@@ -633,6 +809,9 @@ export class R2MediaLibraryController {
         activeFilter:
           this.activeFilter,
 
+        sortMode:
+          this.sortMode,
+
         loading:
           this.loading,
 
@@ -657,6 +836,10 @@ export class R2MediaLibraryController {
     return this.activeFilter;
   }
 
+  getSortMode() {
+    return this.sortMode;
+  }
+
   destroy() {
     if (this.root) {
       this.root.removeEventListener(
@@ -668,6 +851,11 @@ export class R2MediaLibraryController {
         'input',
         this.handleInput
       );
+
+      this.root.removeEventListener(
+        'change',
+        this.handleChange
+      );
     }
 
     this.root = null;
@@ -677,6 +865,7 @@ export class R2MediaLibraryController {
 
     this.searchQuery = '';
     this.activeFilter = 'all';
+    this.sortMode = 'newest';
 
     this.loading = false;
     this.error = null;
