@@ -1,9 +1,13 @@
 /**
  * Cántico de Fe Music
- * V13.3.1 — R2 Media Service
+ * V13.6.6 — R2 Media Service
  *
- * Lee archivos almacenados en Cloudflare R2
- * mediante la Pages Function /api/media.
+ * Funciones:
+ * - Listar una página de archivos
+ * - Cargar páginas siguientes con cursor
+ * - Mantener compatibilidad con listAll()
+ * - Consultar uploads y fechas
+ * - Detectar tipo multimedia
  */
 
 export class R2MediaService {
@@ -120,6 +124,51 @@ export class R2MediaService {
     };
   }
 
+  async listPage({
+    prefix = '',
+    cursor = null,
+    limit = 50
+  } = {}) {
+    return this.list({
+      prefix,
+      cursor,
+      limit
+    });
+  }
+
+  async listFirstPage({
+    prefix = '',
+    limit = 50
+  } = {}) {
+    return this.listPage({
+      prefix,
+      cursor: null,
+      limit
+    });
+  }
+
+  async listNextPage({
+    prefix = '',
+    cursor,
+    limit = 50
+  } = {}) {
+    if (!cursor) {
+      return {
+        prefix,
+        count: 0,
+        truncated: false,
+        cursor: null,
+        objects: []
+      };
+    }
+
+    return this.listPage({
+      prefix,
+      cursor,
+      limit
+    });
+  }
+
   async listAll({
     prefix = '',
     limit = 100
@@ -131,7 +180,7 @@ export class R2MediaService {
 
     while (hasMore) {
       const result =
-        await this.list({
+        await this.listPage({
           prefix,
           cursor,
           limit
@@ -152,15 +201,21 @@ export class R2MediaService {
     return objects;
   }
 
-  async getUploads() {
+  async getUploads({
+    limit = 100
+  } = {}) {
     return this.listAll({
       prefix:
-        'uploads/'
+        'uploads/',
+      limit
     });
   }
 
   async getByDate(
-    date
+    date,
+    {
+      limit = 100
+    } = {}
   ) {
     if (!date) {
       return [];
@@ -168,7 +223,8 @@ export class R2MediaService {
 
     return this.listAll({
       prefix:
-        `uploads/${date}/`
+        `uploads/${date}/`,
+      limit
     });
   }
 
