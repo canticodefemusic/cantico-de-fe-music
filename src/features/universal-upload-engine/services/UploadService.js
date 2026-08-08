@@ -11,14 +11,35 @@ import {
 } from './UploadQueueService.js';
 
 import {
+  UploadTransportService
+} from './UploadTransportService.js';
+
+import {
   uploadEventBus
 } from '../events/UploadEventBus.js';
+
+import {
+  UPLOAD_STATUS
+} from '../constants/uploadStatus.js';
 
 export class UploadService {
 
   constructor() {
     this.queue =
       new UploadQueueService();
+
+    this.transport =
+      new UploadTransportService({
+        onProgress: (
+          id,
+          progress
+        ) => {
+          this.queue.updateProgress(
+            id,
+            progress
+          );
+        }
+      });
   }
 
   add(file) {
@@ -72,11 +93,115 @@ export class UploadService {
     };
   }
 
+  async start(id) {
+    const item =
+      this.queue.getById(id);
+
+    if (!item) {
+      return null;
+    }
+
+    if (
+      item.status ===
+      UPLOAD_STATUS.CANCELLED
+    ) {
+      return null;
+    }
+
+    this.queue.updateStatus(
+      id,
+      UPLOAD_STATUS.UPLOADING
+    );
+
+    this.queue.update(
+      id,
+      {
+        startedAt:
+          new Date().toISOString(),
+
+        error: null
+      }
+    );
+
+    try {
+      const result =
+        await this.transport.upload(
+          item
+        );
+
+      this.queue.updateProgress(
+        id,
+        100
+      );
+
+      this.queue.update(
+        id,
+        {
+          status:
+            UPLOAD_STATUS.COMPLETED,
+
+          completedAt:
+            new Date().toISOString()
+        }
+      );
+
+      uploadEventBus.emit(
+        'upload:completed',
+        this.queue.getById(id)
+      );
+
+      return result;
+
+    } catch (error) {
+
+      if (
+        error?.name ===
+        'AbortError'
+      ) {
+        this.queue.cancel(id);
+
+        return null;
+      }
+
+      this.queue.update(
+        id,
+        {
+          status:
+            UPLOAD_STATUS.FAILED,
+
+          error:
+            error?.message ||
+            'Upload failed'
+        }
+      );
+
+      uploadEventBus.emit(
+        'upload:failed',
+        this.queue.getById(id)
+      );
+
+      return null;
+    }
+  }
+
+  async startAll() {
+    const pending =
+      this.queue.getPending();
+
+    return Promise.all(
+      pending.map(
+        item =>
+          this.start(item.id)
+      )
+    );
+  }
+
   remove(id) {
     return this.queue.remove(id);
   }
 
   clear() {
+    this.transport.cancelAll();
     this.queue.clear();
   }
 
@@ -120,9 +245,11 @@ export class UploadService {
   }
 
   cancel(id) {
+    this.transport.cancel(id);
+
     return this.queue.cancel(id);
   }
-  
+
   updateProgress(id, progress) {
     return this.queue.updateProgress(
       id,
