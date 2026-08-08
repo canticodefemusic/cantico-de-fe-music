@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V13.6.3 — R2 Media Library Controller
+ * V13.6.4 — R2 Media Library Controller
  *
  * Funciones:
  * - Cargar biblioteca R2
@@ -11,8 +11,10 @@
  * - Selección múltiple
  * - Seleccionar visibles
  * - Limpiar selección
- * - Copiar enlace
- * - Eliminar archivo de R2
+ * - Copiar enlace individual
+ * - Eliminar archivo individual
+ * - Copiar enlaces seleccionados
+ * - Eliminar archivos seleccionados
  */
 
 import r2MediaService
@@ -251,6 +253,28 @@ function sortObjects(
   );
 }
 
+function getMediaUrl(
+  key
+) {
+  return (
+    '/api/media/file?key=' +
+    encodeURIComponent(
+      key
+    )
+  );
+}
+
+function getAbsoluteMediaUrl(
+  key
+) {
+  return new URL(
+    getMediaUrl(
+      key
+    ),
+    window.location.origin
+  ).href;
+}
+
 export class R2MediaLibraryController {
 
   constructor({
@@ -271,6 +295,8 @@ export class R2MediaLibraryController {
 
     this.selectedKeys =
       new Set();
+
+    this.bulkBusy = false;
 
     this.loading = false;
     this.error = null;
@@ -341,6 +367,7 @@ export class R2MediaLibraryController {
 
       this.objects = [];
       this.filteredObjects = [];
+
       this.selectedKeys.clear();
 
       this.error =
@@ -479,6 +506,30 @@ export class R2MediaLibraryController {
       return;
     }
 
+    const bulkCopyButton =
+      event.target.closest(
+        '[data-media-bulk-copy]'
+      );
+
+    if (bulkCopyButton) {
+      await this.copySelectedLinks(
+        bulkCopyButton
+      );
+
+      return;
+    }
+
+    const bulkDeleteButton =
+      event.target.closest(
+        '[data-media-bulk-delete]'
+      );
+
+    if (bulkDeleteButton) {
+      await this.deleteSelected();
+
+      return;
+    }
+
     const copyButton =
       event.target.closest(
         '[data-media-copy]'
@@ -610,7 +661,10 @@ export class R2MediaLibraryController {
     key,
     selected
   ) {
-    if (!key) {
+    if (
+      !key ||
+      this.bulkBusy
+    ) {
       return;
     }
 
@@ -628,6 +682,12 @@ export class R2MediaLibraryController {
   }
 
   selectVisible() {
+    if (
+      this.bulkBusy
+    ) {
+      return;
+    }
+
     this.filteredObjects.forEach(
       object => {
         if (
@@ -644,6 +704,12 @@ export class R2MediaLibraryController {
   }
 
   clearSelection() {
+    if (
+      this.bulkBusy
+    ) {
+      return;
+    }
+
     this.selectedKeys.clear();
 
     this.render();
@@ -759,8 +825,53 @@ export class R2MediaLibraryController {
         error
       );
 
+      return false;
+    }
+  }
+
+  async copySelectedLinks(
+    button
+  ) {
+    if (
+      this.bulkBusy ||
+      !this.selectedKeys.size
+    ) {
+      return false;
+    }
+
+    const selectedObjects =
+      this.getSelectedObjects();
+
+    if (!selectedObjects.length) {
+      return false;
+    }
+
+    const links =
+      selectedObjects.map(
+        object =>
+          getAbsoluteMediaUrl(
+            object.key
+          )
+      );
+
+    const text =
+      links.join(
+        '\n'
+      );
+
+    const originalText =
+      button.textContent;
+
+    try {
+      await navigator.clipboard.writeText(
+        text
+      );
+
       button.textContent =
-        'No se pudo copiar';
+        '✓ Enlaces copiados';
+
+      button.disabled =
+        true;
 
       window.setTimeout(
         () => {
@@ -770,8 +881,19 @@ export class R2MediaLibraryController {
 
           button.textContent =
             originalText;
+
+          button.disabled =
+            false;
         },
         1800
+      );
+
+      return true;
+
+    } catch (error) {
+      console.error(
+        '[R2MediaLibraryController] Bulk copy failed:',
+        error
       );
 
       return false;
@@ -781,6 +903,12 @@ export class R2MediaLibraryController {
   async deleteMedia(
     button
   ) {
+    if (
+      this.bulkBusy
+    ) {
+      return false;
+    }
+
     const key =
       button.getAttribute(
         'data-media-delete'
@@ -821,6 +949,146 @@ export class R2MediaLibraryController {
       'Eliminando...';
 
     try {
+      const success =
+        await this.deleteObjectByKey(
+          key
+        );
+
+      if (!success) {
+        throw new Error(
+          'No se pudo eliminar el archivo.'
+        );
+      }
+
+      this.removeObjectFromState(
+        key
+      );
+
+      this.render();
+
+      return true;
+
+    } catch (error) {
+      console.error(
+        '[R2MediaLibraryController] Delete failed:',
+        error
+      );
+
+      if (
+        button.isConnected
+      ) {
+        button.disabled =
+          false;
+
+        button.textContent =
+          originalText;
+      }
+
+      return false;
+    }
+  }
+
+  async deleteSelected() {
+    if (
+      this.bulkBusy ||
+      !this.selectedKeys.size
+    ) {
+      return false;
+    }
+
+    const selectedObjects =
+      this.getSelectedObjects();
+
+    if (!selectedObjects.length) {
+      return false;
+    }
+
+    const count =
+      selectedObjects.length;
+
+    const confirmed =
+      window.confirm(
+        `¿Eliminar permanentemente ${count} archivo${
+          count === 1
+            ? ''
+            : 's'
+        } seleccionado${
+          count === 1
+            ? ''
+            : 's'
+        }?`
+      );
+
+    if (!confirmed) {
+      return false;
+    }
+
+    this.bulkBusy =
+      true;
+
+    this.render();
+
+    const failedKeys = [];
+
+    try {
+      for (
+        const object
+        of selectedObjects
+      ) {
+        const key =
+          object?.key;
+
+        if (!key) {
+          continue;
+        }
+
+        const success =
+          await this.deleteObjectByKey(
+            key
+          );
+
+        if (success) {
+          this.removeObjectFromState(
+            key,
+            {
+              render:
+                false
+            }
+          );
+        } else {
+          failedKeys.push(
+            key
+          );
+        }
+      }
+
+      this.applyViewState();
+
+      if (
+        failedKeys.length
+      ) {
+        console.error(
+          '[R2MediaLibraryController] Some bulk deletes failed:',
+          failedKeys
+        );
+      }
+
+      return (
+        failedKeys.length === 0
+      );
+
+    } finally {
+      this.bulkBusy =
+        false;
+
+      this.render();
+    }
+  }
+
+  async deleteObjectByKey(
+    key
+  ) {
+    try {
       const response =
         await fetch(
           '/api/media/delete',
@@ -848,68 +1116,44 @@ export class R2MediaLibraryController {
         data =
           await response.json();
       } catch {
-        throw new Error(
-          'La API de eliminación devolvió una respuesta inválida.'
-        );
+        return false;
       }
 
-      if (
-        !response.ok ||
-        !data?.success
-      ) {
-        throw new Error(
-          data?.error ||
-          `No se pudo eliminar el archivo. HTTP ${response.status}`
-        );
-      }
-
-      this.objects =
-        this.objects.filter(
-          item =>
-            item.key !== key
-        );
-
-      this.selectedKeys.delete(
-        key
+      return Boolean(
+        response.ok &&
+        data?.success
       );
-
-      this.applyViewState();
-
-      this.render();
-
-      return true;
 
     } catch (error) {
       console.error(
-        '[R2MediaLibraryController] Delete failed:',
+        '[R2MediaLibraryController] Delete request failed:',
         error
       );
 
-      if (
-        button.isConnected
-      ) {
-        button.disabled =
-          false;
-
-        button.textContent =
-          'Error al eliminar';
-
-        window.setTimeout(
-          () => {
-            if (
-              !button.isConnected
-            ) {
-              return;
-            }
-
-            button.textContent =
-              originalText;
-          },
-          2000
-        );
-      }
-
       return false;
+    }
+  }
+
+  removeObjectFromState(
+    key,
+    {
+      render = false
+    } = {}
+  ) {
+    this.objects =
+      this.objects.filter(
+        item =>
+          item.key !== key
+      );
+
+    this.selectedKeys.delete(
+      key
+    );
+
+    this.applyViewState();
+
+    if (render) {
+      this.render();
     }
   }
 
@@ -940,6 +1184,9 @@ export class R2MediaLibraryController {
 
         selectedCount:
           this.selectedKeys.size,
+
+        bulkBusy:
+          this.bulkBusy,
 
         loading:
           this.loading,
@@ -1012,6 +1259,8 @@ export class R2MediaLibraryController {
     this.searchQuery = '';
     this.activeFilter = 'all';
     this.sortMode = 'newest';
+
+    this.bulkBusy = false;
 
     this.loading = false;
     this.error = null;
