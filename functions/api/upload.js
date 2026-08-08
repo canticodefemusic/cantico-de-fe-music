@@ -29,7 +29,7 @@ function jsonResponse(
   status = 200
 ) {
   return new Response(
-    JSON.stringify(data),
+    JSON.stringify(data, null, 2),
     {
       status,
 
@@ -41,6 +41,36 @@ function jsonResponse(
           'no-store'
       }
     }
+  );
+}
+
+export function onRequestGet({
+  env
+}) {
+  const connected =
+    Boolean(env.MEDIA_BUCKET);
+
+  return jsonResponse(
+    {
+      success: connected,
+
+      service:
+        'cantico-r2-upload-api',
+
+      binding:
+        'MEDIA_BUCKET',
+
+      bucketConnected:
+        connected,
+
+      message:
+        connected
+          ? 'R2 bucket binding is connected.'
+          : 'R2 bucket binding is not configured.'
+    },
+    connected
+      ? 200
+      : 500
   );
 }
 
@@ -92,7 +122,7 @@ export async function onRequestPost(
 
     if (
       !file ||
-      typeof file.arrayBuffer !==
+      typeof file.stream !==
         'function'
     ) {
       return jsonResponse(
@@ -161,7 +191,6 @@ export async function onRequestPost(
     });
 
   } catch (error) {
-
     console.error(
       '[R2 Upload API]',
       error
