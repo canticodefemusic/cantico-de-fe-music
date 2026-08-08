@@ -9,6 +9,7 @@ import {
 
 let uploadController = null;
 let mediaLibraryController = null;
+let unsubscribeUploadCompleted = null;
 
 export function renderUploadView() {
   return `
@@ -53,6 +54,53 @@ export function renderUploadView() {
   `;
 }
 
+function cleanupControllers() {
+  if (
+    typeof unsubscribeUploadCompleted ===
+    'function'
+  ) {
+    unsubscribeUploadCompleted();
+
+    unsubscribeUploadCompleted = null;
+  }
+
+  if (uploadController) {
+    uploadController.destroy?.();
+
+    uploadController = null;
+  }
+
+  if (mediaLibraryController) {
+    mediaLibraryController.destroy?.();
+
+    mediaLibraryController = null;
+  }
+}
+
+function connectUploadRefresh() {
+  if (
+    !uploadController?.engine ||
+    !mediaLibraryController
+  ) {
+    return;
+  }
+
+  unsubscribeUploadCompleted =
+    uploadController.engine.on(
+      'upload:completed',
+      async () => {
+        try {
+          await mediaLibraryController.refresh();
+        } catch (error) {
+          console.error(
+            '[UploadView] Unable to refresh media library:',
+            error
+          );
+        }
+      }
+    );
+}
+
 export function initUploadView() {
   const uploadRoot =
     document.querySelector(
@@ -64,20 +112,13 @@ export function initUploadView() {
       '[data-r2-media-root]'
     );
 
-  if (uploadController) {
-    uploadController.destroy?.();
-    uploadController = null;
-  }
-
-  if (mediaLibraryController) {
-    mediaLibraryController.destroy?.();
-    mediaLibraryController = null;
-  }
+  cleanupControllers();
 
   if (uploadRoot) {
     uploadController =
       new UploadUIController({
-        root: uploadRoot
+        root:
+          uploadRoot
       });
 
     uploadController.init();
@@ -86,11 +127,14 @@ export function initUploadView() {
   if (mediaRoot) {
     mediaLibraryController =
       new R2MediaLibraryController({
-        root: mediaRoot
+        root:
+          mediaRoot
       });
 
     mediaLibraryController.init();
   }
+
+  connectUploadRefresh();
 
   return {
     uploadController,
