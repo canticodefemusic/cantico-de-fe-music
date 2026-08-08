@@ -4,9 +4,12 @@
  *
  * Funciones:
  * - Listar una página de archivos
- * - Cargar páginas siguientes con cursor
- * - Mantener compatibilidad con listAll()
- * - Consultar uploads y fechas
+ * - Primera página
+ * - Página siguiente mediante cursor
+ * - Compatibilidad con listAll()
+ * - Consultar uploads
+ * - Consultar archivos por fecha
+ * - Utilidades de metadata
  * - Detectar tipo multimedia
  */
 
@@ -149,7 +152,7 @@ export class R2MediaService {
 
   async listNextPage({
     prefix = '',
-    cursor,
+    cursor = null,
     limit = 50
   } = {}) {
     if (!cursor) {
@@ -207,6 +210,7 @@ export class R2MediaService {
     return this.listAll({
       prefix:
         'uploads/',
+
       limit
     });
   }
@@ -224,6 +228,7 @@ export class R2MediaService {
     return this.listAll({
       prefix:
         `uploads/${date}/`,
+
       limit
     });
   }
@@ -307,6 +312,7 @@ export class R2MediaService {
 
     return 'file';
   }
+
 }
 
 export const r2MediaService =
