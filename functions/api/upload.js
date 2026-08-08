@@ -1,3 +1,4 @@
+// V13.2.1 Preview R2 binding deployment
 function createObjectKey(fileName = 'file') {
   const safeName =
     String(fileName)
