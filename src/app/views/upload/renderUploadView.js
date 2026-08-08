@@ -3,6 +3,13 @@ import {
   UploadUIController
 } from '../../../features/universal-upload-engine/index.js';
 
+import {
+  R2MediaLibraryController
+} from '../../../features/media-library-engine/index.js';
+
+let uploadController = null;
+let mediaLibraryController = null;
+
 export function renderUploadView() {
   return `
     <main
@@ -22,33 +29,71 @@ export function renderUploadView() {
         </p>
       </header>
 
-      <div
-        class="upload-view__content"
-        data-upload-root
+      <section
+        class="upload-view__uploader"
       >
-        ${renderUploadPanel()}
-      </div>
+        <div
+          class="upload-view__content"
+          data-upload-root
+        >
+          ${renderUploadPanel()}
+        </div>
+      </section>
+
+      <section
+        class="upload-view__library"
+        aria-label="Archivos almacenados"
+      >
+        <div
+          data-r2-media-root
+        ></div>
+      </section>
 
     </main>
   `;
 }
 
 export function initUploadView() {
-  const root =
+  const uploadRoot =
     document.querySelector(
       '[data-upload-root]'
     );
 
-  if (!root) {
-    return null;
+  const mediaRoot =
+    document.querySelector(
+      '[data-r2-media-root]'
+    );
+
+  if (uploadController) {
+    uploadController.destroy?.();
+    uploadController = null;
   }
 
-  const controller =
-    new UploadUIController({
-      root
-    });
+  if (mediaLibraryController) {
+    mediaLibraryController.destroy?.();
+    mediaLibraryController = null;
+  }
 
-  controller.init();
+  if (uploadRoot) {
+    uploadController =
+      new UploadUIController({
+        root: uploadRoot
+      });
 
-  return controller;
+    uploadController.init();
+  }
+
+  if (mediaRoot) {
+    mediaLibraryController =
+      new R2MediaLibraryController({
+        root: mediaRoot
+      });
+
+    mediaLibraryController.init();
+  }
+
+  return {
+    uploadController,
+    mediaLibraryController
+  };
 }
