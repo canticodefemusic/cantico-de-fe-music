@@ -282,63 +282,79 @@ export class MediaSelectionController {
   /* ------------------------------------------------------------------ */
 
   selectRange(
-    toKey,
-    {
-      additive = false,
-      emitChange = true
-    } = {}
-  ) {
-    const endKey =
-      String(
-        toKey || ''
-      ).trim();
+  toKey,
+  {
+    fromKey = null,
+    additive = false,
+    emitChange = true,
+    preserveAnchor = true
+  } = {}
+) {
+  const endKey =
+    String(
+      toKey || ''
+    ).trim();
 
-    if (!endKey) {
-      return false;
-    }
+  if (!endKey) {
+    return false;
+  }
 
-    const fromKey =
+  const startKey =
+    String(
+      fromKey ||
       this.lastSelectedKey ||
       this.service
-        .getLastSelectedId?.();
+        .getLastSelectedId?.() ||
+      ''
+    ).trim();
 
-    if (!fromKey) {
-      return this.select(
-        endKey,
-        {
-          additive,
-          emitChange
-        }
-      );
-    }
-
-    const result =
-      this.service.selectRange({
-        orderedIds:
-          this.orderedKeys,
-
-        fromId:
-          fromKey,
-
-        toId:
-          endKey,
-
+  if (!startKey) {
+    return this.select(
+      endKey,
+      {
         additive,
-
         emitChange
-      });
-
-    if (
-      result?.success
-    ) {
-      this.lastSelectedKey =
-        endKey;
-    }
-
-    return Boolean(
-      result?.success
+      }
     );
   }
+
+  const result =
+    this.service.selectRange({
+      orderedIds:
+        this.orderedKeys,
+
+      fromId:
+        startKey,
+
+      toId:
+        endKey,
+
+      additive,
+
+      emitChange
+    });
+
+  if (
+    !result?.success
+  ) {
+    return false;
+  }
+
+  /*
+   * Para Shift + Click conservamos
+   * el archivo inicial como ancla.
+   *
+   * Así varios Shift + Click siguen
+   * extendiendo el rango desde el
+   * mismo punto inicial.
+   */
+  this.lastSelectedKey =
+    preserveAnchor
+      ? startKey
+      : endKey;
+
+  return true;
+}
 
   /* ------------------------------------------------------------------ */
   /* Seleccionar visibles                                               */
