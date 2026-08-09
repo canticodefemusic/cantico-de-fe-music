@@ -904,6 +904,8 @@ export function renderR2MediaLibrary({
 
                     selectedKeys:
                       safeSelectedKeys
+                    
+                    sortMode
                   })
                : `
                     <div
