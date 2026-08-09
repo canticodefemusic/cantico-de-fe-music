@@ -5,12 +5,14 @@ import {
 
 import {
   R2MediaLibraryController,
-  R2MediaMenuController
+  R2MediaMenuController,
+  R2MediaLightboxController
 } from '../../../features/media-library-engine/index.js';
 
 let uploadController = null;
 let mediaLibraryController = null;
 let mediaMenuController = null;
+let mediaLightboxController = null;
 
 let unsubscribeUploadCompleted = null;
 
@@ -65,6 +67,12 @@ function cleanupControllers() {
     unsubscribeUploadCompleted();
 
     unsubscribeUploadCompleted = null;
+  }
+
+  if (mediaLightboxController) {
+    mediaLightboxController.destroy?.();
+
+    mediaLightboxController = null;
   }
 
   if (mediaMenuController) {
@@ -149,6 +157,14 @@ export function initUploadView() {
       });
 
     mediaMenuController.init();
+
+    mediaLightboxController =
+      new R2MediaLightboxController({
+        root:
+          mediaRoot
+      });
+
+    mediaLightboxController.init();
   }
 
   connectUploadRefresh();
@@ -156,6 +172,7 @@ export function initUploadView() {
   return {
     uploadController,
     mediaLibraryController,
-    mediaMenuController
+    mediaMenuController,
+    mediaLightboxController
   };
 }
