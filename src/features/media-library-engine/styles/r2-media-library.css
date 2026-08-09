@@ -1548,3 +1548,103 @@
     width: 180px;
   }
 }
+
+/* ===================================================================== */
+/* V13.10.1 Professional Media Cards                                     */
+/* ===================================================================== */
+
+.media-card {
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    border-color .18s ease;
+
+  border: 1px solid rgba(255,255,255,.05);
+
+  background: #0f1217;
+}
+
+.media-card:hover {
+  transform: translateY(-4px);
+
+  box-shadow:
+    0 18px 40px rgba(0,0,0,.35);
+
+  border-color:
+    rgba(201,163,39,.35);
+}
+
+.media-card__preview {
+  aspect-ratio: 16 / 10;
+
+  overflow: hidden;
+
+  background: #171b21;
+}
+
+.media-card__preview img,
+.media-card__preview video {
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: cover;
+
+  transition: transform .25s ease;
+}
+
+.media-card:hover
+.media-card__preview img,
+
+.media-card:hover
+.media-card__preview video {
+
+  transform: scale(1.04);
+
+}
+
+.media-card__body {
+
+  padding: 14px;
+
+}
+
+.media-card__title {
+
+  font-size: .95rem;
+
+  font-weight: 700;
+
+  margin-bottom: 6px;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+}
+
+.media-card__meta {
+
+  opacity: .75;
+
+  font-size: .78rem;
+
+}
+
+.media-card__footer {
+
+  margin-top: 12px;
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+}
