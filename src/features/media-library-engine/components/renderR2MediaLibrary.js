@@ -898,36 +898,36 @@ export function renderR2MediaLibrary({
           ? `
             ${
               viewMode === 'list'
-                ? renderMediaListView({
-                    objects:
-                      safeObjects,
+  ? renderMediaListView({
+      objects:
+        safeObjects,
 
-                    selectedKeys:
-                      safeSelectedKeys
-                    
-                    sortMode
-                  })
-               : `
-                    <div
-                      class="media-library-grid"
-                      data-media-library-grid
-                    >
-                      ${safeObjects
-                        .map(
-                          object =>
-                            renderR2MediaItem(
-                              object,
-                              {
-                                selected:
-                                  safeSelectedKeys.has(
-                                    object.key
-                                  )
-                              }
-                            )
-                        )
-                        .join('')}
-                    </div>
-                  `
+      selectedKeys:
+        safeSelectedKeys,
+
+      sortMode
+    })
+  : `
+      <div
+        class="media-library-grid"
+        data-media-library-grid
+      >
+        ${safeObjects
+          .map(
+            object =>
+              renderR2MediaItem(
+                object,
+                {
+                  selected:
+                    safeSelectedKeys.has(
+                      object.key
+                    )
+                }
+              )
+          )
+          .join('')}
+      </div>
+    `
             }
           `
           : ''
