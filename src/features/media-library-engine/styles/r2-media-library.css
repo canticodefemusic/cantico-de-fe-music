@@ -1648,3 +1648,89 @@
   align-items:center;
 
 }
+
+/* ================================================================== */
+/* V13.11.2 — Smart Media Loading State                               */
+/* ================================================================== */
+
+.media-library-loading {
+  min-height: 120px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 14px;
+
+  padding: 24px;
+
+  box-sizing: border-box;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.08);
+
+  border-radius: 16px;
+
+  background:
+    rgba(255, 255, 255, 0.025);
+}
+
+.media-library-loading__spinner {
+  width: 26px;
+  height: 26px;
+
+  flex-shrink: 0;
+
+  border: 3px solid
+    rgba(255, 255, 255, 0.12);
+
+  border-top-color:
+    #f4d06f;
+
+  border-radius: 50%;
+
+  animation:
+    media-library-spin
+    0.75s
+    linear
+    infinite;
+}
+
+.media-library-loading__content {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.media-library-loading__content strong {
+  color:
+    rgba(255, 255, 255, 0.92);
+
+  font-size: 0.9rem;
+}
+
+.media-library-loading__content span {
+  color:
+    rgba(255, 255, 255, 0.55);
+
+  font-size: 0.78rem;
+}
+
+@keyframes media-library-spin {
+  to {
+    transform:
+      rotate(360deg);
+  }
+}
+
+@media (
+  prefers-reduced-motion:
+    reduce
+) {
+
+  .media-library-loading__spinner {
+    animation: none;
+  }
+
+}
