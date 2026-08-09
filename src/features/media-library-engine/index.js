@@ -15,6 +15,9 @@ import MediaSelectionService
 import MediaFilterService
   from './services/MediaFilterService.js';
 
+import renderMediaManagerToolbar
+  from './components/renderMediaManagerToolbar.js';
+
 import MediaMetadataService
   from './services/MediaMetadataService.js';
 
@@ -94,7 +97,7 @@ export {
   renderMediaPreview,
   renderMediaCardMenu,
   renderMediaMetadataEditor,
-
+  renderMediaManagerToolbar,
   renderR2MediaItem,
   renderR2MediaLibrary,
 
@@ -127,7 +130,7 @@ export default {
   renderMediaPreview,
   renderMediaCardMenu,
   renderMediaMetadataEditor,
-
+  renderMediaManagerToolbar,
   renderR2MediaItem,
   renderR2MediaLibrary,
 
