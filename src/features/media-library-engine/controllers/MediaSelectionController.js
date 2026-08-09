@@ -1,15 +1,16 @@
 /**
  * Cántico de Fe Music
- * V13.12.1 — Media Selection Controller
+ * V13.12.5 — Media Selection Controller
  *
  * Funciones:
- * - Puente entre la UI y MediaSelectionService
+ * - Puente entre UI y MediaSelectionService
  * - Selección individual
  * - Toggle
  * - Selección por rango
  * - Seleccionar visibles
+ * - Reemplazar selección completa
+ * - Sincronizar selección R2 existente
  * - Limpiar selección
- * - Sincronizar selección válida
  * - Preparado para Shift + Click
  * - Preparado para Ctrl / Cmd + Click
  */
@@ -34,31 +35,41 @@ export class MediaSelectionController {
   }
 
   /* ------------------------------------------------------------------ */
-  /* Orden visible                                                       */
+  /* Utilidades                                                         */
+  /* ------------------------------------------------------------------ */
+
+  normalizeKeys(
+    keys = []
+  ) {
+    return Array.isArray(
+      keys
+    )
+      ? keys
+          .map(
+            key =>
+              String(
+                key || ''
+              ).trim()
+          )
+          .filter(
+            Boolean
+          )
+      : [];
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Orden visible                                                      */
   /* ------------------------------------------------------------------ */
 
   setOrderedKeys(
     keys = []
   ) {
     this.orderedKeys =
-      Array.isArray(
+      this.normalizeKeys(
         keys
-      )
-        ? keys
-            .map(
-              key =>
-                String(
-                  key || ''
-                ).trim()
-            )
-            .filter(
-              Boolean
-            )
-        : [];
+      );
 
-    this.prune();
-
-    return this.getSelectedKeys();
+    return this.getOrderedKeys();
   }
 
   getOrderedKeys() {
@@ -68,13 +79,70 @@ export class MediaSelectionController {
   }
 
   /* ------------------------------------------------------------------ */
-  /* Selección individual                                                */
+  /* Reemplazar / sincronizar selección                                 */
+  /* ------------------------------------------------------------------ */
+
+  replaceSelection(
+    keys = [],
+    {
+      emitChange = false
+    } = {}
+  ) {
+    const normalizedKeys =
+      this.normalizeKeys(
+        keys
+      );
+
+    this.service.selectAll(
+      normalizedKeys,
+      {
+        replace:
+          true,
+
+        emitChange
+      }
+    );
+
+    this.lastSelectedKey =
+      normalizedKeys.length
+        ? normalizedKeys[
+            normalizedKeys.length - 1
+          ]
+        : null;
+
+    return this.getSelectedKeySet();
+  }
+
+  syncFromSet(
+    selectedKeys,
+    options = {}
+  ) {
+    const keys =
+      selectedKeys instanceof Set
+        ? [
+            ...selectedKeys
+          ]
+        : Array.isArray(
+            selectedKeys
+          )
+          ? selectedKeys
+          : [];
+
+    return this.replaceSelection(
+      keys,
+      options
+    );
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Selección individual                                               */
   /* ------------------------------------------------------------------ */
 
   select(
     key,
     {
-      additive = false
+      additive = false,
+      emitChange = true
     } = {}
   ) {
     if (!key) {
@@ -85,7 +153,8 @@ export class MediaSelectionController {
       this.service.select(
         key,
         {
-          additive
+          additive,
+          emitChange
         }
       );
 
@@ -93,7 +162,9 @@ export class MediaSelectionController {
       result?.success
     ) {
       this.lastSelectedKey =
-        String(key);
+        String(
+          key
+        );
     }
 
     return Boolean(
@@ -102,7 +173,10 @@ export class MediaSelectionController {
   }
 
   deselect(
-    key
+    key,
+    {
+      emitChange = true
+    } = {}
   ) {
     if (!key) {
       return false;
@@ -110,12 +184,17 @@ export class MediaSelectionController {
 
     const result =
       this.service.deselect(
-        key
+        key,
+        {
+          emitChange
+        }
       );
 
     if (
       this.lastSelectedKey ===
-      String(key)
+      String(
+        key
+      )
     ) {
       this.lastSelectedKey =
         this.service
@@ -131,7 +210,8 @@ export class MediaSelectionController {
   toggle(
     key,
     {
-      additive = true
+      additive = true,
+      emitChange = true
     } = {}
   ) {
     if (!key) {
@@ -142,7 +222,8 @@ export class MediaSelectionController {
       this.service.toggle(
         key,
         {
-          additive
+          additive,
+          emitChange
         }
       );
 
@@ -150,11 +231,12 @@ export class MediaSelectionController {
       result?.success
     ) {
       this.lastSelectedKey =
-        this.service
-          .isSelected(
-            key
-          )
-          ? String(key)
+        this.service.isSelected(
+          key
+        )
+          ? String(
+              key
+            )
           : this.service
               .getLastSelectedId?.() ||
             null;
@@ -169,7 +251,8 @@ export class MediaSelectionController {
     key,
     selected = true,
     {
-      additive = true
+      additive = true,
+      emitChange = true
     } = {}
   ) {
     if (!key) {
@@ -180,24 +263,29 @@ export class MediaSelectionController {
       return this.select(
         key,
         {
-          additive
+          additive,
+          emitChange
         }
       );
     }
 
     return this.deselect(
-      key
+      key,
+      {
+        emitChange
+      }
     );
   }
 
   /* ------------------------------------------------------------------ */
-  /* Selección por rango                                                 */
+  /* Selección por rango                                                */
   /* ------------------------------------------------------------------ */
 
   selectRange(
     toKey,
     {
-      additive = false
+      additive = false,
+      emitChange = true
     } = {}
   ) {
     const endKey =
@@ -218,7 +306,8 @@ export class MediaSelectionController {
       return this.select(
         endKey,
         {
-          additive
+          additive,
+          emitChange
         }
       );
     }
@@ -234,7 +323,9 @@ export class MediaSelectionController {
         toId:
           endKey,
 
-        additive
+        additive,
+
+        emitChange
       });
 
     if (
@@ -250,11 +341,12 @@ export class MediaSelectionController {
   }
 
   /* ------------------------------------------------------------------ */
-  /* Seleccionar visibles                                                */
+  /* Seleccionar visibles                                               */
   /* ------------------------------------------------------------------ */
 
   selectVisible({
-    replace = false
+    replace = false,
+    emitChange = true
   } = {}) {
     if (
       !this.orderedKeys.length
@@ -266,13 +358,13 @@ export class MediaSelectionController {
       this.service.selectAll(
         this.orderedKeys,
         {
-          replace
+          replace,
+          emitChange
         }
       );
 
     if (
-      result?.success &&
-      this.orderedKeys.length
+      result?.success
     ) {
       this.lastSelectedKey =
         this.orderedKeys[
@@ -289,9 +381,13 @@ export class MediaSelectionController {
   /* Limpiar                                                            */
   /* ------------------------------------------------------------------ */
 
-  clear() {
+  clear({
+    emitChange = true
+  } = {}) {
     const result =
-      this.service.clear();
+      this.service.clear({
+        emitChange
+      });
 
     this.lastSelectedKey =
       null;
@@ -302,19 +398,22 @@ export class MediaSelectionController {
   }
 
   /* ------------------------------------------------------------------ */
-  /* Sincronización                                                      */
+  /* Sincronización                                                     */
   /* ------------------------------------------------------------------ */
 
   prune(
-    validKeys =
-      this.orderedKeys
+    validKeys = [],
+    {
+      emitChange = false
+    } = {}
   ) {
     const result =
       this.service.prune(
-        validKeys,
+        this.normalizeKeys(
+          validKeys
+        ),
         {
-          emitChange:
-            false
+          emitChange
         }
       );
 
@@ -336,7 +435,7 @@ export class MediaSelectionController {
   }
 
   /* ------------------------------------------------------------------ */
-  /* Consultas                                                           */
+  /* Consultas                                                          */
   /* ------------------------------------------------------------------ */
 
   isSelected(
@@ -384,7 +483,7 @@ export class MediaSelectionController {
   }
 
   /* ------------------------------------------------------------------ */
-  /* Ciclo de vida                                                       */
+  /* Ciclo de vida                                                      */
   /* ------------------------------------------------------------------ */
 
   destroy() {
