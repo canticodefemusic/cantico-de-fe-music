@@ -15,6 +15,10 @@ import {
   renderR2MediaListRow
 } from './renderR2MediaListRow.js';
 
+import {
+  renderMediaListHeader
+} from './renderMediaListHeader.js';
+
 /* ------------------------------------------------------------------ */
 /* Utilidades                                                         */
 /* ------------------------------------------------------------------ */
@@ -285,9 +289,7 @@ export function renderMediaListView({
       aria-label="Lista de archivos multimedia"
     >
 
-      ${renderListHeader({
-        sortMode
-      })}
+      ${renderMediaListHeader()}
 
       <div
         class="media-list-view__body"
