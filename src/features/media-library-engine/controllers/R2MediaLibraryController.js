@@ -31,6 +31,9 @@ import {
 import MediaViewModeController
   from './MediaViewModeController.js';
 
+import MediaSelectionController
+  from './MediaSelectionController.js';
+
 function normalizeText(
   value = ''
 ) {
@@ -358,6 +361,9 @@ export class R2MediaLibraryController {
 
     this.viewModeController =
       null;
+
+    this.selectionController =
+      new MediaSelectionController();
     
     this.selectedKeys =
       new Set();
@@ -1529,6 +1535,12 @@ this.viewModeController.init();
       ?.destroy();
 
     this.viewModeController =
+      null;
+
+    this.selectionController
+      ?.destroy();
+
+    this.selectionController =
       null;
     
     this.objects = [];
