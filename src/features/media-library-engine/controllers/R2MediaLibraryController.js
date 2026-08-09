@@ -973,32 +973,45 @@ this.viewModeController.init();
 }
 
   pruneSelection() {
-    const validKeys =
-      new Set(
-        this.objects
-          .map(
-            object =>
-              object?.key
-          )
-          .filter(
-            Boolean
-          )
+  const validKeys =
+    this.objects
+      .map(
+        object =>
+          object?.key
+      )
+      .filter(
+        Boolean
       );
 
-    this.selectedKeys.forEach(
-      key => {
-        if (
-          !validKeys.has(
-            key
-          )
-        ) {
-          this.selectedKeys.delete(
-            key
-          );
-        }
-      }
+  const validKeySet =
+    new Set(
+      validKeys
     );
-  }
+
+  this.selectedKeys.forEach(
+    key => {
+      if (
+        !validKeySet.has(
+          key
+        )
+      ) {
+        this.selectedKeys.delete(
+          key
+        );
+      }
+    }
+  );
+
+  this.selectionController
+    ?.prune(
+      validKeys
+    );
+
+  this.selectionController
+    ?.syncFromSet(
+      this.selectedKeys
+    );
+}
 
   restoreSearchFocus() {
     window.requestAnimationFrame(
