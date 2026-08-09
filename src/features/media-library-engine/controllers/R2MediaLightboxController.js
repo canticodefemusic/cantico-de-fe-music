@@ -1,13 +1,15 @@
 /**
  * Cántico de Fe Music
- * V13.7.4.1 — R2 Media Lightbox Controller
+ * V13.7.5 — R2 Media Lightbox Controller
  *
  * Funciones:
  * - Abrir imágenes dentro del Modal Engine
- * - Usar el nombre original mostrado en la tarjeta
+ * - Usar nombre original mostrado en la tarjeta
+ * - Navegar entre imágenes cargadas
+ * - Botones Anterior / Siguiente
+ * - Navegación con teclas ← y →
  * - Cerrar con Escape
  * - Cerrar al hacer clic fuera
- * - Mostrar imagen grande
  * - Descargar imagen
  * - Copiar enlace
  */
@@ -20,26 +22,11 @@ function escapeHtml(
   value = ''
 ) {
   return String(value)
-    .replace(
-      /&/g,
-      '&amp;'
-    )
-    .replace(
-      /</g,
-      '&lt;'
-    )
-    .replace(
-      />/g,
-      '&gt;'
-    )
-    .replace(
-      /"/g,
-      '&quot;'
-    )
-    .replace(
-      /'/g,
-      '&#039;'
-    );
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 function getMediaUrl(
@@ -110,6 +97,12 @@ export class R2MediaLightboxController {
     this.initialized =
       false;
 
+    this.images = [];
+    this.currentIndex = -1;
+
+    this.lightboxKeydownHandler =
+      null;
+
     this.handleClick =
       this.handleClick.bind(
         this
@@ -170,12 +163,6 @@ export class R2MediaLightboxController {
         'data-media-type'
       );
 
-    /*
-     * V13.7.4.1
-     *
-     * Por ahora el Lightbox se usa
-     * únicamente para imágenes.
-     */
     if (
       mediaType !== 'image'
     ) {
@@ -191,18 +178,83 @@ export class R2MediaLightboxController {
       return;
     }
 
-    const originalName =
-      getOriginalNameFromCard(
-        card,
-        key
-      );
-
     event.preventDefault();
 
-    this.openImage({
-      key,
+    this.collectImages();
+
+    const index =
+      this.images.findIndex(
+        image =>
+          image.key === key
+      );
+
+    this.currentIndex =
+      index >= 0
+        ? index
+        : 0;
+
+    this.openCurrentImage();
+  }
+
+  collectImages() {
+    if (!this.root) {
+      this.images = [];
+
+      return;
+    }
+
+    const cards =
+      [
+        ...this.root.querySelectorAll(
+          '[data-media-key][data-media-type="image"]'
+        )
+      ];
+
+    this.images =
+      cards
+        .map(
+          card => {
+            const key =
+              card.getAttribute(
+                'data-media-key'
+              );
+
+            if (!key) {
+              return null;
+            }
+
+            return {
+              key,
+
+              name:
+                getOriginalNameFromCard(
+                  card,
+                  key
+                )
+            };
+          }
+        )
+        .filter(
+          Boolean
+        );
+  }
+
+  openCurrentImage() {
+    const item =
+      this.images[
+        this.currentIndex
+      ];
+
+    if (!item) {
+      return null;
+    }
+
+    return this.openImage({
+      key:
+        item.key,
+
       name:
-        originalName
+        item.name
     });
   }
 
@@ -237,66 +289,145 @@ export class R2MediaLightboxController {
         mediaUrl
       );
 
+    const total =
+      this.images.length;
+
+    const position =
+      this.currentIndex + 1;
+
+    const hasPrevious =
+      this.currentIndex > 0;
+
+    const hasNext =
+      this.currentIndex <
+      total - 1;
+
+    this.removeLightboxKeyboard();
+
     const backdrop =
-      ModalService.open({
-        title:
-          safeName,
+      ModalService.open(
+        {
+          title:
+            safeName,
 
-        message: `
-          <div
-            class="media-lightbox"
-            data-media-lightbox
-          >
-
+          message: `
             <div
-              class="media-lightbox__viewer"
+              class="media-lightbox"
+              data-media-lightbox
             >
-              <img
-                class="media-lightbox__image"
-                src="${safeUrl}"
-                alt="${safeName}"
-                decoding="async"
-              >
-            </div>
 
-            <div
-              class="media-lightbox__details"
+              <div
+                class="media-lightbox__viewer"
+              >
+
+                ${
+                  hasPrevious
+                    ? `
+                      <button
+                        type="button"
+                        class="
+                          media-lightbox__nav
+                          media-lightbox__nav--previous
+                        "
+                        data-media-lightbox-previous
+                        aria-label="Imagen anterior"
+                        title="Anterior"
+                      >
+                        ‹
+                      </button>
+                    `
+                    : ''
+                }
+
+                <img
+                  class="media-lightbox__image"
+                  src="${safeUrl}"
+                  alt="${safeName}"
+                  decoding="async"
+                >
+
+                ${
+                  hasNext
+                    ? `
+                      <button
+                        type="button"
+                        class="
+                          media-lightbox__nav
+                          media-lightbox__nav--next
+                        "
+                        data-media-lightbox-next
+                        aria-label="Imagen siguiente"
+                        title="Siguiente"
+                      >
+                        ›
+                      </button>
+                    `
+                    : ''
+                }
+
+              </div>
+
+              <div
+                class="media-lightbox__details"
+              >
+
+                <span
+                  class="media-lightbox__name"
+                >
+                  ${safeName}
+                </span>
+
+                ${
+                  total > 1
+                    ? `
+                      <span
+                        class="media-lightbox__position"
+                        aria-label="Posición de la imagen"
+                      >
+                        ${position}
+                        de
+                        ${total}
+                      </span>
+                    `
+                    : ''
+                }
+
+              </div>
+
+            </div>
+          `,
+
+          actions: `
+            <button
+              type="button"
+              data-media-lightbox-copy
+              data-media-url="${safeUrl}"
             >
-              <span
-                class="media-lightbox__name"
-              >
-                ${safeName}
-              </span>
-            </div>
+              Copiar enlace
+            </button>
 
-          </div>
-        `,
+            <a
+              href="${safeUrl}"
+              download="${safeName}"
+              class="media-lightbox__download"
+            >
+              Descargar
+            </a>
 
-        actions: `
-          <button
-            type="button"
-            data-media-lightbox-copy
-            data-media-url="${safeUrl}"
-          >
-            Copiar enlace
-          </button>
-
-          <a
-            href="${safeUrl}"
-            download="${safeName}"
-            class="media-lightbox__download"
-          >
-            Descargar
-          </a>
-
-          <button
-            type="button"
-            data-media-lightbox-close
-          >
-            Cerrar
-          </button>
-        `
-      });
+            <button
+              type="button"
+              data-media-lightbox-close
+            >
+              Cerrar
+            </button>
+          `
+        },
+        {
+          onDismiss: () => {
+            this.removeLightboxKeyboard();
+          }
+        }
+      );
 
     if (!backdrop) {
       return null;
@@ -320,6 +451,8 @@ export class R2MediaLightboxController {
       ?.addEventListener(
         'click',
         () => {
+          this.removeLightboxKeyboard();
+
           ModalService.close();
         },
         {
@@ -344,6 +477,34 @@ export class R2MediaLightboxController {
         }
       );
 
+    const previousButton =
+      backdrop.querySelector(
+        '[data-media-lightbox-previous]'
+      );
+
+    previousButton
+      ?.addEventListener(
+        'click',
+        () => {
+          this.showPrevious();
+        }
+      );
+
+    const nextButton =
+      backdrop.querySelector(
+        '[data-media-lightbox-next]'
+      );
+
+    nextButton
+      ?.addEventListener(
+        'click',
+        () => {
+          this.showNext();
+        }
+      );
+
+    this.installLightboxKeyboard();
+
     window.requestAnimationFrame(
       () => {
         closeButton?.focus();
@@ -351,6 +512,83 @@ export class R2MediaLightboxController {
     );
 
     return backdrop;
+  }
+
+  showPrevious() {
+    if (
+      this.currentIndex <= 0
+    ) {
+      return false;
+    }
+
+    this.currentIndex -= 1;
+
+    this.openCurrentImage();
+
+    return true;
+  }
+
+  showNext() {
+    if (
+      this.currentIndex >=
+      this.images.length - 1
+    ) {
+      return false;
+    }
+
+    this.currentIndex += 1;
+
+    this.openCurrentImage();
+
+    return true;
+  }
+
+  installLightboxKeyboard() {
+    this.removeLightboxKeyboard();
+
+    this.lightboxKeydownHandler =
+      event => {
+        if (
+          event.key ===
+          'ArrowLeft'
+        ) {
+          event.preventDefault();
+
+          this.showPrevious();
+
+          return;
+        }
+
+        if (
+          event.key ===
+          'ArrowRight'
+        ) {
+          event.preventDefault();
+
+          this.showNext();
+        }
+      };
+
+    document.addEventListener(
+      'keydown',
+      this.lightboxKeydownHandler
+    );
+  }
+
+  removeLightboxKeyboard() {
+    if (
+      !this.lightboxKeydownHandler
+    ) {
+      return;
+    }
+
+    document.removeEventListener(
+      'keydown',
+      this.lightboxKeydownHandler
+    );
+
+    this.lightboxKeydownHandler =
+      null;
   }
 
   async copyLink(
@@ -436,18 +674,23 @@ export class R2MediaLightboxController {
   }
 
   destroy() {
-    if (
-      !this.initialized
-    ) {
-      return;
-    }
+    this.removeLightboxKeyboard();
 
-    if (this.root) {
+    ModalService.close(
+      false
+    );
+
+    if (
+      this.root
+    ) {
       this.root.removeEventListener(
         'click',
         this.handleClick
       );
     }
+
+    this.images = [];
+    this.currentIndex = -1;
 
     this.root =
       null;
