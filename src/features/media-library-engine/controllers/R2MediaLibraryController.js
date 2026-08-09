@@ -931,14 +931,25 @@ this.viewModeController.init();
   }
 
   if (selected) {
-    this.selectedKeys.add(
-      key
-    );
-  } else {
-    this.selectedKeys.delete(
-      key
-    );
+  this.selectedKeys.add(
+    key
+  );
+
+  this.lastSelectedKey =
+    key;
+} else {
+  this.selectedKeys.delete(
+    key
+  );
+
+  if (
+    this.lastSelectedKey ===
+    key
+  ) {
+    this.lastSelectedKey =
+      null;
   }
+}
 
   this.selectionController
     ?.syncFromSet(
