@@ -21,6 +21,10 @@ import {
   renderMediaStatistics
 } from './renderMediaStatistics.js';
 
+import {
+  renderMediaListView
+} from './renderMediaListView.js';
+
 /* ------------------------------------------------------------------ */
 /* Utilidades                                                         */
 /* ------------------------------------------------------------------ */
@@ -892,25 +896,37 @@ export function renderR2MediaLibrary({
         !error &&
         safeObjects.length
           ? `
-            <div
-              class="media-library-grid"
-              data-media-library-grid
-            >
-              ${safeObjects
-                .map(
-                  object =>
-                    renderR2MediaItem(
-                      object,
-                      {
-                        selected:
-                          safeSelectedKeys.has(
-                            object.key
-                          )
-                      }
-                    )
-                )
-                .join('')}
-            </div>
+            ${
+              viewMode === 'list'
+                ? renderMediaListView({
+                    objects:
+                      safeObjects,
+
+                    selectedKeys:
+                      safeSelectedKeys
+                  })
+               : `
+                    <div
+                      class="media-library-grid"
+                      data-media-library-grid
+                    >
+                      ${safeObjects
+                        .map(
+                          object =>
+                            renderR2MediaItem(
+                              object,
+                              {
+                                selected:
+                                  safeSelectedKeys.has(
+                                    object.key
+                                  )
+                              }
+                            )
+                        )
+                        .join('')}
+                    </div>
+                  `
+            }
           `
           : ''
       }
