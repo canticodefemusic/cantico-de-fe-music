@@ -931,26 +931,31 @@ this.viewModeController.init();
 }
 
   selectVisible() {
-    if (
-      this.bulkBusy
-    ) {
-      return;
-    }
+  if (
+    this.bulkBusy
+  ) {
+    return;
+  }
 
-    this.filteredObjects.forEach(
-      object => {
-        if (
-          object?.key
-        ) {
-          this.selectedKeys.add(
-            object.key
-          );
-        }
+  this.filteredObjects.forEach(
+    object => {
+      if (
+        object?.key
+      ) {
+        this.selectedKeys.add(
+          object.key
+        );
       }
+    }
+  );
+
+  this.selectionController
+    ?.syncFromSet(
+      this.selectedKeys
     );
 
-    this.render();
-  }
+  this.render();
+}
 
   clearSelection() {
     if (
