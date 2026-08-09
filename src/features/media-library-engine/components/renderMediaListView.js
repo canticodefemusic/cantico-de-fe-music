@@ -1,14 +1,14 @@
 /**
  * Cántico de Fe Music
- * V13.8.3 — Media List View
+ * V13.8.5 — Professional Media List View
  *
  * Funciones:
  * - Vista compacta tipo tabla
  * - Usa renderR2MediaListRow()
- * - Mantiene selección múltiple
- * - Mantiene menú de acciones
- * - Mantiene Lightbox
- * - Mantiene copiar / descargar / eliminar
+ * - Selección múltiple
+ * - Encabezados ordenables
+ * - Indicador de orden activo
+ * - Compatible con menú, Lightbox y acciones existentes
  */
 
 import {
@@ -42,10 +42,116 @@ function normalizeSelectedKeys(
 }
 
 /* ------------------------------------------------------------------ */
+/* Ordenamiento                                                       */
+/* ------------------------------------------------------------------ */
+
+function getSortIndicator({
+  column,
+  sortMode
+}) {
+  if (
+    column === 'name' &&
+    sortMode === 'name'
+  ) {
+    return '▲';
+  }
+
+  if (
+    column === 'type' &&
+    sortMode === 'type'
+  ) {
+    return '▲';
+  }
+
+  if (
+    column === 'size' &&
+    sortMode === 'size'
+  ) {
+    return '▼';
+  }
+
+  if (
+    column === 'date' &&
+    sortMode === 'newest'
+  ) {
+    return '▼';
+  }
+
+  if (
+    column === 'date' &&
+    sortMode === 'oldest'
+  ) {
+    return '▲';
+  }
+
+  return '';
+}
+
+function renderSortableHeading({
+  column,
+  label,
+  sortMode,
+  className = ''
+}) {
+  const indicator =
+    getSortIndicator({
+      column,
+      sortMode
+    });
+
+  const active =
+    Boolean(
+      indicator
+    );
+
+  return `
+    <div
+      class="
+        media-list-view__heading
+        ${className}
+      "
+      role="columnheader"
+    >
+      <button
+        type="button"
+        class="
+          media-list-view__sort-button
+          ${
+            active
+              ? 'is-active'
+              : ''
+          }
+        "
+        data-media-list-sort="${column}"
+        aria-label="Ordenar por ${label}"
+        aria-pressed="${
+          active
+            ? 'true'
+            : 'false'
+        }"
+      >
+        <span>
+          ${label}
+        </span>
+
+        <span
+          class="media-list-view__sort-indicator"
+          aria-hidden="true"
+        >
+          ${indicator}
+        </span>
+      </button>
+    </div>
+  `;
+}
+
+/* ------------------------------------------------------------------ */
 /* Encabezado                                                         */
 /* ------------------------------------------------------------------ */
 
-function renderListHeader() {
+function renderListHeader({
+  sortMode = 'newest'
+} = {}) {
   return `
     <div
       class="media-list-view__header"
@@ -61,45 +167,57 @@ function renderListHeader() {
       >
       </div>
 
-      <div
-        class="
-          media-list-view__heading
-          media-list-view__heading--name
-        "
-        role="columnheader"
-      >
-        Nombre
-      </div>
+      ${renderSortableHeading({
+        column:
+          'name',
 
-      <div
-        class="
-          media-list-view__heading
-          media-list-view__heading--type
-        "
-        role="columnheader"
-      >
-        Tipo
-      </div>
+        label:
+          'Nombre',
 
-      <div
-        class="
-          media-list-view__heading
-          media-list-view__heading--size
-        "
-        role="columnheader"
-      >
-        Tamaño
-      </div>
+        sortMode,
 
-      <div
-        class="
-          media-list-view__heading
-          media-list-view__heading--date
-        "
-        role="columnheader"
-      >
-        Fecha
-      </div>
+        className:
+          'media-list-view__heading--name'
+      })}
+
+      ${renderSortableHeading({
+        column:
+          'type',
+
+        label:
+          'Tipo',
+
+        sortMode,
+
+        className:
+          'media-list-view__heading--type'
+      })}
+
+      ${renderSortableHeading({
+        column:
+          'size',
+
+        label:
+          'Tamaño',
+
+        sortMode,
+
+        className:
+          'media-list-view__heading--size'
+      })}
+
+      ${renderSortableHeading({
+        column:
+          'date',
+
+        label:
+          'Fecha',
+
+        sortMode,
+
+        className:
+          'media-list-view__heading--date'
+      })}
 
       <div
         class="
@@ -137,7 +255,8 @@ function renderEmptyList() {
 
 export function renderMediaListView({
   objects = [],
-  selectedKeys = []
+  selectedKeys = [],
+  sortMode = 'newest'
 } = {}) {
 
   const safeObjects =
@@ -166,7 +285,9 @@ export function renderMediaListView({
       aria-label="Lista de archivos multimedia"
     >
 
-      ${renderListHeader()}
+      ${renderListHeader({
+        sortMode
+      })}
 
       <div
         class="media-list-view__body"
