@@ -853,27 +853,37 @@ this.viewModeController.init();
   }
 
   setSortMode(
-    sortMode = 'newest'
+  sortMode = 'newest'
+) {
+  const allowedSortModes = [
+    'newest',
+    'oldest',
+    'name',
+    'size',
+    'type'
+  ];
+
+  const nextSortMode =
+    allowedSortModes.includes(
+      sortMode
+    )
+      ? sortMode
+      : 'newest';
+
+  if (
+    this.sortMode ===
+    nextSortMode
   ) {
-    const allowedSortModes = [
-      'newest',
-      'oldest',
-      'name',
-      'size',
-      'type'
-    ];
-
-    this.sortMode =
-      allowedSortModes.includes(
-        sortMode
-      )
-        ? sortMode
-        : 'newest';
-
-    this.applyViewState();
-
-    this.render();
+    return;
   }
+
+  this.sortMode =
+    nextSortMode;
+
+  this.applyViewState();
+
+  this.render();
+}
 
   clearSearch() {
     this.searchQuery = '';
