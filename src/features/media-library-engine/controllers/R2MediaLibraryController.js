@@ -392,6 +392,11 @@ export class R2MediaLibraryController {
       this.handleChange.bind(
         this
       );
+    
+    this.handleKeyDown =
+      this.handleKeyDown.bind(
+        this
+      );
   }
 
   init() {
@@ -414,6 +419,11 @@ export class R2MediaLibraryController {
       this.handleChange
     );
 
+    document.addEventListener(
+      'keydown',
+      this.handleKeyDown
+    );
+    
     this.load();
 
     this.viewModeController =
@@ -872,6 +882,56 @@ export class R2MediaLibraryController {
     }
   }
 
+  handleKeyDown(
+  event
+) {
+  if (
+    !this.root ||
+    this.bulkBusy
+  ) {
+    return;
+  }
+
+  const target =
+    event.target;
+
+  const typing =
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target instanceof HTMLSelectElement ||
+    target?.isContentEditable;
+
+  if (typing) {
+    return;
+  }
+
+  const selectAllShortcut =
+    (
+      event.metaKey ||
+      event.ctrlKey
+    ) &&
+    event.key.toLowerCase() ===
+      'a';
+
+  if (selectAllShortcut) {
+    event.preventDefault();
+
+    this.selectVisible();
+
+    return;
+  }
+
+  if (
+    event.key ===
+      'Escape' &&
+    this.selectedKeys.size
+  ) {
+    event.preventDefault();
+
+    this.clearSelection();
+  }
+}
+  
   applyViewState() {
     const query =
       normalizeText(
@@ -1807,6 +1867,11 @@ export class R2MediaLibraryController {
       this.root.removeEventListener(
         'change',
         this.handleChange
+      );
+
+      document.removeEventListener(
+        'keydown',
+        this.handleKeyDown
       );
     }
 
