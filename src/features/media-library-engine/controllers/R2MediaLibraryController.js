@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V13.6.6 — R2 Media Library Controller
+ * V13.14.5 — Professional R2 Media Library Controller
  *
  * Funciones:
  * - Carga paginada desde R2
@@ -352,10 +352,10 @@ export class R2MediaLibraryController {
 
     this.objects = [];
     this.filteredObjects = [];
-    
+
     this.lastSelectedKey =
       null;
-    
+
     this.searchQuery = '';
     this.activeFilter = 'all';
     this.sortMode = 'newest';
@@ -367,7 +367,7 @@ export class R2MediaLibraryController {
 
     this.selectionController =
       new MediaSelectionController();
-    
+
     this.selectedKeys =
       new Set();
 
@@ -415,28 +415,28 @@ export class R2MediaLibraryController {
     );
 
     this.load();
-    
+
     this.viewModeController =
       new MediaViewModeController({
+        root:
+          this.root,
 
-        root: this.root,
+        onChange:
+          mode => {
+            this.viewMode =
+              mode;
 
-        onChange: mode => {
+            this.render();
+          }
+      });
 
-          this.viewMode =
-            mode;
+    this.viewMode =
+      this.viewModeController
+        .getMode();
 
-          this.render();
+    this.viewModeController
+      .init();
 
-        }
-
-    });
-
-this.viewMode =
-  this.viewModeController.getMode();
-
-this.viewModeController.init();
-    
     return true;
   }
 
@@ -502,7 +502,16 @@ this.viewModeController.init();
       this.cursor = null;
       this.hasMore = false;
 
+      this.selectionController
+        ?.clear({
+          emitChange:
+            false
+        });
+
       this.selectedKeys.clear();
+
+      this.lastSelectedKey =
+        null;
 
       this.error =
         error?.message ||
@@ -511,7 +520,7 @@ this.viewModeController.init();
     } finally {
       this.loading = false;
 
-      this.render();
+          this.render();
     }
   }
 
@@ -615,7 +624,16 @@ this.viewModeController.init();
     this.cursor = null;
     this.hasMore = false;
 
+    this.selectionController
+      ?.clear({
+        emitChange:
+          false
+      });
+
     this.selectedKeys.clear();
+
+    this.lastSelectedKey =
+      null;
 
     return this.load();
   }
@@ -663,17 +681,68 @@ this.viewModeController.init();
         '[data-media-select]'
       );
 
-    if (checkbox) {
-      const key =
-        checkbox.getAttribute(
-          'data-media-select'
-        );
-
-      this.setSelected(
-        key,
-        checkbox.checked
-      );
+    if (!checkbox) {
+      return;
     }
+
+    const key =
+      checkbox.getAttribute(
+        'data-media-select'
+      );
+
+    if (!key) {
+      return;
+    }
+
+    const shiftSelection =
+      checkbox.getAttribute(
+        'data-media-shift-select'
+      ) === 'true';
+
+    checkbox.removeAttribute(
+      'data-media-shift-select'
+    );
+
+    if (
+      shiftSelection &&
+      this.lastSelectedKey &&
+      this.lastSelectedKey !== key
+    ) {
+      const anchorKey =
+        this.lastSelectedKey;
+
+      const success =
+        this.selectionController
+          ?.selectRange(
+            key,
+            {
+              fromKey:
+                anchorKey,
+
+              additive:
+                false,
+
+              preserveAnchor:
+                true
+            }
+          );
+
+      if (success) {
+        this.syncSelectedKeysFromSelectionController();
+
+        this.lastSelectedKey =
+          anchorKey;
+
+        this.render();
+
+        return;
+      }
+    }
+
+    this.setSelected(
+      key,
+      checkbox.checked
+    );
   }
 
   async handleClick(
@@ -694,7 +763,7 @@ this.viewModeController.init();
 
       return;
     }
-    
+
     const loadMoreButton =
       event.target.closest(
         '[data-media-load-more]'
@@ -804,61 +873,61 @@ this.viewModeController.init();
   }
 
   applyViewState() {
-  const query =
-    normalizeText(
-      this.searchQuery
-    );
-
-  const filtered =
-    this.objects.filter(
-      object => {
-        const matchesSearch =
-          !query ||
-          buildSearchText(
-            object
-          ).includes(
-            query
-          );
-
-        const mediaType =
-          getObjectMediaType(
-            object
-          );
-
-        const matchesType =
-          this.activeFilter ===
-            'all' ||
-          mediaType ===
-            this.activeFilter;
-
-        return (
-          matchesSearch &&
-          matchesType
-        );
-      }
-    );
-
-  this.filteredObjects =
-    sortObjects(
-      filtered,
-      this.sortMode
-    );
-
-  const orderedKeys =
-    this.filteredObjects
-      .map(
-        object =>
-          object?.key
-      )
-      .filter(
-        Boolean
+    const query =
+      normalizeText(
+        this.searchQuery
       );
 
-  this.selectionController
-    ?.setOrderedKeys(
-      orderedKeys
-    );
-}
+    const filtered =
+      this.objects.filter(
+        object => {
+          const matchesSearch =
+            !query ||
+            buildSearchText(
+              object
+            ).includes(
+              query
+            );
+
+          const mediaType =
+            getObjectMediaType(
+              object
+            );
+
+          const matchesType =
+            this.activeFilter ===
+              'all' ||
+            mediaType ===
+              this.activeFilter;
+
+          return (
+            matchesSearch &&
+            matchesType
+          );
+        }
+      );
+
+    this.filteredObjects =
+      sortObjects(
+        filtered,
+        this.sortMode
+      );
+
+    const orderedKeys =
+      this.filteredObjects
+        .map(
+          object =>
+            object?.key
+        )
+        .filter(
+          Boolean
+        );
+
+    this.selectionController
+      ?.setOrderedKeys(
+        orderedKeys
+      );
+  }
 
   setFilter(
     filter = 'all'
@@ -887,176 +956,286 @@ this.viewModeController.init();
   }
 
   setSortMode(
-  sortMode = 'newest'
-) {
-  const allowedSortModes = [
-    'newest',
-    'oldest',
-    'name',
-    'size',
-    'type'
-  ];
-
-  const nextSortMode =
-    allowedSortModes.includes(
-      sortMode
-    )
-      ? sortMode
-      : 'newest';
-
-  if (
-    this.sortMode ===
-    nextSortMode
+    sortMode = 'newest'
   ) {
-    return;
+    const allowedSortModes = [
+      'newest',
+      'oldest',
+      'name',
+      'size',
+      'type'
+    ];
+
+    const nextSortMode =
+      allowedSortModes.includes(
+        sortMode
+      )
+        ? sortMode
+        : 'newest';
+
+    if (
+      this.sortMode ===
+      nextSortMode
+    ) {
+      return;
+    }
+
+    this.sortMode =
+      nextSortMode;
+
+    this.applyViewState();
+
+    this.render();
   }
-
-  this.sortMode =
-    nextSortMode;
-
-  this.applyViewState();
-
-  this.render();
-}
 
   clearSearch() {
-  if (
-    !this.searchQuery
-  ) {
-    return;
+    if (
+      !this.searchQuery
+    ) {
+      return;
+    }
+
+    this.searchQuery = '';
+
+    this.applyViewState();
+
+    this.render();
+
+    this.restoreSearchFocus();
   }
-
-  this.searchQuery = '';
-
-  this.applyViewState();
-
-  this.render();
-
-  this.restoreSearchFocus();
-}
 
   setSelected(
-  key,
-  selected
-) {
-  if (
-    !key ||
-    this.bulkBusy
+    key,
+    selected
   ) {
-    return;
-  }
-
-  if (selected) {
-  this.selectedKeys.add(
-    key
-  );
-
-  this.lastSelectedKey =
-    key;
-} else {
-  this.selectedKeys.delete(
-    key
-  );
-
-  if (
-    this.lastSelectedKey ===
-    key
-  ) {
-    this.lastSelectedKey =
-      null;
-  }
-}
-
-  this.selectionController
-    ?.syncFromSet(
-      this.selectedKeys
-    );
-
-  this.render();
-}
-
-  selectVisible() {
-  if (
-    this.bulkBusy
-  ) {
-    return;
-  }
-
-  this.filteredObjects.forEach(
-    object => {
-      if (
-        object?.key
-      ) {
-        this.selectedKeys.add(
-          object.key
-        );
-      }
+    if (
+      !key ||
+      this.bulkBusy
+    ) {
+      return;
     }
-  );
 
-  this.selectionController
-    ?.syncFromSet(
-      this.selectedKeys
-    );
+    if (
+      this.selectionController
+    ) {
+      this.selectionController
+        .setSelected(
+          key,
+          selected,
+          {
+            additive:
+              true,
 
-  this.render();
-}
+            emitChange:
+              true
+          }
+        );
 
-  clearSelection() {
-  if (
-    this.bulkBusy
-  ) {
-    return;
-  }
+      this.syncSelectedKeysFromSelectionController();
 
-  this.selectedKeys.clear();
+      this.render();
 
-  this.selectionController
-    ?.clear();
+      return;
+    }
 
-  this.render();
-}
-
-  pruneSelection() {
-  const validKeys =
-    this.objects
-      .map(
-        object =>
-          object?.key
-      )
-      .filter(
-        Boolean
+    /*
+     * Compatibilidad de seguridad.
+     * Solo se usa si el Selection Controller
+     * no está disponible.
+     */
+    if (selected) {
+      this.selectedKeys.add(
+        key
       );
 
-  const validKeySet =
-    new Set(
-      validKeys
-    );
+      this.lastSelectedKey =
+        key;
+    } else {
+      this.selectedKeys.delete(
+        key
+      );
 
-  this.selectedKeys.forEach(
-    key => {
       if (
-        !validKeySet.has(
-          key
-        )
+        this.lastSelectedKey ===
+        key
       ) {
-        this.selectedKeys.delete(
+        this.lastSelectedKey =
+          null;
+      }
+    }
+
+    this.render();
+  }
+
+  selectVisible() {
+    if (
+      this.bulkBusy
+    ) {
+      return;
+    }
+
+    const visibleKeys =
+      this.filteredObjects
+        .map(
+          object =>
+            object?.key
+        )
+        .filter(
+          Boolean
+        );
+
+    if (
+      this.selectionController
+    ) {
+      this.selectionController
+        .setOrderedKeys(
+          visibleKeys
+        );
+
+      this.selectionController
+        .selectVisible({
+          replace:
+            false,
+
+          emitChange:
+            true
+        });
+
+      this.syncSelectedKeysFromSelectionController();
+
+      this.render();
+
+      return;
+    }
+
+    visibleKeys.forEach(
+      key => {
+        this.selectedKeys.add(
           key
         );
       }
+    );
+
+    this.render();
+  }
+
+  clearSelection() {
+    if (
+      this.bulkBusy
+    ) {
+      return;
     }
-  );
 
-  this.selectionController
-    ?.prune(
-      validKeys
+    if (
+      this.selectionController
+    ) {
+      this.selectionController
+        .clear({
+          emitChange:
+            true
+        });
+
+      this.syncSelectedKeysFromSelectionController();
+
+      this.render();
+
+      return;
+    }
+
+    this.selectedKeys.clear();
+
+    this.lastSelectedKey =
+      null;
+
+    this.render();
+  }
+
+  pruneSelection() {
+    const validKeys =
+      this.objects
+        .map(
+          object =>
+            object?.key
+        )
+        .filter(
+          Boolean
+        );
+
+    if (
+      this.selectionController
+    ) {
+      this.selectionController
+        .prune(
+          validKeys,
+          {
+            emitChange:
+              false
+          }
+        );
+
+      this.syncSelectedKeysFromSelectionController();
+
+      return;
+    }
+
+    const validKeySet =
+      new Set(
+        validKeys
+      );
+
+    this.selectedKeys.forEach(
+      key => {
+        if (
+          !validKeySet.has(
+            key
+          )
+        ) {
+          this.selectedKeys.delete(
+            key
+          );
+        }
+      }
     );
 
-  this.selectionController
-    ?.syncFromSet(
-      this.selectedKeys
+    if (
+      this.lastSelectedKey &&
+      !validKeySet.has(
+        this.lastSelectedKey
+      )
+    ) {
+      this.lastSelectedKey =
+        null;
+    }
+  }
+
+  syncSelectedKeysFromSelectionController() {
+    if (
+      !this.selectionController
+    ) {
+      return this.selectedKeys;
+    }
+
+    const selectedKeys =
+      this.selectionController
+        .getSelectedKeys();
+
+    this.selectedKeys.clear();
+
+    selectedKeys.forEach(
+      key => {
+        this.selectedKeys.add(
+          key
+        );
+      }
     );
-}
+
+    this.lastSelectedKey =
+      this.selectionController
+        .getLastSelectedKey() ||
+      null;
+
+    return this.selectedKeys;
+  }
 
   restoreSearchFocus() {
     window.requestAnimationFrame(
@@ -1474,9 +1653,24 @@ this.viewModeController.init();
           item.key !== key
       );
 
-    this.selectedKeys.delete(
-      key
-    );
+    if (
+      this.selectionController
+    ) {
+      this.selectionController
+        .deselect(
+          key,
+          {
+            emitChange:
+              false
+          }
+        );
+
+      this.syncSelectedKeysFromSelectionController();
+    } else {
+      this.selectedKeys.delete(
+        key
+      );
+    }
 
     this.applyViewState();
 
@@ -1505,7 +1699,7 @@ this.viewModeController.init();
 
         viewMode:
           this.viewMode,
-        
+
         totalCount:
           this.objects.length,
 
@@ -1625,15 +1819,24 @@ this.viewModeController.init();
       null;
 
     this.selectionController
+      ?.clear({
+        emitChange:
+          false
+      });
+
+    this.selectionController
       ?.destroy();
 
     this.selectionController =
       null;
-    
+
     this.objects = [];
     this.filteredObjects = [];
 
     this.selectedKeys.clear();
+
+    this.lastSelectedKey =
+      null;
 
     this.searchQuery = '';
     this.activeFilter = 'all';
