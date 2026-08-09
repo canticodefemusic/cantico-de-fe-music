@@ -25,6 +25,9 @@ import {
   renderMediaListView
 } from './renderMediaListView.js';
 
+import renderMediaManagerToolbar
+  from './renderMediaManagerToolbar.js';
+
 /* ------------------------------------------------------------------ */
 /* Utilidades                                                         */
 /* ------------------------------------------------------------------ */
@@ -866,10 +869,14 @@ export function renderR2MediaLibrary({
 
       ${
         !error
-          ? renderToolbar({
+          ? renderMediaManagerToolbar({
               searchQuery,
+
               activeFilter,
+
               sortMode,
+
+              viewMode,
 
               totalCount:
                 fullCount,
