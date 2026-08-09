@@ -1,18 +1,19 @@
 /**
  * Cántico de Fe Music
- * V13.12.0 — Professional Media Selection Service
+ * V13.12.3 — Universal Media Selection Service
  *
  * Funciones:
+ * - Compatible con MediaLibraryService
+ * - Compatible con keys de Cloudflare R2
  * - Selección individual
  * - Selección múltiple
- * - Seleccionar / deseleccionar
  * - Toggle
- * - Seleccionar todos
  * - Selección por rango
- * - Último archivo seleccionado
- * - Estado de selección
+ * - Seleccionar todos
+ * - Último elemento seleccionado
  * - Suscripciones
- * - Evento global
+ * - Eventos globales
+ * - Limpieza y sincronización
  * - Compatibilidad con API anterior
  */
 
@@ -33,7 +34,7 @@ let lastSelectedMediaId =
   null;
 
 /* ------------------------------------------------------------------ */
-/* Utilidades                                                         */
+/* Normalización                                                      */
 /* ------------------------------------------------------------------ */
 
 function normalizeId(
@@ -51,8 +52,15 @@ function normalizeId(
       mediaId
     ).trim();
 
-  return value || null;
+  return (
+    value ||
+    null
+  );
 }
+
+/* ------------------------------------------------------------------ */
+/* Resolución opcional de metadata                                    */
+/* ------------------------------------------------------------------ */
 
 function getMediaById(
   mediaId
@@ -66,14 +74,28 @@ function getMediaById(
     return null;
   }
 
-  return (
-    MediaLibraryService
-      .getById(
-        id
-      ) ||
-    null
-  );
+  try {
+    return (
+      MediaLibraryService
+        ?.getById?.(
+          id
+        ) ||
+      null
+    );
+  } catch {
+    /*
+     * Una key de R2 puede no existir
+     * dentro de MediaLibraryService.
+     *
+     * La selección sigue siendo válida.
+     */
+    return null;
+  }
 }
+
+/* ------------------------------------------------------------------ */
+/* Consultas internas                                                 */
+/* ------------------------------------------------------------------ */
 
 function getSelectedMedia() {
   return [
@@ -91,6 +113,11 @@ function getSelectedMedia() {
 }
 
 function createSnapshot() {
+  const selectedIds =
+    [
+      ...selectedMediaIds
+    ];
+
   const selected =
     getSelectedMedia();
 
@@ -104,13 +131,10 @@ function createSnapshot() {
   return {
     selected,
 
-    selectedIds:
-      [
-        ...selectedMediaIds
-      ],
+    selectedIds,
 
     count:
-      selectedMediaIds.size,
+      selectedIds.length,
 
     lastSelected,
 
@@ -118,7 +142,7 @@ function createSnapshot() {
       lastSelectedMediaId,
 
     hasSelection:
-      selectedMediaIds.size > 0
+      selectedIds.length > 0
   };
 }
 
@@ -130,14 +154,6 @@ function emit() {
   const snapshot =
     createSnapshot();
 
-  /*
-   * Compatibilidad con V12:
-   * El primer argumento continúa siendo
-   * el último archivo seleccionado.
-   *
-   * El segundo argumento contiene el nuevo
-   * estado completo de selección múltiple.
-   */
   listeners.forEach(
     listener => {
       try {
@@ -147,7 +163,7 @@ function emit() {
         );
       } catch (error) {
         console.error(
-          '[MediaSelectionService] Error en listener:',
+          '[MediaSelectionService] Listener error:',
           error
         );
       }
@@ -166,13 +182,13 @@ function emit() {
         {
           detail: {
             /*
-             * Compatibilidad anterior.
+             * Compatibilidad V12.
              */
             media:
               snapshot.lastSelected,
 
             /*
-             * Nuevo estado profesional.
+             * API moderna.
              */
             selected:
               snapshot.selected,
@@ -215,13 +231,13 @@ function createResult({
     success,
 
     /*
-     * Compatibilidad V12.
+     * Compatibilidad anterior.
      */
     media:
       snapshot.lastSelected,
 
     /*
-     * Estado nuevo.
+     * API moderna.
      */
     selected:
       snapshot.selected,
@@ -279,7 +295,7 @@ const MediaSelectionService = {
       );
     } catch (error) {
       console.error(
-        '[MediaSelectionService] Error inicializando listener:',
+        '[MediaSelectionService] Initial listener error:',
         error
       );
     }
@@ -307,21 +323,13 @@ const MediaSelectionService = {
         mediaId
       );
 
-    const media =
-      getMediaById(
-        id
-      );
-
-    if (
-      !id ||
-      !media
-    ) {
+    if (!id) {
       return createResult({
         success:
           false,
 
         message:
-          'No se encontró el archivo seleccionado.'
+          'No se encontró un identificador válido.'
       });
     }
 
@@ -372,7 +380,7 @@ const MediaSelectionService = {
           false,
 
         message:
-          'No se encontró el archivo seleccionado.'
+          'No se encontró un identificador válido.'
       });
     }
 
@@ -439,7 +447,7 @@ const MediaSelectionService = {
           false,
 
         message:
-          'No se encontró el archivo seleccionado.'
+          'No se encontró un identificador válido.'
       });
     }
 
@@ -466,35 +474,33 @@ const MediaSelectionService = {
   },
 
   /* ================================================================ */
-  /* Establecer estado                                                 */
+  /* Establecer selección                                              */
   /* ================================================================ */
 
   setSelected(
     mediaId,
     selected = true,
-    options = {}
+    {
+      additive = true,
+      emitChange = true
+    } = {}
   ) {
-    return selected
-      ? this.select(
-          mediaId,
-          {
-            additive:
-              options.additive ??
-              true,
+    if (selected) {
+      return this.select(
+        mediaId,
+        {
+          additive,
+          emitChange
+        }
+      );
+    }
 
-            emitChange:
-              options.emitChange ??
-              true
-          }
-        )
-      : this.deselect(
-          mediaId,
-          {
-            emitChange:
-              options.emitChange ??
-              true
-          }
-        );
+    return this.deselect(
+      mediaId,
+      {
+        emitChange
+      }
+    );
   },
 
   /* ================================================================ */
@@ -528,15 +534,6 @@ const MediaSelectionService = {
 
     ids.forEach(
       id => {
-        const media =
-          getMediaById(
-            id
-          );
-
-        if (!media) {
-          return;
-        }
-
         selectedMediaIds
           .add(
             id
@@ -551,17 +548,20 @@ const MediaSelectionService = {
       emit();
     }
 
+    const count =
+      selectedMediaIds.size;
+
     return createResult({
       success:
         true,
 
       message:
-        `${selectedMediaIds.size} archivo${
-          selectedMediaIds.size === 1
+        `${count} archivo${
+          count === 1
             ? ''
             : 's'
         } seleccionado${
-          selectedMediaIds.size === 1
+          count === 1
             ? ''
             : 's'
         }.`
@@ -664,17 +664,10 @@ const MediaSelectionService = {
 
     range.forEach(
       id => {
-        const media =
-          getMediaById(
+        selectedMediaIds
+          .add(
             id
           );
-
-        if (media) {
-          selectedMediaIds
-            .add(
-              id
-            );
-        }
       }
     );
 
@@ -771,12 +764,8 @@ const MediaSelectionService = {
   },
 
   /*
-   * Compatibilidad con V12.
-   *
-   * Antes getSelected() devolvía un
-   * único archivo. Conservamos ese
-   * comportamiento devolviendo el
-   * último archivo seleccionado.
+   * API antigua:
+   * devuelve metadata cuando existe.
    */
   getSelected() {
     if (
@@ -791,7 +780,7 @@ const MediaSelectionService = {
   },
 
   /*
-   * Compatibilidad con V12.
+   * API antigua.
    */
   getSelectedId() {
     return lastSelectedMediaId;
