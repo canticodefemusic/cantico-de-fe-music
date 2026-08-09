@@ -1,12 +1,12 @@
 /**
  * Cántico de Fe Music
- * V13.7.4 — R2 Media Lightbox Controller
+ * V13.7.4.1 — R2 Media Lightbox Controller
  *
  * Funciones:
  * - Abrir imágenes dentro del Modal Engine
+ * - Usar el nombre original mostrado en la tarjeta
  * - Cerrar con Escape
  * - Cerrar al hacer clic fuera
- * - Mostrar nombre del archivo
  * - Mostrar imagen grande
  * - Descargar imagen
  * - Copiar enlace
@@ -71,12 +71,41 @@ function getFileName(
   );
 }
 
+function getOriginalNameFromCard(
+  card,
+  key
+) {
+  if (!card) {
+    return getFileName(
+      key
+    );
+  }
+
+  const nameElement =
+    card.querySelector(
+      '.media-library-item__name'
+    );
+
+  const originalName =
+    nameElement
+      ?.textContent
+      ?.trim();
+
+  return (
+    originalName ||
+    getFileName(
+      key
+    )
+  );
+}
+
 export class R2MediaLightboxController {
 
   constructor({
     root = null
   } = {}) {
-    this.root = root;
+    this.root =
+      root;
 
     this.initialized =
       false;
@@ -142,12 +171,10 @@ export class R2MediaLightboxController {
       );
 
     /*
-     * Por ahora el Lightbox
-     * se usa solamente para imágenes.
+     * V13.7.4.1
      *
-     * Audio, video, PDF y otros
-     * continúan con el comportamiento
-     * existente.
+     * Por ahora el Lightbox se usa
+     * únicamente para imágenes.
      */
     if (
       mediaType !== 'image'
@@ -164,22 +191,38 @@ export class R2MediaLightboxController {
       return;
     }
 
+    const originalName =
+      getOriginalNameFromCard(
+        card,
+        key
+      );
+
     event.preventDefault();
 
-    this.openImage(
-      key
-    );
+    this.openImage({
+      key,
+      name:
+        originalName
+    });
   }
 
-  openImage(
-    key
-  ) {
+  openImage({
+    key,
+    name = ''
+  } = {}) {
+    if (!key) {
+      return null;
+    }
+
     const mediaUrl =
       getMediaUrl(
         key
       );
 
     const fileName =
+      String(
+        name
+      ).trim() ||
       getFileName(
         key
       );
@@ -219,13 +262,11 @@ export class R2MediaLightboxController {
             <div
               class="media-lightbox__details"
             >
-
               <span
                 class="media-lightbox__name"
               >
                 ${safeName}
               </span>
-
             </div>
 
           </div>
@@ -383,6 +424,9 @@ export class R2MediaLightboxController {
 
           button.textContent =
             originalText;
+
+          button.disabled =
+            false;
         },
         1600
       );
