@@ -56,10 +56,33 @@ export class R2MediaService {
   }
 
   async list({
-    prefix = '',
-    cursor = null,
-    limit = 50
-  } = {}) {
+  prefix = '',
+  cursor = null,
+  limit = 50
+} = {}) {
+  const url =
+    this.buildUrl({
+      prefix,
+      cursor,
+      limit
+    });
+
+  const retryDelays = [
+    0,
+    350,
+    900
+  ];
+
+  let lastError = null;
+
+  for (
+    let attempt = 0;
+    attempt < retryDelays.length;
+    attempt += 1
+  ) {
+    const delay =
+      retryDelays[attempt];
+
     if (delay > 0) {
       await new Promise(
         resolve =>
@@ -70,69 +93,120 @@ export class R2MediaService {
       );
     }
 
-    const response =
-      await fetch(
-        url,
-        {
-          method: 'GET',
-
-          headers: {
-            Accept:
-              'application/json'
-          },
-
-          cache:
-            'no-store'
-        }
-      );
-
-    let data;
-
     try {
-      data =
-        await response.json();
-    } catch {
-      throw new Error(
-        'La API multimedia devolvió una respuesta inválida.'
-      );
+      const response =
+        await fetch(
+          url,
+          {
+            method: 'GET',
+
+            headers: {
+              Accept:
+                'application/json'
+            },
+
+            cache:
+              'no-store'
+          }
+        );
+
+      let data = null;
+
+      const contentType =
+        response.headers.get(
+          'content-type'
+        ) || '';
+
+      if (
+        contentType.includes(
+          'application/json'
+        )
+      ) {
+        try {
+          data =
+            await response.json();
+        } catch {
+          data = null;
+        }
+      }
+
+      if (
+        response.ok &&
+        data?.success
+      ) {
+        return {
+          prefix:
+            data.prefix || '',
+
+          count:
+            Number(
+              data.count
+            ) || 0,
+
+          truncated:
+            Boolean(
+              data.truncated
+            ),
+
+          cursor:
+            data.cursor || null,
+
+          objects:
+            Array.isArray(
+              data.objects
+            )
+              ? data.objects
+              : []
+        };
+      }
+
+      const retryable =
+        response.status === 404 ||
+        response.status === 408 ||
+        response.status === 425 ||
+        response.status === 429 ||
+        response.status >= 500;
+
+      lastError =
+        new Error(
+          data?.error ||
+          (
+            contentType.includes(
+              'application/json'
+            )
+              ? `No se pudo cargar la biblioteca multimedia. HTTP ${response.status}`
+              : `La API multimedia devolvió una respuesta inválida. HTTP ${response.status}`
+          )
+        );
+
+      if (!retryable) {
+        throw lastError;
+      }
+
+    } catch (error) {
+      lastError =
+        error instanceof Error
+          ? error
+          : new Error(
+              'No se pudo conectar con la API multimedia.'
+            );
     }
 
     if (
-      !response.ok ||
-      !data?.success
+      attempt ===
+      retryDelays.length - 1
     ) {
-      throw new Error(
-        data?.error ||
-        `No se pudo cargar la biblioteca multimedia. HTTP ${response.status}`
-      );
+      break;
     }
-
-    return {
-      prefix:
-        data.prefix || '',
-
-      count:
-        Number(
-          data.count
-        ) || 0,
-
-      truncated:
-        Boolean(
-          data.truncated
-        ),
-
-      cursor:
-        data.cursor || null,
-
-      objects:
-        Array.isArray(
-          data.objects
-        )
-          ? data.objects
-          : []
-    };
   }
 
+  throw (
+    lastError ||
+    new Error(
+      'No se pudo cargar la biblioteca multimedia.'
+    )
+  );
+}
   async listPage({
     prefix = '',
     cursor = null,
