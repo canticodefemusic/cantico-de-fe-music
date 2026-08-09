@@ -28,6 +28,9 @@ import {
   renderR2MediaLibrary
 } from '../components/renderR2MediaLibrary.js';
 
+import MediaViewModeController
+  from './MediaViewModeController.js';
+
 function normalizeText(
   value = ''
 ) {
@@ -350,7 +353,12 @@ export class R2MediaLibraryController {
     this.searchQuery = '';
     this.activeFilter = 'all';
     this.sortMode = 'newest';
+    this.viewMode =
+      'grid';
 
+    this.viewModeController =
+      null;
+    
     this.selectedKeys =
       new Set();
 
@@ -398,7 +406,28 @@ export class R2MediaLibraryController {
     );
 
     this.load();
+    
+    this.viewModeController =
+      new MediaViewModeController({
 
+        root: this.root,
+
+        onChange: mode => {
+
+          this.viewMode =
+            mode;
+
+          this.render();
+
+        }
+
+    });
+
+this.viewMode =
+  this.viewModeController.getMode();
+
+this.viewModeController.init();
+    
     return true;
   }
 
@@ -1381,6 +1410,9 @@ export class R2MediaLibraryController {
         allObjects:
           this.objects,
 
+        viewMode:
+          this.viewMode,
+        
         totalCount:
           this.objects.length,
 
@@ -1493,6 +1525,12 @@ export class R2MediaLibraryController {
 
     this.root = null;
 
+    this.viewModeController
+      ?.destroy();
+
+    this.viewModeController =
+      null;
+    
     this.objects = [];
     this.filteredObjects = [];
 
