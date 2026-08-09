@@ -785,46 +785,61 @@ this.viewModeController.init();
   }
 
   applyViewState() {
-    const query =
-      normalizeText(
-        this.searchQuery
-      );
+  const query =
+    normalizeText(
+      this.searchQuery
+    );
 
-    const filtered =
-      this.objects.filter(
-        object => {
-          const matchesSearch =
-            !query ||
-            buildSearchText(
-              object
-            ).includes(
-              query
-            );
-
-          const mediaType =
-            getObjectMediaType(
-              object
-            );
-
-          const matchesType =
-            this.activeFilter ===
-              'all' ||
-            mediaType ===
-              this.activeFilter;
-
-          return (
-            matchesSearch &&
-            matchesType
+  const filtered =
+    this.objects.filter(
+      object => {
+        const matchesSearch =
+          !query ||
+          buildSearchText(
+            object
+          ).includes(
+            query
           );
-        }
+
+        const mediaType =
+          getObjectMediaType(
+            object
+          );
+
+        const matchesType =
+          this.activeFilter ===
+            'all' ||
+          mediaType ===
+            this.activeFilter;
+
+        return (
+          matchesSearch &&
+          matchesType
+        );
+      }
+    );
+
+  this.filteredObjects =
+    sortObjects(
+      filtered,
+      this.sortMode
+    );
+
+  const orderedKeys =
+    this.filteredObjects
+      .map(
+        object =>
+          object?.key
+      )
+      .filter(
+        Boolean
       );
 
-    this.filteredObjects =
-      sortObjects(
-        filtered,
-        this.sortMode
-      );
-  }
+  this.selectionController
+    ?.setOrderedKeys(
+      orderedKeys
+    );
+}
 
   setFilter(
     filter = 'all'
