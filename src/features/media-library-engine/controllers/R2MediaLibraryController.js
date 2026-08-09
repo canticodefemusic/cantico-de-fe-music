@@ -902,28 +902,33 @@ this.viewModeController.init();
 }
 
   setSelected(
-    key,
-    selected
+  key,
+  selected
+) {
+  if (
+    !key ||
+    this.bulkBusy
   ) {
-    if (
-      !key ||
-      this.bulkBusy
-    ) {
-      return;
-    }
-
-    if (selected) {
-      this.selectedKeys.add(
-        key
-      );
-    } else {
-      this.selectedKeys.delete(
-        key
-      );
-    }
-
-    this.render();
+    return;
   }
+
+  if (selected) {
+    this.selectedKeys.add(
+      key
+    );
+  } else {
+    this.selectedKeys.delete(
+      key
+    );
+  }
+
+  this.selectionController
+    ?.syncFromSet(
+      this.selectedKeys
+    );
+
+  this.render();
+}
 
   selectVisible() {
     if (
