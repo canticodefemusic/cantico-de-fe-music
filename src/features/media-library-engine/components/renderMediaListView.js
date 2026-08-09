@@ -1,22 +1,19 @@
 /**
  * Cántico de Fe Music
- * V13.8.1 — Media List View
- *
- * Vista compacta de archivos multimedia.
+ * V13.8.3 — Media List View
  *
  * Funciones:
- * - Reutiliza renderR2MediaItem()
+ * - Vista compacta tipo tabla
+ * - Usa renderR2MediaListRow()
  * - Mantiene selección múltiple
  * - Mantiene menú de acciones
  * - Mantiene Lightbox
  * - Mantiene copiar / descargar / eliminar
- * - Encabezados de lista
- * - Estado vacío seguro
  */
 
 import {
-  renderR2MediaItem
-} from './renderR2MediaItem.js';
+  renderR2MediaListRow
+} from './renderR2MediaListRow.js';
 
 /* ------------------------------------------------------------------ */
 /* Utilidades                                                         */
@@ -53,7 +50,6 @@ function renderListHeader() {
     <div
       class="media-list-view__header"
       role="row"
-      aria-hidden="true"
     >
 
       <div
@@ -61,6 +57,7 @@ function renderListHeader() {
           media-list-view__heading
           media-list-view__heading--select
         "
+        role="columnheader"
       >
       </div>
 
@@ -69,6 +66,7 @@ function renderListHeader() {
           media-list-view__heading
           media-list-view__heading--name
         "
+        role="columnheader"
       >
         Nombre
       </div>
@@ -78,6 +76,7 @@ function renderListHeader() {
           media-list-view__heading
           media-list-view__heading--type
         "
+        role="columnheader"
       >
         Tipo
       </div>
@@ -87,6 +86,7 @@ function renderListHeader() {
           media-list-view__heading
           media-list-view__heading--size
         "
+        role="columnheader"
       >
         Tamaño
       </div>
@@ -96,6 +96,7 @@ function renderListHeader() {
           media-list-view__heading
           media-list-view__heading--date
         "
+        role="columnheader"
       >
         Fecha
       </div>
@@ -105,6 +106,7 @@ function renderListHeader() {
           media-list-view__heading
           media-list-view__heading--actions
         "
+        role="columnheader"
       >
         Acciones
       </div>
@@ -160,6 +162,8 @@ export function renderMediaListView({
     <div
       class="media-list-view"
       data-media-list-view
+      role="table"
+      aria-label="Lista de archivos multimedia"
     >
 
       ${renderListHeader()}
@@ -171,7 +175,7 @@ export function renderMediaListView({
         ${safeObjects
           .map(
             object =>
-              renderR2MediaItem(
+              renderR2MediaListRow(
                 object,
                 {
                   selected:
