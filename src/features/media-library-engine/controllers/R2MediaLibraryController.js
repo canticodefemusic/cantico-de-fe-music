@@ -679,6 +679,22 @@ this.viewModeController.init();
   async handleClick(
     event
   ) {
+    const selectionCheckbox =
+      event.target.closest(
+        '[data-media-select]'
+      );
+
+    if (selectionCheckbox) {
+      selectionCheckbox.setAttribute(
+        'data-media-shift-select',
+        event.shiftKey
+          ? 'true'
+          : 'false'
+      );
+
+      return;
+    }
+    
     const loadMoreButton =
       event.target.closest(
         '[data-media-load-more]'
