@@ -116,6 +116,79 @@
 }
 
 /* ================================================================ */
+/* Encabezados ordenables                                             */
+/* ================================================================ */
+
+.media-list-view__sort-button {
+  width: 100%;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 0;
+
+  border: 0;
+
+  background:
+    transparent;
+
+  color:
+    rgba(255, 255, 255, 0.58);
+
+  font: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+
+  letter-spacing: inherit;
+
+  text-transform: inherit;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    color 140ms ease,
+    opacity 140ms ease;
+}
+
+.media-list-view__sort-button:hover {
+  color:
+    rgba(255, 255, 255, 0.9);
+}
+
+.media-list-view__sort-button.is-active {
+  color:
+    #f4d06f;
+}
+
+.media-list-view__sort-indicator {
+  display: inline-flex;
+  align-items: center;
+
+  min-width: 10px;
+
+  color:
+    currentColor;
+
+  font-size: 0.62rem;
+  line-height: 1;
+
+  opacity: 0.9;
+}
+
+.media-list-view__sort-button:focus-visible {
+  outline:
+    2px solid #f4d06f;
+
+  outline-offset: 4px;
+
+  border-radius: 4px;
+}
+
+/* ================================================================ */
 /* Body                                                               */
 /* ================================================================ */
 
