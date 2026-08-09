@@ -886,14 +886,20 @@ this.viewModeController.init();
 }
 
   clearSearch() {
-    this.searchQuery = '';
-
-    this.applyViewState();
-
-    this.render();
-
-    this.restoreSearchFocus();
+  if (
+    !this.searchQuery
+  ) {
+    return;
   }
+
+  this.searchQuery = '';
+
+  this.applyViewState();
+
+  this.render();
+
+  this.restoreSearchFocus();
+}
 
   setSelected(
     key,
