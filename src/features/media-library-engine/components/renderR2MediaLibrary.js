@@ -820,14 +820,6 @@ export function renderR2MediaLibrary({
           : ''
       }
 
-      ${
-        !error
-          ? renderViewModeSelector({
-              viewMode
-            })
-          : ''
-      }
-
       <div
         class="media-library-explorer__header"
       >
