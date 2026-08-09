@@ -770,40 +770,59 @@ export function renderR2MediaLibrary({
       : safeSelectedKeys.size;
 
   if (loading) {
-    return `
-      <section
-        class="media-library-explorer"
-        data-r2-media-library
+  return `
+    <section
+      class="media-library-explorer"
+      data-r2-media-library
+      aria-busy="true"
+    >
+
+      <div
+        class="media-library-explorer__header"
+      >
+        <div>
+          <h2>
+            ${escapeHtml(
+              title
+            )}
+          </h2>
+
+          <p>
+            ${escapeHtml(
+              description
+            )}
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="media-library-loading"
+        role="status"
+        aria-live="polite"
       >
 
-        <div
-          class="media-library-explorer__header"
-        >
-          <div>
-            <h2>
-              ${escapeHtml(
-                title
-              )}
-            </h2>
-
-            <p>
-              ${escapeHtml(
-                description
-              )}
-            </p>
-          </div>
-        </div>
+        <span
+          class="media-library-loading__spinner"
+          aria-hidden="true"
+        ></span>
 
         <div
-          class="media-library-loading"
-          aria-live="polite"
+          class="media-library-loading__content"
         >
-          Cargando archivos...
+          <strong>
+            Cargando biblioteca multimedia
+          </strong>
+
+          <span>
+            Estamos preparando tus archivos...
+          </span>
         </div>
 
-      </section>
-    `;
-  }
+      </div>
+
+    </section>
+  `;
+}
 
   return `
     <section
