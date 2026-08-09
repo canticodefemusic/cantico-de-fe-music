@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V13.7.3 — Media Library Engine Public API
+ * V13.7.4 — Media Library Engine Public API
  */
 
 import mediaLibraryData
@@ -71,6 +71,9 @@ import {
 import R2MediaMenuController
   from './controllers/R2MediaMenuController.js';
 
+import R2MediaLightboxController
+  from './controllers/R2MediaLightboxController.js';
+
 export {
   mediaLibraryData,
 
@@ -100,7 +103,8 @@ export {
   MediaMetadataController,
 
   R2MediaLibraryController,
-  R2MediaMenuController
+  R2MediaMenuController,
+  R2MediaLightboxController
 };
 
 export default {
@@ -132,5 +136,6 @@ export default {
   MediaMetadataController,
 
   R2MediaLibraryController,
-  R2MediaMenuController
+  R2MediaMenuController,
+  R2MediaLightboxController
 };
