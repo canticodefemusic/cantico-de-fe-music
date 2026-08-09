@@ -60,13 +60,19 @@ export class R2MediaService {
     cursor = null,
     limit = 50
   } = {}) {
+    if (delay > 0) {
+      await new Promise(
+        resolve =>
+          setTimeout(
+            resolve,
+            delay
+          )
+      );
+    }
+
     const response =
       await fetch(
-        this.buildUrl({
-          prefix,
-          cursor,
-          limit
-        }),
+        url,
         {
           method: 'GET',
 
