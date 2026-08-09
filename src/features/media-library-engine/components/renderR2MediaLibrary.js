@@ -301,6 +301,57 @@ function renderSortControl({
 /* Barra principal                                                    */
 /* ------------------------------------------------------------------ */
 
+function renderViewModeSelector({
+  viewMode = 'grid'
+} = {}) {
+
+  return `
+    <div
+      class="media-view-selector"
+      role="group"
+      aria-label="Modo de visualización"
+    >
+
+      <button
+        type="button"
+        class="
+          media-view-selector__button
+          ${
+            viewMode === 'grid'
+              ? 'is-active'
+              : ''
+          }
+        "
+        data-media-view="grid"
+        aria-pressed="${
+          viewMode === 'grid'
+        }"
+      >
+        ▦ Cuadrícula
+      </button>
+
+      <button
+        type="button"
+        class="
+          media-view-selector__button
+          ${
+            viewMode === 'list'
+              ? 'is-active'
+              : ''
+          }
+        "
+        data-media-view="list"
+        aria-pressed="${
+          viewMode === 'list'
+        }"
+      >
+        ☰ Lista
+      </button>
+
+    </div>
+  `;
+}
+
 function renderToolbar({
   searchQuery = '',
   activeFilter = 'all',
@@ -642,10 +693,13 @@ export function renderR2MediaLibrary({
   sortMode = 'newest',
 
   selectedKeys = [],
+  
   selectedCount = null,
 
+  viewMode = 'grid',
+  
   bulkBusy = false,
-
+  
   totalCount = null,
 
   title =
@@ -755,6 +809,14 @@ export function renderR2MediaLibrary({
           ? renderMediaStatistics({
               objects:
                 safeAllObjects
+            })
+          : ''
+      }
+
+      ${
+        !error
+          ? renderViewModeSelector({
+              viewMode
             })
           : ''
       }
