@@ -77,6 +77,9 @@ import R2MediaMenuController
 import R2MediaLightboxController
   from './controllers/R2MediaLightboxController.js';
 
+import MediaSelectionController
+  from './controllers/MediaSelectionController.js';
+
 export {
   mediaLibraryData,
 
@@ -84,7 +87,7 @@ export {
   MediaSelectionService,
   MediaFilterService,
   MediaMetadataService,
-
+  
   R2MediaService,
   r2MediaService,
 
@@ -104,7 +107,8 @@ export {
   MediaBrowserController,
   MediaCardMenuController,
   MediaMetadataController,
-
+  MediaSelectionController,
+  
   R2MediaLibraryController,
   R2MediaMenuController,
   R2MediaLightboxController
@@ -137,7 +141,8 @@ export default {
   MediaBrowserController,
   MediaCardMenuController,
   MediaMetadataController,
-
+  MediaSelectionController,
+  
   R2MediaLibraryController,
   R2MediaMenuController,
   R2MediaLightboxController
