@@ -352,7 +352,10 @@ export class R2MediaLibraryController {
 
     this.objects = [];
     this.filteredObjects = [];
-
+    
+    this.lastSelectedKey =
+      null;
+    
     this.searchQuery = '';
     this.activeFilter = 'all';
     this.sortMode = 'newest';
