@@ -958,16 +958,19 @@ this.viewModeController.init();
 }
 
   clearSelection() {
-    if (
-      this.bulkBusy
-    ) {
-      return;
-    }
-
-    this.selectedKeys.clear();
-
-    this.render();
+  if (
+    this.bulkBusy
+  ) {
+    return;
   }
+
+  this.selectedKeys.clear();
+
+  this.selectionController
+    ?.clear();
+
+  this.render();
+}
 
   pruneSelection() {
     const validKeys =
