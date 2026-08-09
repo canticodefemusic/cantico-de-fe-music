@@ -289,7 +289,9 @@ export function renderMediaListView({
       aria-label="Lista de archivos multimedia"
     >
 
-      ${renderMediaListHeader()}
+      ${renderListHeader({
+        sortMode
+      })}
 
       <div
         class="media-list-view__body"
