@@ -5579,3 +5579,288 @@ button.cantico-chip:focus-visible,
       var(--space-4);
   }
 }
+
+/* ========================================================== */
+/* V13.15.18 — Final Integration & Responsive Polish           */
+/* ========================================================== */
+
+/* ---------------------------------------------------------- */
+/* Global Overflow Safety                                     */
+/* ---------------------------------------------------------- */
+
+html,
+body {
+  max-width:
+    100%;
+
+  overflow-x:
+    hidden;
+}
+
+img,
+video,
+audio,
+canvas,
+svg {
+  max-width:
+    100%;
+}
+
+/* ---------------------------------------------------------- */
+/* Main Content Safety                                        */
+/* ---------------------------------------------------------- */
+
+.cantico-main,
+.cantico-section,
+.cantico-card-grid,
+.cantico-toolbar,
+[data-toolbar] {
+  min-width:
+    0;
+}
+
+/* ---------------------------------------------------------- */
+/* Long Text Safety                                           */
+/* ---------------------------------------------------------- */
+
+.cantico-card,
+.cantico-detail,
+.cantico-panel,
+.cantico-surface,
+.cantico-data-list-item,
+[data-list-item],
+.cantico-toast,
+[data-toast],
+.cantico-popover,
+[data-popover] {
+  overflow-wrap:
+    anywhere;
+}
+
+/* ---------------------------------------------------------- */
+/* Shared Interactive Focus                                   */
+/* ---------------------------------------------------------- */
+
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline-color:
+    var(--color-primary);
+}
+
+/* ---------------------------------------------------------- */
+/* Touch Targets                                              */
+/* ---------------------------------------------------------- */
+
+button,
+[role="button"],
+.cantico-tab,
+[data-tab],
+.cantico-segment,
+[data-segment],
+.cantico-filter,
+[data-filter] {
+  min-height:
+    40px;
+}
+
+/* ---------------------------------------------------------- */
+/* Scrollbar                                                  */
+/* ---------------------------------------------------------- */
+
+* {
+  scrollbar-width:
+    thin;
+
+  scrollbar-color:
+    var(--color-border-strong)
+    transparent;
+}
+
+*::-webkit-scrollbar {
+  width:
+    10px;
+
+  height:
+    10px;
+}
+
+*::-webkit-scrollbar-track {
+  background:
+    transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  border:
+    2px solid
+    transparent;
+
+  border-radius:
+    var(--radius-pill);
+
+  background:
+    var(--color-border-strong);
+
+  background-clip:
+    padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background:
+    var(--color-border-hover);
+
+  background-clip:
+    padding-box;
+}
+
+/* ---------------------------------------------------------- */
+/* Tablet                                                    */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .cantico-main {
+    width:
+      min(
+        100% - 28px,
+        var(--content-max-width)
+      );
+  }
+
+  .cantico-toolbar,
+  [data-toolbar] {
+    align-items:
+      stretch;
+  }
+
+  .cantico-card-grid {
+    gap:
+      var(--space-4);
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Mobile                                                    */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .cantico-main {
+    width:
+      min(
+        100% - 20px,
+        var(--content-max-width)
+      );
+  }
+
+  .cantico-header {
+    padding:
+      var(--space-3)
+      var(--space-4);
+  }
+
+  .cantico-nav {
+    width:
+      100%;
+
+    overflow-x:
+      auto;
+
+    flex-wrap:
+      nowrap;
+
+    padding-bottom:
+      var(--space-1);
+  }
+
+  .cantico-nav a {
+    flex:
+      0 0 auto;
+  }
+
+  .cantico-section {
+    padding:
+      var(--space-7)
+      0;
+  }
+
+  .cantico-card-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .cantico-toolbar,
+  [data-toolbar] {
+    padding:
+      var(--space-3);
+  }
+
+  .cantico-toolbar-group,
+  [data-toolbar-group] {
+    width:
+      100%;
+  }
+
+  .cantico-modal-footer,
+  [data-modal-footer],
+  .cantico-popover-actions,
+  [data-popover-actions] {
+    justify-content:
+      stretch;
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Small Mobile                                               */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 420px) {
+  .cantico-header {
+    padding-inline:
+      var(--space-3);
+  }
+
+  .cantico-logo {
+    width:
+      38px;
+
+    height:
+      38px;
+  }
+
+  .cantico-card,
+  .cantico-detail,
+  .cantico-panel,
+  .cantico-surface {
+    border-radius:
+      var(--radius-md);
+  }
+
+  .cantico-button,
+  button,
+  [role="button"] {
+    max-width:
+      100%;
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Reduced Motion                                             */
+/* ---------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior:
+      auto !important;
+
+    transition-duration:
+      0.01ms !important;
+
+    animation-duration:
+      0.01ms !important;
+
+    animation-iteration-count:
+      1 !important;
+  }
+}
