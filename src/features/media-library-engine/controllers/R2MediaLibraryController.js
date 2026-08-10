@@ -1003,6 +1003,32 @@ if (selectionCheckbox) {
       return;
     }
 
+    const bulkDownloadButton =
+      event.target.closest(
+        '[data-media-bulk-download]'
+      );
+
+    if (bulkDownloadButton) {
+      await this.downloadSelected(
+        bulkDownloadButton
+      );
+
+      return;
+    }
+    
+    const bulkDownloadButton =
+      event.target.closest(
+        '[data-media-bulk-download]'
+      );
+
+    if (bulkDownloadButton) {
+      await this.downloadSelected(
+        bulkDownloadButton
+      );
+
+      return;
+    }
+    
     const bulkDeleteButton =
       event.target.closest(
         '[data-media-bulk-delete]'
@@ -1623,6 +1649,106 @@ if (selectionCheckbox) {
     }
   }
 
+  async downloadSelected(
+  button
+) {
+  if (
+    this.bulkBusy ||
+    !this.selectedKeys.size
+  ) {
+    return false;
+  }
+
+  const selectedObjects =
+    this.getSelectedObjects();
+
+  if (
+    !selectedObjects.length
+  ) {
+    return false;
+  }
+
+  const originalText =
+    button?.textContent ||
+    'Descargar seleccionados';
+
+  if (button) {
+    button.disabled = true;
+    button.textContent =
+      'Preparando descargas...';
+  }
+
+  try {
+    for (
+      const object
+      of selectedObjects
+    ) {
+      const key =
+        object?.key;
+
+      if (!key) {
+        continue;
+      }
+
+      const link =
+        document.createElement(
+          'a'
+        );
+
+      link.href =
+        getMediaUrl(
+          key
+        );
+
+      link.download =
+        getObjectName(
+          object
+        ) || '';
+
+      link.style.display =
+        'none';
+
+      document.body.appendChild(
+        link
+      );
+
+      link.click();
+
+      link.remove();
+
+      await new Promise(
+        resolve =>
+          window.setTimeout(
+            resolve,
+            150
+          )
+      );
+    }
+
+    return true;
+
+  } catch (error) {
+    console.error(
+      '[R2MediaLibraryController] Bulk download failed:',
+      error
+    );
+
+    return false;
+
+  } finally {
+    if (
+      button &&
+      button.isConnected
+    ) {
+      button.disabled =
+        false;
+
+      button.textContent =
+        originalText;
+    }
+  }
+}
+  
   async deleteMedia(
     button
   ) {
