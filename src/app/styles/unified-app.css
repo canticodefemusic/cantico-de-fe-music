@@ -2475,3 +2475,207 @@ textarea:focus-visible {
       100%;
   }
 }
+
+/* ========================================================== */
+/* V13.15.7 — Shared Loading & Progress Theme                  */
+/* ========================================================== */
+
+/* ---------------------------------------------------------- */
+/* Base Loading                                               */
+/* ---------------------------------------------------------- */
+
+.cantico-loading,
+[data-loading] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--space-3);
+
+  color: var(--color-text-secondary);
+}
+
+/* ---------------------------------------------------------- */
+/* Loading Spinner                                            */
+/* ---------------------------------------------------------- */
+
+.cantico-spinner,
+[data-spinner] {
+  width: 24px;
+  height: 24px;
+
+  flex: 0 0 auto;
+
+  border:
+    3px
+    solid
+    var(--color-border);
+
+  border-top-color:
+    var(--color-primary);
+
+  border-radius: 50%;
+
+  animation:
+    cantico-spinner-rotate
+    0.8s
+    linear
+    infinite;
+}
+
+@keyframes cantico-spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Loading Text                                               */
+/* ---------------------------------------------------------- */
+
+.cantico-loading-text,
+[data-loading-text] {
+  color:
+    var(--color-text-secondary);
+
+  font-size:
+    0.95rem;
+
+  line-height:
+    1.5;
+}
+
+/* ---------------------------------------------------------- */
+/* Progress                                                   */
+/* ---------------------------------------------------------- */
+
+.cantico-progress,
+[data-progress] {
+  width: 100%;
+
+  height: 8px;
+
+  overflow: hidden;
+
+  background:
+    var(--color-surface-soft);
+
+  border:
+    1px
+    solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-pill);
+}
+
+/* ---------------------------------------------------------- */
+/* Progress Bar                                               */
+/* ---------------------------------------------------------- */
+
+.cantico-progress-bar,
+[data-progress-bar] {
+  width: 0;
+  height: 100%;
+
+  background:
+    var(--color-primary);
+
+  border-radius:
+    inherit;
+
+  transition:
+    width
+    var(--transition-normal);
+}
+
+/* ---------------------------------------------------------- */
+/* Progress Information                                       */
+/* ---------------------------------------------------------- */
+
+.cantico-progress-info,
+[data-progress-info] {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-3);
+
+  margin-top:
+    var(--space-2);
+
+  color:
+    var(--color-text-muted);
+
+  font-size:
+    0.875rem;
+}
+
+/* ---------------------------------------------------------- */
+/* Indeterminate Progress                                     */
+/* ---------------------------------------------------------- */
+
+.cantico-progress.is-indeterminate
+.cantico-progress-bar,
+[data-progress="indeterminate"]
+[data-progress-bar] {
+  width: 40%;
+
+  animation:
+    cantico-progress-indeterminate
+    1.2s
+    ease-in-out
+    infinite;
+}
+
+@keyframes cantico-progress-indeterminate {
+  0% {
+    transform: translateX(-110%);
+  }
+
+  100% {
+    transform: translateX(260%);
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Reduced Motion                                             */
+/* ---------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .cantico-spinner,
+  [data-spinner],
+  .cantico-progress.is-indeterminate
+  .cantico-progress-bar,
+  [data-progress="indeterminate"]
+  [data-progress-bar] {
+    animation: none;
+  }
+
+  .cantico-progress-bar,
+  [data-progress-bar] {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Responsive                                                 */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .cantico-loading,
+  [data-loading] {
+    gap:
+      var(--space-2);
+  }
+
+  .cantico-progress-info,
+  [data-progress-info] {
+    gap:
+      var(--space-2);
+
+    font-size:
+      0.8125rem;
+  }
+}
