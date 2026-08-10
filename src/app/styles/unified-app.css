@@ -4513,3 +4513,348 @@ button.cantico-chip:focus-visible,
       var(--space-3);
   }
 }
+
+/* ========================================================== */
+/* V13.15.15 — Tabs & Segmented Controls Theme                 */
+/* ========================================================== */
+
+/* ---------------------------------------------------------- */
+/* Tabs Container                                             */
+/* ---------------------------------------------------------- */
+
+.cantico-tabs,
+[data-tabs] {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    var(--space-2);
+
+  padding:
+    var(--space-1);
+
+  border:
+    1px
+    solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-lg);
+
+  background:
+    var(--color-surface-soft);
+}
+
+/* ---------------------------------------------------------- */
+/* Tab                                                        */
+/* ---------------------------------------------------------- */
+
+.cantico-tab,
+[data-tab] {
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    var(--space-2);
+
+  min-height:
+    40px;
+
+  padding:
+    var(--space-2)
+    var(--space-4);
+
+  border:
+    1px
+    solid
+    transparent;
+
+  border-radius:
+    var(--radius-md);
+
+  background:
+    transparent;
+
+  color:
+    var(--color-text-secondary);
+
+  font:
+    inherit;
+
+  font-size:
+    var(--font-size-sm);
+
+  font-weight:
+    var(--font-weight-semibold);
+
+  text-decoration:
+    none;
+
+  cursor:
+    pointer;
+
+  transition:
+    background
+      var(--transition-fast),
+    border-color
+      var(--transition-fast),
+    color
+      var(--transition-fast),
+    transform
+      var(--transition-fast);
+}
+
+/* ---------------------------------------------------------- */
+/* Tab Hover                                                  */
+/* ---------------------------------------------------------- */
+
+.cantico-tab:hover:not(:disabled),
+[data-tab]:hover:not(:disabled) {
+  background:
+    var(--color-surface-hover);
+
+  border-color:
+    var(--color-border);
+
+  color:
+    var(--color-text);
+
+  transform:
+    translateY(-1px);
+}
+
+/* ---------------------------------------------------------- */
+/* Active Tab                                                 */
+/* ---------------------------------------------------------- */
+
+.cantico-tab.is-active,
+.cantico-tab[aria-selected="true"],
+[data-tab][aria-selected="true"],
+[data-tab][data-active="true"] {
+  background:
+    var(--color-primary-soft);
+
+  border-color:
+    var(--color-border-primary);
+
+  color:
+    var(--color-primary);
+}
+
+/* ---------------------------------------------------------- */
+/* Focus                                                      */
+/* ---------------------------------------------------------- */
+
+.cantico-tab:focus-visible,
+[data-tab]:focus-visible {
+  outline:
+    2px
+    solid
+    var(--color-primary);
+
+  outline-offset:
+    2px;
+}
+
+/* ---------------------------------------------------------- */
+/* Disabled                                                   */
+/* ---------------------------------------------------------- */
+
+.cantico-tab:disabled,
+.cantico-tab[aria-disabled="true"],
+[data-tab][aria-disabled="true"] {
+  opacity:
+    0.5;
+
+  cursor:
+    not-allowed;
+
+  pointer-events:
+    none;
+}
+
+/* ---------------------------------------------------------- */
+/* Segmented Control                                          */
+/* ---------------------------------------------------------- */
+
+.cantico-segmented,
+[data-segmented] {
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  gap:
+    var(--space-1);
+
+  padding:
+    var(--space-1);
+
+  border:
+    1px
+    solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-pill);
+
+  background:
+    var(--color-surface-soft);
+}
+
+/* ---------------------------------------------------------- */
+/* Segment                                                    */
+/* ---------------------------------------------------------- */
+
+.cantico-segment,
+[data-segment] {
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  min-height:
+    36px;
+
+  padding:
+    var(--space-2)
+    var(--space-3);
+
+  border:
+    1px
+    solid
+    transparent;
+
+  border-radius:
+    var(--radius-pill);
+
+  background:
+    transparent;
+
+  color:
+    var(--color-text-secondary);
+
+  font:
+    inherit;
+
+  font-size:
+    var(--font-size-sm);
+
+  font-weight:
+    var(--font-weight-semibold);
+
+  cursor:
+    pointer;
+
+  transition:
+    background
+      var(--transition-fast),
+    border-color
+      var(--transition-fast),
+    color
+      var(--transition-fast);
+}
+
+/* ---------------------------------------------------------- */
+/* Segment Hover                                              */
+/* ---------------------------------------------------------- */
+
+.cantico-segment:hover:not(:disabled),
+[data-segment]:hover:not(:disabled) {
+  background:
+    var(--color-surface-hover);
+
+  color:
+    var(--color-text);
+}
+
+/* ---------------------------------------------------------- */
+/* Selected Segment                                           */
+/* ---------------------------------------------------------- */
+
+.cantico-segment.is-active,
+.cantico-segment[aria-pressed="true"],
+[data-segment][aria-pressed="true"],
+[data-segment][data-active="true"] {
+  background:
+    var(--color-primary);
+
+  border-color:
+    var(--color-primary);
+
+  color:
+    var(--color-text-inverse);
+}
+
+/* ---------------------------------------------------------- */
+/* Focus                                                      */
+/* ---------------------------------------------------------- */
+
+.cantico-segment:focus-visible,
+[data-segment]:focus-visible {
+  outline:
+    2px
+    solid
+    var(--color-primary);
+
+  outline-offset:
+    2px;
+}
+
+/* ---------------------------------------------------------- */
+/* Reduced Motion                                             */
+/* ---------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .cantico-tab,
+  [data-tab],
+  .cantico-segment,
+  [data-segment] {
+    transition:
+      none;
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Responsive                                                 */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .cantico-tabs,
+  [data-tabs] {
+    width:
+      100%;
+  }
+
+  .cantico-tab,
+  [data-tab] {
+    flex:
+      1 1 auto;
+  }
+
+  .cantico-segmented,
+  [data-segmented] {
+    max-width:
+      100%;
+
+    overflow-x:
+      auto;
+  }
+}
