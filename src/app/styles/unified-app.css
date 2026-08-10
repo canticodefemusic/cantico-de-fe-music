@@ -1,3 +1,4 @@
+@import './design-tokens.css';
 @import '../../features/universal-upload-engine/styles/universal-upload.css';
 
 body {
