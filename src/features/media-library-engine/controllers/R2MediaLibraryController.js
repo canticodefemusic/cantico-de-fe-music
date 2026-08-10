@@ -1016,19 +1016,6 @@ if (selectionCheckbox) {
       return;
     }
     
-    const bulkDownloadButton =
-      event.target.closest(
-        '[data-media-bulk-download]'
-      );
-
-    if (bulkDownloadButton) {
-      await this.downloadSelected(
-        bulkDownloadButton
-      );
-
-      return;
-    }
-    
     const bulkDeleteButton =
       event.target.closest(
         '[data-media-bulk-delete]'
