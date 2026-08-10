@@ -569,6 +569,18 @@ function renderSelectionToolbar({
 
         <button
           type="button"
+          data-media-bulk-download
+          ${
+            bulkBusy
+              ? 'disabled'
+              : ''
+          }
+        >
+          Descargar seleccionados
+        </button>
+        
+        <button
+          type="button"
           data-media-bulk-delete
           class="media-selection-toolbar__delete"
           ${
