@@ -824,6 +824,113 @@ if (selectionCheckbox) {
   return;
 }
 
+        const mediaItem =
+      event.target.closest(
+        '[data-media-key]'
+      );
+
+    const interactiveElement =
+      event.target.closest(
+        [
+          'button',
+          'a',
+          'input',
+          'select',
+          'textarea',
+          'summary',
+          'details',
+          'audio',
+          'video',
+          '[data-media-menu]',
+          '[data-media-preview]',
+          '[data-media-copy]',
+          '[data-media-download]',
+          '[data-media-delete]'
+        ].join(',')
+      );
+
+    if (
+      mediaItem &&
+      !interactiveElement
+    ) {
+      const key =
+        mediaItem.getAttribute(
+          'data-media-key'
+        );
+
+      if (!key) {
+        return;
+      }
+
+      const additive =
+        event.metaKey ||
+        event.ctrlKey;
+
+      const range =
+        event.shiftKey;
+
+      if (
+        range &&
+        this.lastSelectedKey &&
+        this.lastSelectedKey !== key
+      ) {
+        const success =
+          this.selectionController
+            ?.selectRange(
+              key,
+              {
+                fromKey:
+                  this.lastSelectedKey,
+
+                additive,
+
+                preserveAnchor:
+                  true
+              }
+            );
+
+        if (success) {
+          this.syncSelectedKeysFromSelectionController();
+
+          this.render();
+        }
+
+        return;
+      }
+
+      if (additive) {
+        const selected =
+          !this.selectedKeys.has(
+            key
+          );
+
+        this.setSelected(
+          key,
+          selected
+        );
+
+        return;
+      }
+
+      this.selectionController
+        ?.clear({
+          emitChange:
+            false
+        });
+
+      this.selectedKeys.clear();
+
+      this.setSelected(
+        key,
+        true
+      );
+
+      this.lastSelectedKey =
+        key;
+
+      return;
+    }
+    
     const loadMoreButton =
       event.target.closest(
         '[data-media-load-more]'
