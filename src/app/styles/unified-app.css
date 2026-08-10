@@ -4160,3 +4160,356 @@ button.cantico-chip:focus-visible,
       var(--space-3);
   }
 }
+
+/* ========================================================== */
+/* V13.15.14 — Toasts & Notifications Theme                    */
+/* ========================================================== */
+
+/* ---------------------------------------------------------- */
+/* Toast Container                                            */
+/* ---------------------------------------------------------- */
+
+.cantico-toast-container,
+[data-toast-container] {
+  position: fixed;
+
+  z-index:
+    var(--z-modal);
+
+  top:
+    var(--space-5);
+
+  right:
+    var(--space-5);
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    var(--space-3);
+
+  width:
+    min(
+      380px,
+      calc(100vw - 32px)
+    );
+
+  pointer-events:
+    none;
+}
+
+/* ---------------------------------------------------------- */
+/* Toast                                                      */
+/* ---------------------------------------------------------- */
+
+.cantico-toast,
+[data-toast] {
+  display:
+    flex;
+
+  align-items:
+    flex-start;
+
+  gap:
+    var(--space-3);
+
+  padding:
+    var(--space-4);
+
+  border:
+    1px
+    solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-lg);
+
+  background:
+    var(--color-surface-elevated);
+
+  color:
+    var(--color-text);
+
+  box-shadow:
+    var(--shadow-lg);
+
+  pointer-events:
+    auto;
+
+  overflow:
+    hidden;
+}
+
+/* ---------------------------------------------------------- */
+/* Toast Content                                              */
+/* ---------------------------------------------------------- */
+
+.cantico-toast-content,
+[data-toast-content] {
+  flex:
+    1;
+
+  min-width:
+    0;
+}
+
+.cantico-toast-title,
+[data-toast-title] {
+  margin:
+    0 0
+    var(--space-1);
+
+  color:
+    var(--color-text);
+
+  font-weight:
+    var(--font-weight-bold);
+}
+
+.cantico-toast-message,
+[data-toast-message] {
+  margin:
+    0;
+
+  color:
+    var(--color-text-secondary);
+
+  font-size:
+    var(--font-size-sm);
+
+  line-height:
+    1.5;
+}
+
+/* ---------------------------------------------------------- */
+/* Success                                                    */
+/* ---------------------------------------------------------- */
+
+.cantico-toast.is-success,
+[data-toast="success"] {
+  border-color:
+    rgba(
+      40,
+      199,
+      111,
+      0.35
+    );
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--color-surface-elevated),
+      var(--color-success-soft)
+    );
+}
+
+/* ---------------------------------------------------------- */
+/* Warning                                                    */
+/* ---------------------------------------------------------- */
+
+.cantico-toast.is-warning,
+[data-toast="warning"] {
+  border-color:
+    rgba(
+      245,
+      185,
+      66,
+      0.35
+    );
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--color-surface-elevated),
+      var(--color-warning-soft)
+    );
+}
+
+/* ---------------------------------------------------------- */
+/* Error                                                      */
+/* ---------------------------------------------------------- */
+
+.cantico-toast.is-error,
+[data-toast="error"] {
+  border-color:
+    rgba(
+      255,
+      92,
+      92,
+      0.35
+    );
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--color-surface-elevated),
+      var(--color-danger-soft)
+    );
+}
+
+/* ---------------------------------------------------------- */
+/* Info                                                       */
+/* ---------------------------------------------------------- */
+
+.cantico-toast.is-info,
+[data-toast="info"] {
+  border-color:
+    rgba(
+      78,
+      160,
+      255,
+      0.35
+    );
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--color-surface-elevated),
+      var(--color-info-soft)
+    );
+}
+
+/* ---------------------------------------------------------- */
+/* Close Button                                               */
+/* ---------------------------------------------------------- */
+
+.cantico-toast-close,
+[data-toast-close] {
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  width:
+    32px;
+
+  height:
+    32px;
+
+  flex-shrink:
+    0;
+
+  padding:
+    0;
+
+  border:
+    1px
+    solid
+    transparent;
+
+  border-radius:
+    var(--radius-md);
+
+  background:
+    transparent;
+
+  color:
+    var(--color-text-muted);
+
+  cursor:
+    pointer;
+
+  transition:
+    background
+      var(--transition-fast),
+    color
+      var(--transition-fast),
+    border-color
+      var(--transition-fast);
+}
+
+.cantico-toast-close:hover:not(:disabled),
+[data-toast-close]:hover:not(:disabled) {
+  background:
+    var(--color-surface-soft);
+
+  border-color:
+    var(--color-border);
+
+  color:
+    var(--color-text);
+}
+
+/* ---------------------------------------------------------- */
+/* Progress                                                   */
+/* ---------------------------------------------------------- */
+
+.cantico-toast-progress,
+[data-toast-progress] {
+  position:
+    absolute;
+
+  left:
+    0;
+
+  bottom:
+    0;
+
+  width:
+    100%;
+
+  height:
+    3px;
+
+  background:
+    var(--color-primary);
+}
+
+/* ---------------------------------------------------------- */
+/* Hidden State                                               */
+/* ---------------------------------------------------------- */
+
+.cantico-toast[hidden],
+[data-toast][hidden] {
+  display:
+    none;
+}
+
+/* ---------------------------------------------------------- */
+/* Focus                                                      */
+/* ---------------------------------------------------------- */
+
+.cantico-toast-close:focus-visible,
+[data-toast-close]:focus-visible {
+  outline:
+    2px
+    solid
+    var(--color-primary);
+
+  outline-offset:
+    2px;
+}
+
+/* ---------------------------------------------------------- */
+/* Responsive                                                 */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .cantico-toast-container,
+  [data-toast-container] {
+    top:
+      var(--space-3);
+
+    right:
+      var(--space-3);
+
+    left:
+      var(--space-3);
+
+    width:
+      auto;
+  }
+
+  .cantico-toast,
+  [data-toast] {
+    padding:
+      var(--space-3);
+  }
+}
