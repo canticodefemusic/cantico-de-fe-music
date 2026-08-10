@@ -1169,3 +1169,359 @@ a:hover {
       1 !important;
   }
 }
+
+/* ================================================================== */
+/* V13.15.4 — Shared Buttons & Forms Theme                            */
+/* ================================================================== */
+
+button,
+input,
+select,
+textarea {
+  font:
+    inherit;
+}
+
+/* ------------------------------------------------------------------ */
+/* Inputs / Selects / Textareas                                       */
+/* ------------------------------------------------------------------ */
+
+input,
+select,
+textarea {
+  border:
+    1px
+    solid
+    var(
+      --input-border
+    );
+
+  border-radius:
+    var(
+      --radius-md
+    );
+
+  background:
+    var(
+      --input-background
+    );
+
+  color:
+    var(
+      --input-text
+    );
+
+  transition:
+    background
+      var(
+        --transition-fast
+      ),
+    border-color
+      var(
+        --transition-fast
+      ),
+    box-shadow
+      var(
+        --transition-fast
+      );
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+  background:
+    var(
+      --input-background-hover
+    );
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline:
+    none;
+
+  border-color:
+    var(
+      --input-border-focus
+    );
+
+  box-shadow:
+    var(
+      --input-focus-ring
+    );
+}
+
+input::placeholder,
+textarea::placeholder {
+  color:
+    var(
+      --input-placeholder
+    );
+}
+
+select option {
+  background:
+    var(
+      --color-background-secondary
+    );
+
+  color:
+    var(
+      --color-text
+    );
+}
+
+/* ------------------------------------------------------------------ */
+/* Disabled                                                           */
+/* ------------------------------------------------------------------ */
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity:
+    0.55;
+
+  cursor:
+    not-allowed;
+}
+
+/* ------------------------------------------------------------------ */
+/* Primary Buttons                                                    */
+/* ------------------------------------------------------------------ */
+
+[data-button-primary],
+.button-primary,
+.btn-primary {
+  border:
+    1px
+    solid
+    var(
+      --button-primary-background
+    );
+
+  background:
+    var(
+      --button-primary-background
+    );
+
+  color:
+    var(
+      --button-primary-text
+    );
+
+  border-radius:
+    var(
+      --radius-md
+    );
+
+  font-weight:
+    var(
+      --font-weight-bold
+    );
+
+  cursor:
+    pointer;
+
+  transition:
+    transform
+      var(
+        --transition-fast
+      ),
+    background
+      var(
+        --transition-fast
+      ),
+    border-color
+      var(
+        --transition-fast
+      );
+}
+
+[data-button-primary]:hover:not(:disabled),
+.button-primary:hover:not(:disabled),
+.btn-primary:hover:not(:disabled) {
+  transform:
+    translateY(
+      -1px
+    );
+
+  border-color:
+    var(
+      --button-primary-background-hover
+    );
+
+  background:
+    var(
+      --button-primary-background-hover
+    );
+}
+
+/* ------------------------------------------------------------------ */
+/* Secondary Buttons                                                  */
+/* ------------------------------------------------------------------ */
+
+[data-button-secondary],
+.button-secondary,
+.btn-secondary {
+  border:
+    1px
+    solid
+    var(
+      --button-secondary-border
+    );
+
+  background:
+    var(
+      --button-secondary-background
+    );
+
+  color:
+    var(
+      --button-secondary-text
+    );
+
+  border-radius:
+    var(
+      --radius-md
+    );
+
+  font-weight:
+    var(
+      --font-weight-semibold
+    );
+
+  cursor:
+    pointer;
+
+  transition:
+    transform
+      var(
+        --transition-fast
+      ),
+    background
+      var(
+        --transition-fast
+      ),
+    border-color
+      var(
+        --transition-fast
+      );
+}
+
+[data-button-secondary]:hover:not(:disabled),
+.button-secondary:hover:not(:disabled),
+.btn-secondary:hover:not(:disabled) {
+  transform:
+    translateY(
+      -1px
+    );
+
+  border-color:
+    var(
+      --color-border-hover
+    );
+
+  background:
+    var(
+      --button-secondary-background-hover
+    );
+}
+
+/* ------------------------------------------------------------------ */
+/* Danger Buttons                                                     */
+/* ------------------------------------------------------------------ */
+
+[data-button-danger],
+.button-danger,
+.btn-danger {
+  border:
+    1px
+    solid
+    rgba(
+      255,
+      92,
+      92,
+      0.28
+    );
+
+  background:
+    var(
+      --button-danger-background
+    );
+
+  color:
+    var(
+      --button-danger-text
+    );
+
+  border-radius:
+    var(
+      --radius-md
+    );
+
+  font-weight:
+    var(
+      --font-weight-bold
+    );
+
+  cursor:
+    pointer;
+
+  transition:
+    transform
+      var(
+        --transition-fast
+      ),
+    background
+      var(
+        --transition-fast
+      ),
+    border-color
+      var(
+        --transition-fast
+      );
+}
+
+[data-button-danger]:hover:not(:disabled),
+.button-danger:hover:not(:disabled),
+.btn-danger:hover:not(:disabled) {
+  transform:
+    translateY(
+      -1px
+    );
+
+  border-color:
+    rgba(
+      255,
+      92,
+      92,
+      0.55
+    );
+
+  background:
+    var(
+      --button-danger-background-hover
+    );
+}
+
+/* ------------------------------------------------------------------ */
+/* Focus                                                              */
+/* ------------------------------------------------------------------ */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline:
+    2px
+    solid
+    var(
+      --color-primary
+    );
+
+  outline-offset:
+    3px;
+}
