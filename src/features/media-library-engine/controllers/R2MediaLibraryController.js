@@ -670,7 +670,7 @@ export class R2MediaLibraryController {
     this.restoreSearchFocus();
   }
 
-  handleChange(
+    handleChange(
     event
   ) {
     const sortSelect =
@@ -709,10 +709,27 @@ export class R2MediaLibraryController {
         'data-media-shift-select'
       ) === 'true';
 
+    const additiveSelection =
+      checkbox.getAttribute(
+        'data-media-additive-select'
+      ) === 'true';
+
     checkbox.removeAttribute(
       'data-media-shift-select'
     );
 
+    checkbox.removeAttribute(
+      'data-media-additive-select'
+    );
+
+    /*
+     * Shift + Click
+     * Selecciona un rango desde
+     * el último archivo usado como ancla.
+     *
+     * Cmd/Ctrl + Shift conserva además
+     * la selección anterior.
+     */
     if (
       shiftSelection &&
       this.lastSelectedKey &&
@@ -730,7 +747,7 @@ export class R2MediaLibraryController {
                 anchorKey,
 
               additive:
-                false,
+                additiveSelection,
 
               preserveAnchor:
                 true
@@ -749,6 +766,29 @@ export class R2MediaLibraryController {
       }
     }
 
+    /*
+     * Cmd en macOS / Ctrl en Windows
+     * mantiene las selecciones anteriores
+     * y agrega o quita solamente este archivo.
+     */
+    if (
+      additiveSelection
+    ) {
+      this.setSelected(
+        key,
+        checkbox.checked
+      );
+
+      return;
+    }
+
+    /*
+     * Click normal del checkbox.
+     *
+     * Conservamos el comportamiento actual
+     * para no romper la selección múltiple
+     * que ya comprobamos que funciona.
+     */
     this.setSelected(
       key,
       checkbox.checked
@@ -759,20 +799,30 @@ export class R2MediaLibraryController {
     event
   ) {
     const selectionCheckbox =
-      event.target.closest(
-        '[data-media-select]'
-      );
+  event.target.closest(
+    '[data-media-select]'
+  );
 
-    if (selectionCheckbox) {
-      selectionCheckbox.setAttribute(
-        'data-media-shift-select',
-        event.shiftKey
-          ? 'true'
-          : 'false'
-      );
+if (selectionCheckbox) {
+  selectionCheckbox.setAttribute(
+    'data-media-shift-select',
+    event.shiftKey
+      ? 'true'
+      : 'false'
+  );
 
-      return;
-    }
+  selectionCheckbox.setAttribute(
+    'data-media-additive-select',
+    (
+      event.metaKey ||
+      event.ctrlKey
+    )
+      ? 'true'
+      : 'false'
+  );
+
+  return;
+}
 
     const loadMoreButton =
       event.target.closest(
