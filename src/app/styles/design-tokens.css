@@ -1,17 +1,22 @@
 /**
  * Cántico de Fe Music
- * V13.15.0 — Design Tokens Foundation
+ * V13.15.3 — Expanded Design Tokens System
  *
  * Base visual global:
- * - Colores
+ * - Colores de marca
  * - Fondos
+ * - Superficies
  * - Texto
  * - Bordes
+ * - Estados
+ * - Botones
+ * - Formularios
  * - Sombras
  * - Radios
  * - Espaciado
  * - Tipografía
- * - Estados
+ * - Motion
+ * - Layout
  */
 
 :root {
@@ -31,6 +36,9 @@
   --color-primary-soft:
     rgba(244, 208, 111, 0.12);
 
+  --color-primary-soft-hover:
+    rgba(244, 208, 111, 0.18);
+
   /* ================================================================ */
   /* Backgrounds                                                      */
   /* ================================================================ */
@@ -41,6 +49,9 @@
   --color-background-secondary:
     #111821;
 
+  --color-background-tertiary:
+    #151d26;
+
   --color-surface:
     #141f29;
 
@@ -49,6 +60,12 @@
 
   --color-surface-soft:
     rgba(255, 255, 255, 0.045);
+
+  --color-surface-hover:
+    rgba(255, 255, 255, 0.075);
+
+  --color-overlay:
+    rgba(0, 0, 0, 0.72);
 
   /* ================================================================ */
   /* Text                                                             */
@@ -63,6 +80,9 @@
   --color-text-muted:
     #77808c;
 
+  --color-text-disabled:
+    #59616c;
+
   --color-text-inverse:
     #0b0f14;
 
@@ -76,8 +96,14 @@
   --color-border-strong:
     rgba(255, 255, 255, 0.16);
 
+  --color-border-hover:
+    rgba(255, 255, 255, 0.24);
+
   --color-border-primary:
     rgba(244, 208, 111, 0.5);
+
+  --color-border-primary-strong:
+    rgba(244, 208, 111, 0.75);
 
   /* ================================================================ */
   /* Semantic colors                                                  */
@@ -86,11 +112,17 @@
   --color-success:
     #28c76f;
 
+  --color-success-hover:
+    #3bd77d;
+
   --color-success-soft:
     rgba(40, 199, 111, 0.14);
 
   --color-warning:
     #f5b942;
+
+  --color-warning-hover:
+    #ffc95c;
 
   --color-warning-soft:
     rgba(245, 185, 66, 0.14);
@@ -107,8 +139,90 @@
   --color-info:
     #4ea0ff;
 
+  --color-info-hover:
+    #70b3ff;
+
   --color-info-soft:
     rgba(78, 160, 255, 0.14);
+
+  /* ================================================================ */
+  /* Buttons                                                          */
+  /* ================================================================ */
+
+  --button-primary-background:
+    var(--color-primary);
+
+  --button-primary-background-hover:
+    var(--color-primary-hover);
+
+  --button-primary-text:
+    var(--color-text-inverse);
+
+  --button-secondary-background:
+    var(--color-surface);
+
+  --button-secondary-background-hover:
+    var(--color-surface-elevated);
+
+  --button-secondary-text:
+    var(--color-text);
+
+  --button-secondary-border:
+    var(--color-border-strong);
+
+  --button-danger-background:
+    var(--color-danger-soft);
+
+  --button-danger-background-hover:
+    rgba(255, 92, 92, 0.22);
+
+  --button-danger-text:
+    #ffb7b7;
+
+  /* ================================================================ */
+  /* Forms                                                            */
+  /* ================================================================ */
+
+  --input-background:
+    rgba(255, 255, 255, 0.045);
+
+  --input-background-hover:
+    rgba(255, 255, 255, 0.06);
+
+  --input-border:
+    var(--color-border-strong);
+
+  --input-border-focus:
+    var(--color-border-primary-strong);
+
+  --input-text:
+    var(--color-text);
+
+  --input-placeholder:
+    rgba(255, 255, 255, 0.42);
+
+  --input-focus-ring:
+    0 0 0 3px
+    rgba(244, 208, 111, 0.12);
+
+  /* ================================================================ */
+  /* Cards                                                            */
+  /* ================================================================ */
+
+  --card-background:
+    var(--color-surface);
+
+  --card-background-elevated:
+    var(--color-surface-elevated);
+
+  --card-border:
+    var(--color-border);
+
+  --card-border-hover:
+    rgba(244, 208, 111, 0.3);
+
+  --card-selected-border:
+    var(--color-border-primary-strong);
 
   /* ================================================================ */
   /* Shadows                                                          */
@@ -126,6 +240,10 @@
     0 18px 44px
     rgba(0, 0, 0, 0.3);
 
+  --shadow-xl:
+    0 28px 70px
+    rgba(0, 0, 0, 0.38);
+
   --shadow-primary:
     0 0 0 3px
     rgba(244, 208, 111, 0.12);
@@ -133,6 +251,9 @@
   /* ================================================================ */
   /* Border Radius                                                    */
   /* ================================================================ */
+
+  --radius-xs:
+    6px;
 
   --radius-sm:
     8px;
@@ -145,6 +266,9 @@
 
   --radius-xl:
     24px;
+
+  --radius-2xl:
+    30px;
 
   --radius-pill:
     999px;
@@ -180,6 +304,9 @@
   --space-9:
     48px;
 
+  --space-10:
+    64px;
+
   /* ================================================================ */
   /* Typography                                                       */
   /* ================================================================ */
@@ -210,6 +337,9 @@
   --font-size-2xl:
     2rem;
 
+  --font-size-3xl:
+    2.5rem;
+
   --font-weight-regular:
     400;
 
@@ -221,6 +351,9 @@
 
   --font-weight-bold:
     700;
+
+  --font-weight-black:
+    900;
 
   /* ================================================================ */
   /* Motion                                                           */
@@ -236,11 +369,30 @@
     260ms ease;
 
   /* ================================================================ */
+  /* Z-index                                                          */
+  /* ================================================================ */
+
+  --z-header:
+    20;
+
+  --z-player:
+    30;
+
+  --z-dropdown:
+    50;
+
+  --z-modal:
+    100;
+
+  /* ================================================================ */
   /* Layout                                                           */
   /* ================================================================ */
 
   --content-max-width:
     1440px;
+
+  --content-readable-width:
+    760px;
 
   --header-height:
     72px;
