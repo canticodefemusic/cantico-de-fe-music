@@ -4858,3 +4858,403 @@ button.cantico-chip:focus-visible,
       auto;
   }
 }
+
+/* ========================================================== */
+/* V13.15.16 — Search, Filters & Toolbar Theme                 */
+/* ========================================================== */
+
+/* ---------------------------------------------------------- */
+/* Toolbar                                                    */
+/* ---------------------------------------------------------- */
+
+.cantico-toolbar,
+[data-toolbar] {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    var(--space-3);
+
+  width:
+    100%;
+
+  padding:
+    var(--space-3);
+
+  border:
+    1px
+    solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-lg);
+
+  background:
+    var(--color-surface);
+
+  box-shadow:
+    var(--shadow-sm);
+}
+
+/* ---------------------------------------------------------- */
+/* Toolbar Groups                                             */
+/* ---------------------------------------------------------- */
+
+.cantico-toolbar-group,
+[data-toolbar-group] {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    var(--space-2);
+}
+
+/* ---------------------------------------------------------- */
+/* Search                                                     */
+/* ---------------------------------------------------------- */
+
+.cantico-search,
+[data-search] {
+  position:
+    relative;
+
+  flex:
+    1 1 260px;
+
+  min-width:
+    220px;
+}
+
+/* ---------------------------------------------------------- */
+/* Search Input                                               */
+/* ---------------------------------------------------------- */
+
+.cantico-search input,
+[data-search] input {
+  width:
+    100%;
+
+  min-height:
+    42px;
+
+  padding:
+    var(--space-2)
+    var(--space-4);
+
+  border:
+    1px
+    solid
+    var(--input-border);
+
+  border-radius:
+    var(--radius-md);
+
+  background:
+    var(--input-background);
+
+  color:
+    var(--input-text);
+}
+
+/* ---------------------------------------------------------- */
+/* Search Hover                                               */
+/* ---------------------------------------------------------- */
+
+.cantico-search input:hover,
+[data-search] input:hover {
+  background:
+    var(--input-background-hover);
+}
+
+/* ---------------------------------------------------------- */
+/* Search Focus                                               */
+/* ---------------------------------------------------------- */
+
+.cantico-search input:focus,
+[data-search] input:focus {
+  outline:
+    none;
+
+  border-color:
+    var(--input-border-focus);
+
+  box-shadow:
+    var(--input-focus-ring);
+}
+
+/* ---------------------------------------------------------- */
+/* Filter Group                                               */
+/* ---------------------------------------------------------- */
+
+.cantico-filters,
+[data-filters] {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    var(--space-2);
+}
+
+/* ---------------------------------------------------------- */
+/* Filter Button                                              */
+/* ---------------------------------------------------------- */
+
+.cantico-filter,
+[data-filter] {
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  min-height:
+    38px;
+
+  padding:
+    var(--space-2)
+    var(--space-3);
+
+  border:
+    1px
+    solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-pill);
+
+  background:
+    var(--color-surface-soft);
+
+  color:
+    var(--color-text-secondary);
+
+  font:
+    inherit;
+
+  font-size:
+    var(--font-size-sm);
+
+  font-weight:
+    var(--font-weight-semibold);
+
+  cursor:
+    pointer;
+
+  transition:
+    background
+      var(--transition-fast),
+    border-color
+      var(--transition-fast),
+    color
+      var(--transition-fast),
+    transform
+      var(--transition-fast);
+}
+
+/* ---------------------------------------------------------- */
+/* Filter Hover                                               */
+/* ---------------------------------------------------------- */
+
+.cantico-filter:hover:not(:disabled),
+[data-filter]:hover:not(:disabled) {
+  transform:
+    translateY(-1px);
+
+  border-color:
+    var(--color-border-primary);
+
+  background:
+    var(--color-surface-hover);
+
+  color:
+    var(--color-text);
+}
+
+/* ---------------------------------------------------------- */
+/* Active Filter                                              */
+/* ---------------------------------------------------------- */
+
+.cantico-filter.is-active,
+.cantico-filter[aria-pressed="true"],
+[data-filter][aria-pressed="true"],
+[data-filter][data-active="true"] {
+  border-color:
+    var(--color-border-primary);
+
+  background:
+    var(--color-primary-soft);
+
+  color:
+    var(--color-primary);
+}
+
+/* ---------------------------------------------------------- */
+/* Toolbar Select                                             */
+/* ---------------------------------------------------------- */
+
+.cantico-toolbar select,
+[data-toolbar] select {
+  min-height:
+    40px;
+
+  padding:
+    var(--space-2)
+    var(--space-3);
+
+  border:
+    1px
+    solid
+    var(--input-border);
+
+  border-radius:
+    var(--radius-md);
+
+  background:
+    var(--input-background);
+
+  color:
+    var(--input-text);
+}
+
+/* ---------------------------------------------------------- */
+/* Toolbar Result Count                                       */
+/* ---------------------------------------------------------- */
+
+.cantico-toolbar-results,
+[data-toolbar-results] {
+  color:
+    var(--color-text-muted);
+
+  font-size:
+    var(--font-size-sm);
+
+  font-weight:
+    var(--font-weight-semibold);
+
+  white-space:
+    nowrap;
+}
+
+/* ---------------------------------------------------------- */
+/* Toolbar Divider                                            */
+/* ---------------------------------------------------------- */
+
+.cantico-toolbar-divider,
+[data-toolbar-divider] {
+  width:
+    1px;
+
+  height:
+    28px;
+
+  background:
+    var(--color-border);
+}
+
+/* ---------------------------------------------------------- */
+/* Focus                                                      */
+/* ---------------------------------------------------------- */
+
+.cantico-filter:focus-visible,
+[data-filter]:focus-visible {
+  outline:
+    2px
+    solid
+    var(--color-primary);
+
+  outline-offset:
+    2px;
+}
+
+/* ---------------------------------------------------------- */
+/* Disabled                                                   */
+/* ---------------------------------------------------------- */
+
+.cantico-filter:disabled,
+[data-filter][aria-disabled="true"] {
+  opacity:
+    0.5;
+
+  cursor:
+    not-allowed;
+
+  pointer-events:
+    none;
+}
+
+/* ---------------------------------------------------------- */
+/* Reduced Motion                                             */
+/* ---------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .cantico-filter,
+  [data-filter] {
+    transition:
+      none;
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Responsive                                                 */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .cantico-toolbar,
+  [data-toolbar] {
+    align-items:
+      stretch;
+
+    flex-direction:
+      column;
+  }
+
+  .cantico-toolbar-group,
+  [data-toolbar-group],
+  .cantico-filters,
+  [data-filters] {
+    width:
+      100%;
+  }
+
+  .cantico-search,
+  [data-search] {
+    width:
+      100%;
+
+    min-width:
+      0;
+  }
+
+  .cantico-toolbar-divider,
+  [data-toolbar-divider] {
+    width:
+      100%;
+
+    height:
+      1px;
+  }
+}
