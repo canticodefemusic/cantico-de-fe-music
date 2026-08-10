@@ -5864,3 +5864,168 @@ button,
       1 !important;
   }
 }
+
+/* ========================================================== */
+/* Header Navigation Polish                                   */
+/* ========================================================== */
+
+.cantico-header__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cantico-header__actions .cantico-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+
+  gap: var(--space-2);
+
+  min-width: 0;
+}
+
+/* ---------------------------------------------------------- */
+/* Global Search Trigger                                      */
+/* ---------------------------------------------------------- */
+
+.cantico-search-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--space-2);
+
+  min-height: 40px;
+
+  padding:
+    var(--space-2)
+    var(--space-3);
+
+  flex: 0 0 auto;
+
+  border:
+    1px solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-pill);
+
+  background:
+    var(--color-surface-soft);
+
+  color:
+    var(--color-text-secondary);
+
+  font: inherit;
+
+  font-size:
+    var(--font-size-sm);
+
+  font-weight:
+    var(--font-weight-semibold);
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.cantico-search-trigger:hover {
+  transform:
+    translateY(-1px);
+
+  background:
+    var(--color-primary-soft);
+
+  border-color:
+    var(--color-border-primary);
+
+  color:
+    var(--color-primary);
+}
+
+.cantico-search-trigger:focus-visible {
+  outline:
+    2px solid
+    var(--color-primary);
+
+  outline-offset:
+    2px;
+}
+
+/* ---------------------------------------------------------- */
+/* Tablet                                                     */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 1000px) {
+  .cantico-header {
+    flex-wrap: wrap;
+  }
+
+  .cantico-header__actions {
+    width: 100%;
+  }
+
+  .cantico-header__actions .cantico-nav {
+    flex: 1 1 auto;
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Mobile                                                     */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 800px) {
+  .cantico-header__actions {
+    display: flex;
+
+    width: 100%;
+
+    align-items: center;
+
+    gap:
+      var(--space-2);
+  }
+
+  .cantico-header__actions .cantico-nav {
+    flex: 1 1 auto;
+
+    width: auto;
+
+    overflow-x: auto;
+
+    flex-wrap: nowrap;
+  }
+
+  .cantico-search-trigger {
+    flex: 0 0 auto;
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Small Mobile                                               */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 560px) {
+  .cantico-search-trigger {
+    width: 40px;
+    height: 40px;
+
+    padding: 0;
+  }
+
+  .cantico-search-trigger span:last-child {
+    display: none;
+  }
+}
