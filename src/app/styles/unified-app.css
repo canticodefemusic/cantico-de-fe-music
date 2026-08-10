@@ -2679,3 +2679,272 @@ textarea:focus-visible {
       0.8125rem;
   }
 }
+
+/* ========================================================== */
+/* V13.15.8 — Shared Modal & Overlay Theme                     */
+/* ========================================================== */
+
+/* ---------------------------------------------------------- */
+/* Overlay                                                    */
+/* ---------------------------------------------------------- */
+
+.cantico-overlay,
+[data-overlay] {
+  position: fixed;
+  inset: 0;
+
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding:
+    var(--space-5);
+
+  background:
+    rgba(0, 0, 0, 0.58);
+
+  backdrop-filter:
+    blur(6px);
+
+  -webkit-backdrop-filter:
+    blur(6px);
+}
+
+/* ---------------------------------------------------------- */
+/* Modal                                                      */
+/* ---------------------------------------------------------- */
+
+.cantico-modal,
+[data-modal] {
+  width:
+    min(100%, 560px);
+
+  max-height:
+    min(85vh, 760px);
+
+  overflow:
+    auto;
+
+  background:
+    var(--color-surface-elevated);
+
+  color:
+    var(--color-text);
+
+  border:
+    1px
+    solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-lg);
+
+  box-shadow:
+    var(--shadow-lg);
+}
+
+/* ---------------------------------------------------------- */
+/* Modal Header                                               */
+/* ---------------------------------------------------------- */
+
+.cantico-modal-header,
+[data-modal-header] {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap:
+    var(--space-4);
+
+  padding:
+    var(--space-5);
+
+  border-bottom:
+    1px
+    solid
+    var(--color-border);
+}
+
+.cantico-modal-header h2,
+.cantico-modal-header h3,
+[data-modal-header] h2,
+[data-modal-header] h3 {
+  margin: 0;
+
+  color:
+    var(--color-text);
+}
+
+/* ---------------------------------------------------------- */
+/* Modal Body                                                 */
+/* ---------------------------------------------------------- */
+
+.cantico-modal-body,
+[data-modal-body] {
+  padding:
+    var(--space-5);
+
+  color:
+    var(--color-text-secondary);
+
+  line-height:
+    1.6;
+}
+
+/* ---------------------------------------------------------- */
+/* Modal Footer                                               */
+/* ---------------------------------------------------------- */
+
+.cantico-modal-footer,
+[data-modal-footer] {
+  display: flex;
+
+  align-items: center;
+  justify-content: flex-end;
+
+  flex-wrap: wrap;
+
+  gap:
+    var(--space-3);
+
+  padding:
+    var(--space-4)
+    var(--space-5);
+
+  border-top:
+    1px
+    solid
+    var(--color-border);
+}
+
+/* ---------------------------------------------------------- */
+/* Close Button                                               */
+/* ---------------------------------------------------------- */
+
+.cantico-modal-close,
+[data-modal-close] {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-width: 40px;
+  min-height: 40px;
+
+  padding:
+    var(--space-2);
+
+  border:
+    1px
+    solid
+    transparent;
+
+  border-radius:
+    var(--radius-md);
+
+  background:
+    transparent;
+
+  color:
+    var(--color-text-secondary);
+
+  cursor:
+    pointer;
+
+  transition:
+    background
+    var(--transition-fast),
+    color
+    var(--transition-fast),
+    border-color
+    var(--transition-fast);
+}
+
+.cantico-modal-close:hover:not(:disabled),
+[data-modal-close]:hover:not(:disabled) {
+  background:
+    var(--color-surface-soft);
+
+  color:
+    var(--color-text);
+
+  border-color:
+    var(--color-border);
+}
+
+.cantico-modal-close:focus-visible,
+[data-modal-close]:focus-visible {
+  outline:
+    2px
+    solid
+    var(--color-primary);
+
+  outline-offset:
+    3px;
+}
+
+/* ---------------------------------------------------------- */
+/* Open State                                                 */
+/* ---------------------------------------------------------- */
+
+.cantico-overlay[hidden],
+[data-overlay][hidden],
+.cantico-modal[hidden],
+[data-modal][hidden] {
+  display: none;
+}
+
+/* ---------------------------------------------------------- */
+/* Reduced Motion                                             */
+/* ---------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .cantico-modal-close,
+  [data-modal-close] {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Responsive                                                 */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .cantico-overlay,
+  [data-overlay] {
+    align-items:
+      flex-end;
+
+    padding:
+      var(--space-3);
+  }
+
+  .cantico-modal,
+  [data-modal] {
+    width:
+      100%;
+
+    max-height:
+      90vh;
+
+    border-radius:
+      var(--radius-lg);
+  }
+
+  .cantico-modal-header,
+  [data-modal-header],
+  .cantico-modal-body,
+  [data-modal-body] {
+    padding:
+      var(--space-4);
+  }
+
+  .cantico-modal-footer,
+  [data-modal-footer] {
+    padding:
+      var(--space-4);
+  }
+}
