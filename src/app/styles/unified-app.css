@@ -869,21 +869,33 @@ a:hover {
 /* Secciones                                                          */
 /* ================================================================== */
 
+/* ================================================================ */
+/* V13.15.9 — Sections & Content Hierarchy                           */
+/* ================================================================ */
+
 .cantico-section {
+  position: relative;
+
   padding:
-    34px
+    clamp(40px, 6vw, 72px)
     0;
 }
 
+/* ---------------------------------------------------------------- */
+/* Section headings                                                 */
+/* ---------------------------------------------------------------- */
+
 .cantico-section h1,
 .cantico-section h2 {
-  margin-top:
-    0;
+  margin:
+    0
+    0
+    var(--space-6);
+
+  max-width: 900px;
 
   color:
-    var(
-      --color-text
-    );
+    var(--color-text);
 
   font-size:
     clamp(
@@ -892,8 +904,67 @@ a:hover {
       3rem
     );
 
+  font-weight:
+    var(--font-weight-bold);
+
+  line-height: 1.08;
+
   letter-spacing:
-    -0.02em;
+    -0.025em;
+}
+
+/* ---------------------------------------------------------------- */
+/* Secondary section headings                                       */
+/* ---------------------------------------------------------------- */
+
+.cantico-section h3 {
+  margin:
+    0
+    0
+    var(--space-3);
+
+  color:
+    var(--color-text);
+
+  font-size:
+    var(--font-size-lg);
+
+  font-weight:
+    var(--font-weight-bold);
+
+  line-height: 1.25;
+}
+
+/* ---------------------------------------------------------------- */
+/* Section text                                                     */
+/* ---------------------------------------------------------------- */
+
+.cantico-section > p {
+  max-width: 760px;
+
+  margin:
+    0
+    0
+    var(--space-6);
+
+  color:
+    var(--color-text-secondary);
+
+  font-size:
+    var(--font-size-md);
+
+  line-height: 1.7;
+}
+
+/* ---------------------------------------------------------------- */
+/* Section spacing                                                  */
+/* ---------------------------------------------------------------- */
+
+.cantico-section + .cantico-section {
+  border-top:
+    1px
+    solid
+    var(--color-border);
 }
 
 /* ================================================================== */
