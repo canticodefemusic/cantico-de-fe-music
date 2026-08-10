@@ -3572,3 +3572,341 @@ textarea:focus-visible {
       var(--space-3);
   }
 }
+
+/* ========================================================== */
+/* V13.15.12 — Shared Badges, Tags & Chips Theme               */
+/* ========================================================== */
+
+/* ---------------------------------------------------------- */
+/* Base Badge / Tag / Chip                                    */
+/* ---------------------------------------------------------- */
+
+.cantico-badge,
+.cantico-tag,
+.cantico-chip,
+[data-badge],
+[data-tag],
+[data-chip] {
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    var(--space-1);
+
+  max-width:
+    100%;
+
+  padding:
+    var(--space-1)
+    var(--space-2);
+
+  border:
+    1px
+    solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-full);
+
+  background:
+    var(--color-surface-soft);
+
+  color:
+    var(--color-text-secondary);
+
+  font-size:
+    var(--font-size-xs);
+
+  font-weight:
+    var(--font-weight-semibold);
+
+  line-height:
+    1.2;
+
+  white-space:
+    nowrap;
+
+  vertical-align:
+    middle;
+}
+
+/* ---------------------------------------------------------- */
+/* Primary                                                   */
+/* ---------------------------------------------------------- */
+
+.cantico-badge.is-primary,
+.cantico-tag.is-primary,
+.cantico-chip.is-primary,
+[data-badge="primary"],
+[data-tag="primary"],
+[data-chip="primary"] {
+  background:
+    var(--color-primary-soft);
+
+  color:
+    var(--color-primary);
+
+  border-color:
+    var(--color-border-primary);
+}
+
+/* ---------------------------------------------------------- */
+/* Success                                                   */
+/* ---------------------------------------------------------- */
+
+.cantico-badge.is-success,
+.cantico-tag.is-success,
+.cantico-chip.is-success,
+[data-badge="success"],
+[data-tag="success"],
+[data-chip="success"] {
+  background:
+    var(--color-success-soft);
+
+  color:
+    var(--color-success);
+
+  border-color:
+    var(--color-success);
+}
+
+/* ---------------------------------------------------------- */
+/* Warning                                                   */
+/* ---------------------------------------------------------- */
+
+.cantico-badge.is-warning,
+.cantico-tag.is-warning,
+.cantico-chip.is-warning,
+[data-badge="warning"],
+[data-tag="warning"],
+[data-chip="warning"] {
+  background:
+    var(--color-warning-soft);
+
+  color:
+    var(--color-warning);
+
+  border-color:
+    var(--color-warning);
+}
+
+/* ---------------------------------------------------------- */
+/* Danger                                                    */
+/* ---------------------------------------------------------- */
+
+.cantico-badge.is-danger,
+.cantico-tag.is-danger,
+.cantico-chip.is-danger,
+[data-badge="danger"],
+[data-tag="danger"],
+[data-chip="danger"] {
+  background:
+    var(--color-danger-soft);
+
+  color:
+    var(--color-danger);
+
+  border-color:
+    var(--color-danger);
+}
+
+/* ---------------------------------------------------------- */
+/* Neutral                                                   */
+/* ---------------------------------------------------------- */
+
+.cantico-badge.is-neutral,
+.cantico-tag.is-neutral,
+.cantico-chip.is-neutral,
+[data-badge="neutral"],
+[data-tag="neutral"],
+[data-chip="neutral"] {
+  background:
+    var(--color-background-secondary);
+
+  color:
+    var(--color-text-muted);
+
+  border-color:
+    var(--color-border);
+}
+
+/* ---------------------------------------------------------- */
+/* Interactive Chip                                          */
+/* ---------------------------------------------------------- */
+
+button.cantico-chip,
+.cantico-chip.is-interactive,
+[data-chip][role="button"] {
+  cursor:
+    pointer;
+
+  transition:
+    background
+      var(--transition-fast),
+    border-color
+      var(--transition-fast),
+    color
+      var(--transition-fast),
+    transform
+      var(--transition-fast);
+}
+
+button.cantico-chip:hover:not(:disabled),
+.cantico-chip.is-interactive:hover,
+[data-chip][role="button"]:hover {
+  background:
+    var(--color-surface-elevated);
+
+  border-color:
+    var(--color-border-primary);
+
+  color:
+    var(--color-text);
+
+  transform:
+    translateY(-1px);
+}
+
+/* ---------------------------------------------------------- */
+/* Selected Chip                                             */
+/* ---------------------------------------------------------- */
+
+.cantico-chip.is-selected,
+[data-chip][aria-selected="true"],
+[data-chip][aria-pressed="true"],
+[data-chip][data-selected="true"] {
+  background:
+    var(--color-primary);
+
+  border-color:
+    var(--color-primary);
+
+  color:
+    var(--color-primary-contrast);
+}
+
+/* ---------------------------------------------------------- */
+/* Removable Chip                                            */
+/* ---------------------------------------------------------- */
+
+.cantico-chip-remove,
+[data-chip-remove] {
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  width:
+    1.25rem;
+
+  height:
+    1.25rem;
+
+  padding:
+    0;
+
+  border:
+    0;
+
+  border-radius:
+    50%;
+
+  background:
+    transparent;
+
+  color:
+    inherit;
+
+  cursor:
+    pointer;
+
+  font:
+    inherit;
+
+  line-height:
+    1;
+}
+
+.cantico-chip-remove:hover,
+[data-chip-remove]:hover {
+  background:
+    rgba(0, 0, 0, 0.08);
+}
+
+/* ---------------------------------------------------------- */
+/* Disabled                                                  */
+/* ---------------------------------------------------------- */
+
+.cantico-badge.is-disabled,
+.cantico-tag.is-disabled,
+.cantico-chip.is-disabled,
+.cantico-chip:disabled,
+[data-badge][aria-disabled="true"],
+[data-tag][aria-disabled="true"],
+[data-chip][aria-disabled="true"] {
+  opacity:
+    0.55;
+
+  cursor:
+    not-allowed;
+
+  pointer-events:
+    none;
+}
+
+/* ---------------------------------------------------------- */
+/* Focus                                                     */
+/* ---------------------------------------------------------- */
+
+button.cantico-chip:focus-visible,
+.cantico-chip.is-interactive:focus-visible,
+[data-chip][role="button"]:focus-visible,
+.cantico-chip-remove:focus-visible,
+[data-chip-remove]:focus-visible {
+  outline:
+    2px
+    solid
+    var(--color-primary);
+
+  outline-offset:
+    2px;
+}
+
+/* ---------------------------------------------------------- */
+/* Reduced Motion                                            */
+/* ---------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  button.cantico-chip,
+  .cantico-chip.is-interactive,
+  [data-chip][role="button"] {
+    transition:
+      none;
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Responsive                                                */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .cantico-badge,
+  .cantico-tag,
+  .cantico-chip,
+  [data-badge],
+  [data-tag],
+  [data-chip] {
+    font-size:
+      var(--font-size-xs);
+  }
+}
