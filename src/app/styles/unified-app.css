@@ -3612,7 +3612,7 @@ textarea:focus-visible {
     var(--color-border);
 
   border-radius:
-    var(--radius-full);
+    var(--radius-pill)
 
   background:
     var(--color-surface-soft);
@@ -3788,7 +3788,7 @@ button.cantico-chip:hover:not(:disabled),
     var(--color-primary);
 
   color:
-    var(--color-primary-contrast);
+    var(--color-text-inverse)
 }
 
 /* ---------------------------------------------------------- */
