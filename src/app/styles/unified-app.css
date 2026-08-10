@@ -585,6 +585,10 @@ a:hover {
 /* Hero                                                               */
 /* ================================================================== */
 
+/* ================================================================== */
+/* V13.15.7 — Typography & Content Hierarchy                          */
+/* ================================================================== */
+
 .cantico-hero {
   display:
     grid;
@@ -596,14 +600,29 @@ a:hover {
 
   padding:
     clamp(
-      52px,
+      64px,
       9vw,
-      96px
+      112px
     )
-    0;
+    0
+    clamp(
+      72px,
+      10vw,
+      120px
+    );
 }
 
+/* ------------------------------------------------------------------ */
+/* Etiqueta superior                                                  */
+/* ------------------------------------------------------------------ */
+
 .cantico-kicker {
+  width:
+    fit-content;
+
+  margin:
+    0;
+
   color:
     var(
       --color-primary
@@ -615,21 +634,30 @@ a:hover {
     );
 
   font-weight:
-    900;
+    var(
+      --font-weight-bold
+    );
+
+  line-height:
+    1.2;
 
   text-transform:
     uppercase;
 
   letter-spacing:
-    0.22em;
+    0.24em;
 }
 
+/* ------------------------------------------------------------------ */
+/* Título principal                                                   */
+/* ------------------------------------------------------------------ */
+
 .cantico-hero h1 {
+  max-width:
+    920px;
+
   margin:
     0;
-
-  max-width:
-    900px;
 
   color:
     var(
@@ -638,17 +666,29 @@ a:hover {
 
   font-size:
     clamp(
-      2.6rem,
+      2.75rem,
       7vw,
-      5.2rem
+      5.4rem
+    );
+
+  font-weight:
+    var(
+      --font-weight-bold
     );
 
   line-height:
-    0.95;
+    0.96;
 
   letter-spacing:
-    -0.035em;
+    -0.04em;
+
+  text-wrap:
+    balance;
 }
+
+/* ------------------------------------------------------------------ */
+/* Descripción                                                        */
+/* ------------------------------------------------------------------ */
 
 .cantico-hero p {
   max-width:
@@ -663,10 +703,22 @@ a:hover {
     );
 
   font-size:
-    1.2rem;
+    clamp(
+      1.05rem,
+      1.6vw,
+      1.2rem
+    );
+
+  font-weight:
+    var(
+      --font-weight-regular
+    );
 
   line-height:
-    1.7;
+    1.75;
+
+  text-wrap:
+    pretty;
 }
 
 /* ================================================================== */
