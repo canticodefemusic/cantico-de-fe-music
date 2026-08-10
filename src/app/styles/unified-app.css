@@ -6029,3 +6029,101 @@ button,
     display: none;
   }
 }
+
+/* ========================================================== */
+/* Home Layout Polish                                         */
+/* ========================================================== */
+
+/* ---------------------------------------------------------- */
+/* Hero Spacing                                               */
+/* ---------------------------------------------------------- */
+
+.cantico-hero {
+  padding:
+    clamp(48px, 6vw, 76px)
+    0
+    clamp(24px, 3vw, 40px);
+}
+
+/* ---------------------------------------------------------- */
+/* First Home Section                                         */
+/* ---------------------------------------------------------- */
+
+.cantico-hero + .cantico-section {
+  padding-top:
+    var(--space-5);
+}
+
+/* ---------------------------------------------------------- */
+/* Home Section Header                                        */
+/* ---------------------------------------------------------- */
+
+.cantico-section__header {
+  display:
+    flex;
+
+  align-items:
+    flex-end;
+
+  justify-content:
+    space-between;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    var(--space-3);
+
+  margin-bottom:
+    var(--space-4);
+}
+
+.cantico-section__header h2 {
+  margin-bottom:
+    0;
+}
+
+.cantico-section__header > a {
+  flex:
+    0 0 auto;
+
+  color:
+    var(--color-primary);
+
+  font-size:
+    var(--font-size-sm);
+
+  text-decoration:
+    none;
+}
+
+.cantico-section__header > a:hover {
+  text-decoration:
+    underline;
+}
+
+/* ---------------------------------------------------------- */
+/* Mobile                                                     */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .cantico-hero {
+    padding:
+      var(--space-8)
+      0
+      var(--space-5);
+  }
+
+  .cantico-hero + .cantico-section {
+    padding-top:
+      var(--space-4);
+  }
+
+  .cantico-section__header {
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+}
