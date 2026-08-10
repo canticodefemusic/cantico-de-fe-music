@@ -1,0 +1,250 @@
+/**
+ * Cántico de Fe Music
+ * V13.15.0 — Design Tokens Foundation
+ *
+ * Base visual global:
+ * - Colores
+ * - Fondos
+ * - Texto
+ * - Bordes
+ * - Sombras
+ * - Radios
+ * - Espaciado
+ * - Tipografía
+ * - Estados
+ */
+
+:root {
+  /* ================================================================ */
+  /* Brand                                                            */
+  /* ================================================================ */
+
+  --color-primary:
+    #f4d06f;
+
+  --color-primary-hover:
+    #ffe08a;
+
+  --color-primary-strong:
+    #c9a327;
+
+  --color-primary-soft:
+    rgba(244, 208, 111, 0.12);
+
+  /* ================================================================ */
+  /* Backgrounds                                                      */
+  /* ================================================================ */
+
+  --color-background:
+    #0b0f14;
+
+  --color-background-secondary:
+    #111821;
+
+  --color-surface:
+    #141f29;
+
+  --color-surface-elevated:
+    #192630;
+
+  --color-surface-soft:
+    rgba(255, 255, 255, 0.045);
+
+  /* ================================================================ */
+  /* Text                                                             */
+  /* ================================================================ */
+
+  --color-text:
+    #f5f7fa;
+
+  --color-text-secondary:
+    #a6adb8;
+
+  --color-text-muted:
+    #77808c;
+
+  --color-text-inverse:
+    #0b0f14;
+
+  /* ================================================================ */
+  /* Borders                                                          */
+  /* ================================================================ */
+
+  --color-border:
+    rgba(255, 255, 255, 0.1);
+
+  --color-border-strong:
+    rgba(255, 255, 255, 0.16);
+
+  --color-border-primary:
+    rgba(244, 208, 111, 0.5);
+
+  /* ================================================================ */
+  /* Semantic colors                                                  */
+  /* ================================================================ */
+
+  --color-success:
+    #28c76f;
+
+  --color-success-soft:
+    rgba(40, 199, 111, 0.14);
+
+  --color-warning:
+    #f5b942;
+
+  --color-warning-soft:
+    rgba(245, 185, 66, 0.14);
+
+  --color-danger:
+    #ff5c5c;
+
+  --color-danger-hover:
+    #ff7a7a;
+
+  --color-danger-soft:
+    rgba(255, 92, 92, 0.14);
+
+  --color-info:
+    #4ea0ff;
+
+  --color-info-soft:
+    rgba(78, 160, 255, 0.14);
+
+  /* ================================================================ */
+  /* Shadows                                                          */
+  /* ================================================================ */
+
+  --shadow-sm:
+    0 4px 12px
+    rgba(0, 0, 0, 0.16);
+
+  --shadow-md:
+    0 10px 28px
+    rgba(0, 0, 0, 0.22);
+
+  --shadow-lg:
+    0 18px 44px
+    rgba(0, 0, 0, 0.3);
+
+  --shadow-primary:
+    0 0 0 3px
+    rgba(244, 208, 111, 0.12);
+
+  /* ================================================================ */
+  /* Border Radius                                                    */
+  /* ================================================================ */
+
+  --radius-sm:
+    8px;
+
+  --radius-md:
+    12px;
+
+  --radius-lg:
+    18px;
+
+  --radius-xl:
+    24px;
+
+  --radius-pill:
+    999px;
+
+  /* ================================================================ */
+  /* Spacing                                                          */
+  /* ================================================================ */
+
+  --space-1:
+    4px;
+
+  --space-2:
+    8px;
+
+  --space-3:
+    12px;
+
+  --space-4:
+    16px;
+
+  --space-5:
+    20px;
+
+  --space-6:
+    24px;
+
+  --space-7:
+    32px;
+
+  --space-8:
+    40px;
+
+  --space-9:
+    48px;
+
+  /* ================================================================ */
+  /* Typography                                                       */
+  /* ================================================================ */
+
+  --font-family-base:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  --font-size-xs:
+    0.75rem;
+
+  --font-size-sm:
+    0.875rem;
+
+  --font-size-md:
+    1rem;
+
+  --font-size-lg:
+    1.125rem;
+
+  --font-size-xl:
+    1.5rem;
+
+  --font-size-2xl:
+    2rem;
+
+  --font-weight-regular:
+    400;
+
+  --font-weight-medium:
+    500;
+
+  --font-weight-semibold:
+    600;
+
+  --font-weight-bold:
+    700;
+
+  /* ================================================================ */
+  /* Motion                                                           */
+  /* ================================================================ */
+
+  --transition-fast:
+    120ms ease;
+
+  --transition-normal:
+    180ms ease;
+
+  --transition-slow:
+    260ms ease;
+
+  /* ================================================================ */
+  /* Layout                                                           */
+  /* ================================================================ */
+
+  --content-max-width:
+    1440px;
+
+  --header-height:
+    72px;
+
+  --sidebar-width:
+    260px;
+}
