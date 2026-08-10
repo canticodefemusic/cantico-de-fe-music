@@ -3215,3 +3215,360 @@ textarea:focus-visible {
       44px;
   }
 }
+
+/* ========================================================== */
+/* V13.15.11 — Shared Tables & Data Lists Theme                */
+/* ========================================================== */
+
+/* ---------------------------------------------------------- */
+/* Table Container                                            */
+/* ---------------------------------------------------------- */
+
+.cantico-table-container,
+[data-table-container] {
+  width: 100%;
+
+  overflow-x: auto;
+
+  border:
+    1px
+    solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-lg);
+
+  background:
+    var(--color-surface);
+
+  box-shadow:
+    var(--shadow-sm);
+}
+
+/* ---------------------------------------------------------- */
+/* Table                                                      */
+/* ---------------------------------------------------------- */
+
+.cantico-table,
+[data-table] {
+  width: 100%;
+
+  border-collapse:
+    collapse;
+
+  color:
+    var(--color-text);
+
+  font-size:
+    var(--font-size-sm);
+}
+
+/* ---------------------------------------------------------- */
+/* Header                                                     */
+/* ---------------------------------------------------------- */
+
+.cantico-table th,
+[data-table] th {
+  padding:
+    var(--space-3)
+    var(--space-4);
+
+  background:
+    var(--color-background-secondary);
+
+  color:
+    var(--color-text-secondary);
+
+  text-align:
+    left;
+
+  font-weight:
+    var(--font-weight-semibold);
+
+  white-space:
+    nowrap;
+
+  border-bottom:
+    1px
+    solid
+    var(--color-border-strong);
+}
+
+/* ---------------------------------------------------------- */
+/* Cells                                                      */
+/* ---------------------------------------------------------- */
+
+.cantico-table td,
+[data-table] td {
+  padding:
+    var(--space-3)
+    var(--space-4);
+
+  color:
+    var(--color-text);
+
+  border-bottom:
+    1px
+    solid
+    var(--color-border);
+
+  vertical-align:
+    middle;
+}
+
+/* ---------------------------------------------------------- */
+/* Rows                                                       */
+/* ---------------------------------------------------------- */
+
+.cantico-table tbody tr,
+[data-table] tbody tr {
+  transition:
+    background
+    var(--transition-fast);
+}
+
+.cantico-table tbody tr:hover,
+[data-table] tbody tr:hover {
+  background:
+    var(--color-surface-soft);
+}
+
+.cantico-table tbody tr:last-child td,
+[data-table] tbody tr:last-child td {
+  border-bottom:
+    0;
+}
+
+/* ---------------------------------------------------------- */
+/* Selected Row                                               */
+/* ---------------------------------------------------------- */
+
+.cantico-table tr.is-selected,
+[data-table] tr[aria-selected="true"],
+[data-table] tr[data-selected="true"] {
+  background:
+    var(--color-primary-soft);
+}
+
+.cantico-table tr.is-selected td,
+[data-table] tr[aria-selected="true"] td,
+[data-table] tr[data-selected="true"] td {
+  border-color:
+    var(--color-border-primary);
+}
+
+/* ---------------------------------------------------------- */
+/* Sortable Header                                            */
+/* ---------------------------------------------------------- */
+
+.cantico-table th.is-sortable,
+[data-table] th[data-sortable] {
+  cursor:
+    pointer;
+
+  user-select:
+    none;
+}
+
+.cantico-table th.is-sortable:hover,
+[data-table] th[data-sortable]:hover {
+  color:
+    var(--color-text);
+}
+
+/* ---------------------------------------------------------- */
+/* Generic Data List                                         */
+/* ---------------------------------------------------------- */
+
+.cantico-data-list,
+[data-list] {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  width:
+    100%;
+
+  overflow:
+    hidden;
+
+  border:
+    1px
+    solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-lg);
+
+  background:
+    var(--color-surface);
+}
+
+/* ---------------------------------------------------------- */
+/* Data List Item                                             */
+/* ---------------------------------------------------------- */
+
+.cantico-data-list-item,
+[data-list-item] {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    var(--space-4);
+
+  padding:
+    var(--space-4);
+
+  border-bottom:
+    1px
+    solid
+    var(--color-border);
+
+  color:
+    var(--color-text);
+
+  transition:
+    background
+    var(--transition-fast);
+}
+
+.cantico-data-list-item:last-child,
+[data-list-item]:last-child {
+  border-bottom:
+    0;
+}
+
+.cantico-data-list-item:hover,
+[data-list-item]:hover {
+  background:
+    var(--color-surface-soft);
+}
+
+/* ---------------------------------------------------------- */
+/* Selected List Item                                         */
+/* ---------------------------------------------------------- */
+
+.cantico-data-list-item.is-selected,
+[data-list-item][aria-selected="true"],
+[data-list-item][data-selected="true"] {
+  background:
+    var(--color-primary-soft);
+
+  box-shadow:
+    inset
+    3px
+    0
+    0
+    var(--color-primary);
+}
+
+/* ---------------------------------------------------------- */
+/* Primary / Secondary Text                                   */
+/* ---------------------------------------------------------- */
+
+.cantico-data-list-title,
+[data-list-title] {
+  color:
+    var(--color-text);
+
+  font-weight:
+    var(--font-weight-semibold);
+}
+
+.cantico-data-list-meta,
+[data-list-meta] {
+  color:
+    var(--color-text-muted);
+
+  font-size:
+    var(--font-size-xs);
+}
+
+/* ---------------------------------------------------------- */
+/* Empty Table / List                                         */
+/* ---------------------------------------------------------- */
+
+.cantico-table-empty,
+.cantico-data-list-empty,
+[data-table-empty],
+[data-list-empty] {
+  padding:
+    var(--space-7);
+
+  color:
+    var(--color-text-muted);
+
+  text-align:
+    center;
+
+  background:
+    var(--color-surface-soft);
+}
+
+/* ---------------------------------------------------------- */
+/* Focus                                                      */
+/* ---------------------------------------------------------- */
+
+.cantico-data-list-item:focus-visible,
+[data-list-item]:focus-visible,
+.cantico-table th.is-sortable:focus-visible,
+[data-table] th[data-sortable]:focus-visible {
+  outline:
+    2px
+    solid
+    var(--color-primary);
+
+  outline-offset:
+    -2px;
+}
+
+/* ---------------------------------------------------------- */
+/* Reduced Motion                                             */
+/* ---------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .cantico-table tbody tr,
+  [data-table] tbody tr,
+  .cantico-data-list-item,
+  [data-list-item] {
+    transition:
+      none;
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Responsive                                                 */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .cantico-table th,
+  .cantico-table td,
+  [data-table] th,
+  [data-table] td {
+    padding:
+      var(--space-3);
+
+    font-size:
+      var(--font-size-xs);
+  }
+
+  .cantico-data-list-item,
+  [data-list-item] {
+    align-items:
+      flex-start;
+
+    gap:
+      var(--space-3);
+
+    padding:
+      var(--space-3);
+  }
+}
