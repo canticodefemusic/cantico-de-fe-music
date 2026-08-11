@@ -1,0 +1,826 @@
+/**
+ * Cántico de Fe Music
+ * Playlist Engine
+ *
+ * Visual Design System Integration
+ */
+
+/* ==========================================================
+   Page
+   ========================================================== */
+
+.playlist-page,
+.playlist-detail,
+.playlist-not-found {
+  color:
+    var(--color-text);
+}
+
+/* ==========================================================
+   Page Header
+   ========================================================== */
+
+.playlist-page__header {
+  margin-bottom:
+    var(--space-6);
+}
+
+.playlist-page__kicker,
+.playlist-group__kicker {
+  margin:
+    0 0
+    var(--space-2);
+
+  color:
+    var(--color-primary);
+
+  font-size:
+    var(--font-size-xs);
+
+  font-weight:
+    var(--font-weight-bold);
+
+  letter-spacing:
+    0.18em;
+
+  text-transform:
+    uppercase;
+}
+
+.playlist-page__header h1,
+.playlist-detail__header h1 {
+  margin:
+    0;
+
+  color:
+    var(--color-text);
+
+  font-size:
+    clamp(
+      2.4rem,
+      6vw,
+      4rem
+    );
+
+  line-height:
+    1;
+
+  letter-spacing:
+    -0.03em;
+}
+
+.playlist-page__description,
+.playlist-detail__description {
+  max-width:
+    760px;
+
+  margin:
+    var(--space-3)
+    0
+    0;
+
+  color:
+    var(--color-text-secondary);
+
+  line-height:
+    1.7;
+}
+
+/* ==========================================================
+   Management Actions
+   ========================================================== */
+
+.playlist-management-actions {
+  display:
+    flex;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    var(--space-3);
+
+  margin-bottom:
+    var(--space-8);
+}
+
+.playlist-management-button {
+  min-height:
+    44px;
+}
+
+/* ==========================================================
+   Playlist Groups
+   ========================================================== */
+
+.playlist-group {
+  margin-top:
+    var(--space-8);
+}
+
+.playlist-group:first-of-type {
+  margin-top:
+    0;
+}
+
+.playlist-group__header {
+  display:
+    flex;
+
+  align-items:
+    flex-end;
+
+  justify-content:
+    space-between;
+
+  gap:
+    var(--space-4);
+
+  margin-bottom:
+    var(--space-4);
+}
+
+.playlist-group__header h2 {
+  margin:
+    0;
+
+  color:
+    var(--color-text);
+
+  font-size:
+    clamp(
+      1.8rem,
+      4vw,
+      2.6rem
+    );
+
+  line-height:
+    1.1;
+}
+
+.playlist-group__count {
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  min-width:
+    36px;
+
+  min-height:
+    36px;
+
+  padding:
+    0
+    var(--space-3);
+
+  border:
+    1px solid
+    var(--color-border-primary);
+
+  border-radius:
+    var(--radius-pill);
+
+  background:
+    var(--color-primary-soft);
+
+  color:
+    var(--color-primary);
+
+  font-size:
+    var(--font-size-sm);
+
+  font-weight:
+    var(--font-weight-bold);
+}
+
+/* ==========================================================
+   Grid
+   ========================================================== */
+
+.playlist-grid,
+.playlist-hymn-grid {
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(280px, 1fr)
+    );
+
+  gap:
+    var(--space-5);
+}
+
+/* ==========================================================
+   Playlist Card
+   ========================================================== */
+
+.playlist-card {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  min-height:
+    100%;
+
+  padding:
+    var(--space-5);
+
+  border:
+    1px solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-xl);
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--color-surface),
+      var(--color-background-secondary)
+    );
+
+  box-shadow:
+    var(--shadow-md);
+
+  transition:
+    transform
+      var(--transition-normal),
+    border-color
+      var(--transition-normal),
+    box-shadow
+      var(--transition-normal),
+    background
+      var(--transition-normal);
+}
+
+.playlist-card:hover {
+  transform:
+    translateY(-4px);
+
+  border-color:
+    var(--color-border-primary);
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--color-surface-elevated),
+      var(--color-background-secondary)
+    );
+
+  box-shadow:
+    var(--shadow-lg);
+}
+
+/* ==========================================================
+   Card Header
+   ========================================================== */
+
+.playlist-card__header {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    var(--space-3);
+
+  margin-bottom:
+    var(--space-4);
+}
+
+.playlist-card__icon {
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  width:
+    46px;
+
+  height:
+    46px;
+
+  flex:
+    0 0 46px;
+
+  border:
+    1px solid
+    var(--color-border-primary);
+
+  border-radius:
+    var(--radius-md);
+
+  background:
+    linear-gradient(
+      145deg,
+      #0b3558,
+      #10263a
+    );
+
+  color:
+    var(--color-primary);
+
+  box-shadow:
+    var(--shadow-sm);
+
+  font-size:
+    1.25rem;
+}
+
+/* ==========================================================
+   Badge
+   ========================================================== */
+
+.playlist-badge {
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  min-height:
+    30px;
+
+  padding:
+    0
+    var(--space-3);
+
+  border:
+    1px solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-pill);
+
+  color:
+    var(--color-text-secondary);
+
+  background:
+    var(--color-surface-elevated);
+
+  font-size:
+    var(--font-size-xs);
+
+  font-weight:
+    var(--font-weight-semibold);
+}
+
+.playlist-badge--smart {
+  border-color:
+    var(--color-border-primary);
+
+  background:
+    var(--color-primary-soft);
+
+  color:
+    var(--color-primary);
+}
+
+/* ==========================================================
+   Card Body
+   ========================================================== */
+
+.playlist-card__body {
+  display:
+    flex;
+
+  flex:
+    1;
+
+  flex-direction:
+    column;
+}
+
+.playlist-card__body h3 {
+  margin:
+    0;
+
+  color:
+    var(--color-text);
+
+  font-size:
+    var(--font-size-lg);
+
+  line-height:
+    1.25;
+}
+
+.playlist-card__description {
+  margin:
+    var(--space-3)
+    0
+    0;
+
+  color:
+    var(--color-text-secondary);
+
+  line-height:
+    1.65;
+}
+
+.playlist-card__count {
+  margin:
+    var(--space-4)
+    0
+    0;
+
+  color:
+    var(--color-text-muted);
+
+  font-size:
+    var(--font-size-sm);
+
+  font-weight:
+    var(--font-weight-semibold);
+}
+
+/* ==========================================================
+   Card Actions
+   ========================================================== */
+
+.playlist-card__actions,
+.playlist-hymn-card__actions {
+  display:
+    flex;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    var(--space-2);
+
+  margin-top:
+    auto;
+
+  padding-top:
+    var(--space-5);
+}
+
+.playlist-button {
+  min-height:
+    42px;
+
+  padding:
+    10px
+    14px;
+}
+
+.playlist-button--secondary {
+  border:
+    1px solid
+    var(--color-border-primary);
+
+  background:
+    transparent;
+
+  color:
+    var(--color-primary);
+}
+
+.playlist-button--secondary:hover {
+  background:
+    var(--color-primary-soft);
+
+  border-color:
+    var(--color-primary);
+
+  color:
+    var(--color-primary-hover);
+}
+
+.playlist-button--primary {
+  border:
+    1px solid
+    #174f78;
+
+  background:
+    #0b3558;
+
+  color:
+    var(--color-text);
+}
+
+.playlist-button--primary:hover {
+  border-color:
+    #226792;
+
+  background:
+    #124a76;
+}
+
+.playlist-button--danger {
+  border:
+    1px solid
+    rgba(255, 92, 92, 0.35);
+
+  background:
+    rgba(90, 24, 24, 0.22);
+
+  color:
+    #ff9b9b;
+}
+
+.playlist-button--danger:hover {
+  border-color:
+    rgba(255, 92, 92, 0.65);
+
+  background:
+    rgba(120, 28, 28, 0.34);
+
+  color:
+    #ffc1c1;
+}
+
+/* ==========================================================
+   Playlist Detail
+   ========================================================== */
+
+.playlist-detail__topbar {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    var(--space-3);
+
+  flex-wrap:
+    wrap;
+
+  margin-bottom:
+    var(--space-6);
+}
+
+.playlist-back-link {
+  width:
+    fit-content;
+}
+
+.playlist-detail__header {
+  margin-bottom:
+    var(--space-6);
+}
+
+.playlist-detail__meta {
+  display:
+    flex;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    var(--space-3);
+
+  margin-top:
+    var(--space-4);
+}
+
+.playlist-detail__meta span {
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  min-height:
+    34px;
+
+  padding:
+    0
+    var(--space-3);
+
+  border:
+    1px solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-pill);
+
+  background:
+    var(--color-surface-soft);
+
+  color:
+    var(--color-text-secondary);
+
+  font-size:
+    var(--font-size-sm);
+
+  font-weight:
+    var(--font-weight-semibold);
+}
+
+/* ==========================================================
+   Hymn Card Inside Playlist
+   ========================================================== */
+
+.playlist-hymn-card {
+  display:
+    flex;
+
+  gap:
+    var(--space-4);
+
+  min-height:
+    100%;
+
+  padding:
+    var(--space-5);
+
+  border:
+    1px solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-xl);
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--color-surface),
+      var(--color-background-secondary)
+    );
+
+  box-shadow:
+    var(--shadow-md);
+}
+
+.playlist-hymn-card__icon {
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  width:
+    46px;
+
+  height:
+    46px;
+
+  flex:
+    0 0 46px;
+
+  border:
+    1px solid
+    var(--color-border-primary);
+
+  border-radius:
+    var(--radius-md);
+
+  background:
+    #0b3558;
+
+  color:
+    var(--color-primary);
+}
+
+.playlist-hymn-card__body {
+  display:
+    flex;
+
+  flex:
+    1;
+
+  flex-direction:
+    column;
+
+  min-width:
+    0;
+}
+
+.playlist-hymn-card__body h3 {
+  margin:
+    0;
+
+  color:
+    var(--color-text);
+}
+
+.playlist-hymn-card__body p {
+  color:
+    var(--color-text-secondary);
+
+  line-height:
+    1.6;
+}
+
+/* ==========================================================
+   Empty States
+   ========================================================== */
+
+.playlist-empty {
+  padding:
+    var(--space-6);
+
+  border:
+    1px dashed
+    var(--color-border-primary);
+
+  border-radius:
+    var(--radius-lg);
+
+  background:
+    var(--color-surface-soft);
+
+  color:
+    var(--color-text-secondary);
+}
+
+.playlist-empty h2,
+.playlist-empty h3,
+.playlist-empty h1 {
+  margin-top:
+    0;
+
+  color:
+    var(--color-text);
+}
+
+/* ==========================================================
+   Responsive
+   ========================================================== */
+
+@media (max-width: 760px) {
+  .playlist-management-actions {
+    flex-direction:
+      column;
+  }
+
+  .playlist-management-button {
+    width:
+      100%;
+  }
+
+  .playlist-group__header {
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+
+  .playlist-grid,
+  .playlist-hymn-grid {
+    grid-template-columns:
+      1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .playlist-card,
+  .playlist-hymn-card {
+    padding:
+      var(--space-4);
+  }
+
+  .playlist-card__header {
+    align-items:
+      flex-start;
+  }
+
+  .playlist-card__actions,
+  .playlist-hymn-card__actions {
+    flex-direction:
+      column;
+  }
+
+  .playlist-card__actions .cantico-button,
+  .playlist-hymn-card__actions .cantico-button {
+    width:
+      100%;
+  }
+}
+
+/* ==========================================================
+   Reduced Motion
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .playlist-card {
+    transition:
+      none;
+  }
+
+  .playlist-card:hover {
+    transform:
+      none;
+  }
+}
