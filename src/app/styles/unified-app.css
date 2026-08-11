@@ -6127,3 +6127,59 @@ button,
       column;
   }
 }
+
+/* ========================================================== */
+/* V10.9.2 — Responsive Fixed Player Spacing                  */
+/* ========================================================== */
+
+/*
+ * El reproductor permanece fixed en la parte inferior.
+ * En pantallas pequeñas puede ocupar más altura porque
+ * sus controles cambian de distribución.
+ *
+ * Reservamos espacio adicional para impedir que el player
+ * cubra el footer o el último contenido de cualquier vista.
+ */
+
+/* ---------------------------------------------------------- */
+/* Tablet / Narrow Desktop                                    */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 1000px) {
+  .cantico-app-shell {
+    padding-bottom:
+      190px;
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Tablet / Mobile                                            */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 800px) {
+  .cantico-app-shell {
+    padding-bottom:
+      230px;
+  }
+
+  .cantico-footer {
+    padding-bottom:
+      140px;
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Small Mobile                                               */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 560px) {
+  .cantico-app-shell {
+    padding-bottom:
+      260px;
+  }
+
+  .cantico-footer {
+    padding-bottom:
+      160px;
+  }
+}
