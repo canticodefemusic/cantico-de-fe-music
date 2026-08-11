@@ -199,10 +199,33 @@
 }
 
 /* ==========================================================
-   Grid
+   Playlist Grid
    ========================================================== */
 
-.playlist-grid,
+.playlist-grid {
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fill,
+      minmax(280px, 335px)
+    );
+
+  gap:
+    var(--space-5);
+
+  justify-content:
+    start;
+
+  align-items:
+    stretch;
+}
+
+/* ==========================================================
+   Hymns Inside Playlist Grid
+   ========================================================== */
+
 .playlist-hymn-grid {
   display:
     grid;
@@ -215,6 +238,9 @@
 
   gap:
     var(--space-5);
+
+  align-items:
+    stretch;
 }
 
 /* ==========================================================
@@ -227,6 +253,9 @@
 
   flex-direction:
     column;
+
+  width:
+    100%;
 
   min-height:
     100%;
@@ -388,6 +417,17 @@
 
   color:
     var(--color-primary);
+}
+
+.playlist-badge--manual {
+  border-color:
+    var(--color-border);
+
+  background:
+    var(--color-surface-elevated);
+
+  color:
+    var(--color-text-secondary);
 }
 
 /* ==========================================================
@@ -744,9 +784,9 @@
     var(--color-text-secondary);
 }
 
+.playlist-empty h1,
 .playlist-empty h2,
-.playlist-empty h3,
-.playlist-empty h1 {
+.playlist-empty h3 {
   margin-top:
     0;
 
@@ -781,6 +821,14 @@
   .playlist-hymn-grid {
     grid-template-columns:
       1fr;
+
+    width:
+      100%;
+  }
+
+  .playlist-card {
+    max-width:
+      none;
   }
 }
 
