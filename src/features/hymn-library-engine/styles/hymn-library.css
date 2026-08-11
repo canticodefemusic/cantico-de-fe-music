@@ -12,6 +12,7 @@
  * - Ordenamiento
  * - Detalle del himno
  * - Acciones
+ * - Cargar más
  * - Estados hover / focus
  * - Responsive
  * - Reduced motion
@@ -357,9 +358,6 @@
   line-height:
     1.6;
 }
-
-/* Fallback para tarjetas antiguas que todavía no tengan
-   hymn-library-card__description */
 
 .hymn-library-card__body > p:not(
   .hymn-library-card__category
@@ -819,6 +817,109 @@
 }
 
 /* ==========================================================
+   Load More
+   ========================================================== */
+
+.hymn-library__load-more {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  width:
+    100%;
+
+  margin-top:
+    var(--space-6);
+
+  padding-top:
+    var(--space-2);
+}
+
+.hymn-library__load-more:has(
+  #hymnLibraryLoadMore[hidden]
+) {
+  display:
+    none;
+}
+
+#hymnLibraryLoadMore {
+  min-height:
+    44px;
+
+  padding:
+    var(--space-2)
+    var(--space-5);
+
+  border:
+    1px solid
+    var(--color-border-strong);
+
+  border-radius:
+    var(--radius-pill);
+
+  background:
+    var(--color-surface);
+
+  color:
+    var(--color-text);
+
+  font:
+    inherit;
+
+  font-size:
+    var(--font-size-sm);
+
+  font-weight:
+    var(--font-weight-bold);
+
+  cursor:
+    pointer;
+
+  transition:
+    transform
+      var(--transition-fast),
+    border-color
+      var(--transition-fast),
+    background
+      var(--transition-fast),
+    color
+      var(--transition-fast),
+    box-shadow
+      var(--transition-fast);
+}
+
+#hymnLibraryLoadMore:hover {
+  transform:
+    translateY(-2px);
+
+  border-color:
+    var(--color-border-primary);
+
+  background:
+    var(--color-primary-soft);
+
+  color:
+    var(--color-primary-hover);
+
+  box-shadow:
+    var(--shadow-sm);
+}
+
+#hymnLibraryLoadMore:focus-visible {
+  outline:
+    2px solid
+    var(--color-primary);
+
+  outline-offset:
+    3px;
+}
+
+/* ==========================================================
    Detail Lyrics
    ========================================================== */
 
@@ -1099,6 +1200,16 @@
     flex:
       1 1 auto;
   }
+
+  .hymn-library__load-more {
+    margin-top:
+      var(--space-5);
+  }
+
+  #hymnLibraryLoadMore {
+    width:
+      100%;
+  }
 }
 
 /* ==========================================================
@@ -1148,7 +1259,8 @@
   .hymn-library-card__icon,
   .hymn-library-card__favorite,
   .hymn-library-card__actions a,
-  .hymn-library-card__actions button {
+  .hymn-library-card__actions button,
+  #hymnLibraryLoadMore {
     animation:
       none;
 
@@ -1158,7 +1270,8 @@
 
   .hymn-library-card:hover,
   .hymn-library-card:hover
-  .hymn-library-card__icon {
+  .hymn-library-card__icon,
+  #hymnLibraryLoadMore:hover {
     transform:
       none;
   }
