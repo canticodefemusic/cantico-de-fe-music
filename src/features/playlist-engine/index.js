@@ -3,8 +3,6 @@
  * Public API
  */
 
-import './styles/playlists.css';
-
 export {
   getPlaylists,
   createPlaylist,
