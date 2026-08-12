@@ -11,35 +11,67 @@ function escapeHtml(value = '') {
     .replace(/'/g, '&#039;');
 }
 
-export function renderNavigation(
+function renderNavigationLinks(
   items = [],
-  activePage = 'home'
+  activePage = 'home',
+  className = ''
 ) {
   const safeItems =
     Array.isArray(items)
       ? items
       : [];
 
-  const links = safeItems
+  return safeItems
     .map(item => {
       const active =
         item.id === activePage
           ? 'is-active'
           : '';
 
+      const classes = [
+        className,
+        active
+      ]
+        .filter(Boolean)
+        .join(' ');
+
       return `
         <a
-          class="${active}"
+          class="${classes}"
           href="${escapeHtml(item.href)}"
+          ${
+            item.id === activePage
+              ? 'aria-current="page"'
+              : ''
+          }
         >
           ${escapeHtml(item.label)}
         </a>
       `;
     })
     .join('');
+}
+
+export function renderNavigation(
+  items = [],
+  activePage = 'home'
+) {
+  const desktopLinks =
+    renderNavigationLinks(
+      items,
+      activePage
+    );
+
+  const mobileLinks =
+    renderNavigationLinks(
+      items,
+      activePage,
+      'cantico-mobile-nav__link'
+    );
 
   return `
     <header class="cantico-header">
+
       <a
         class="cantico-brand"
         href="/"
@@ -52,7 +84,7 @@ export function renderNavigation(
           ♪
         </span>
 
-        <span>
+        <span class="cantico-brand__text">
           <strong>
             ${escapeHtml(
               appConfig.brand.name
@@ -68,11 +100,12 @@ export function renderNavigation(
       </a>
 
       <div class="cantico-header__actions">
+
         <nav
-          class="cantico-nav"
+          class="cantico-nav cantico-nav--desktop"
           aria-label="Navegación principal"
         >
-          ${links}
+          ${desktopLinks}
         </nav>
 
         <button
@@ -90,7 +123,53 @@ export function renderNavigation(
             Buscar
           </span>
         </button>
+
+        <details class="cantico-mobile-nav">
+
+          <summary
+            class="cantico-mobile-nav__trigger"
+            aria-label="Abrir menú de navegación"
+            title="Menú"
+          >
+            <span
+              class="cantico-mobile-nav__hamburger"
+              aria-hidden="true"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </summary>
+
+          <div class="cantico-mobile-nav__panel">
+
+            <nav
+              class="cantico-mobile-nav__links"
+              aria-label="Navegación móvil"
+            >
+              ${mobileLinks}
+            </nav>
+
+            <button
+              type="button"
+              class="cantico-mobile-nav__search"
+              data-global-search-open
+            >
+              <span aria-hidden="true">
+                🔍
+              </span>
+
+              <span>
+                Buscar
+              </span>
+            </button>
+
+          </div>
+
+        </details>
+
       </div>
+
     </header>
   `;
 }
