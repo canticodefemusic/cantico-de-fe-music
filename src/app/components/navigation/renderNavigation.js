@@ -124,7 +124,10 @@ export function renderNavigation(
           </span>
         </button>
 
-        <details class="cantico-mobile-nav">
+        <details
+          class="cantico-mobile-nav"
+          data-mobile-navigation
+        >
 
           <summary
             class="cantico-mobile-nav__trigger"
@@ -154,6 +157,7 @@ export function renderNavigation(
               type="button"
               class="cantico-mobile-nav__search"
               data-global-search-open
+              data-mobile-navigation-close
             >
               <span aria-hidden="true">
                 🔍
