@@ -525,8 +525,8 @@
   }
 
   .mpp-track span {
-    margin-top:
-      1px;
+    display: none;
+  }
 
     font-size:
       0.72rem;
