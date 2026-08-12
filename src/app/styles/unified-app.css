@@ -1456,20 +1456,32 @@ a:hover {
 
   .cantico-header {
     align-items:
-      flex-start;
+      center;
 
     flex-direction:
-      column;
+      row;
+
+    flex-wrap:
+      nowrap;
   }
 
-  .cantico-nav {
+  .cantico-nav--desktop {
+    display:
+      none;
+  }
+
+  .cantico-header__actions {
     width:
-      100%;
-  }
+      auto;
 
-  .cantico-nav a {
-    font-size:
-      0.95rem;
+    flex:
+      0 0 auto;
+
+    align-items:
+      center;
+
+    justify-content:
+      flex-end;
   }
 
   .cantico-mini-player {
