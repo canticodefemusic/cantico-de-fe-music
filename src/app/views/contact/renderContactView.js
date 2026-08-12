@@ -54,6 +54,16 @@ export function renderContactView() {
                 creada para fortalecer la fe.
               </p>
 
+              <div class="contact-page__card-actions">
+                <a
+                  class="contact-page__button"
+                  href="#"
+                  aria-label="Visitar canal oficial de Cántico de Fe Music"
+                >
+                  Visitar canal
+                </a>
+              </div>
+
             </div>
 
           </article>
