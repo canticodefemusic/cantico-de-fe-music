@@ -56,12 +56,14 @@ export function renderContactView() {
 
               <div class="contact-page__card-actions">
                 <a
-                  class="contact-page__button"
-                  href="#"
-                  aria-label="Visitar canal oficial de Cántico de Fe Music"
-                >
-                  Visitar canal
-                </a>
+  class="contact-page__button"
+  href="https://www.youtube.com/channel/UC8RSuzs2fSK8jrh-Zc9lNrg"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Visitar canal oficial de Cántico de Fe Music en YouTube"
+>
+  Visitar canal
+</a>
               </div>
 
             </div>
