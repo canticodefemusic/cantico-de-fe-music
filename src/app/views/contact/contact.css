@@ -2,7 +2,7 @@
  * Cántico de Fe Music
  * Contact Page
  *
- * V10.8.1 — Visual Design System Integration
+ * V10.9.6 — Compact Contact Cards + Channel Button
  */
 
 /* ==========================================================
@@ -318,6 +318,122 @@
 }
 
 /* ==========================================================
+   Card Actions
+   ========================================================== */
+
+.contact-page__card-actions {
+  display:
+    flex;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    var(--space-2);
+
+  margin-top:
+    var(--space-5);
+}
+
+.contact-page__button {
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  min-height:
+    42px;
+
+  padding:
+    10px
+    18px;
+
+  border:
+    1px solid
+    var(--color-border-primary);
+
+  border-radius:
+    var(--radius-pill);
+
+  background:
+    var(--color-primary-soft);
+
+  color:
+    var(--color-primary);
+
+  font-size:
+    var(--font-size-sm);
+
+  font-weight:
+    var(--font-weight-bold);
+
+  line-height:
+    1;
+
+  text-decoration:
+    none;
+
+  cursor:
+    pointer;
+
+  transition:
+    transform
+      var(--transition-fast),
+    background
+      var(--transition-fast),
+    border-color
+      var(--transition-fast),
+    color
+      var(--transition-fast),
+    box-shadow
+      var(--transition-fast);
+}
+
+.contact-page__button::before {
+  content:
+    "▶";
+
+  display:
+    inline-flex;
+
+  margin-right:
+    8px;
+
+  font-size:
+    0.82rem;
+}
+
+.contact-page__button:hover {
+  transform:
+    translateY(-2px);
+
+  border-color:
+    var(--color-primary);
+
+  background:
+    var(--color-primary);
+
+  color:
+    var(--color-text-inverse);
+
+  box-shadow:
+    var(--shadow-primary);
+}
+
+.contact-page__button:focus-visible {
+  outline:
+    2px solid
+    var(--color-primary);
+
+  outline-offset:
+    3px;
+}
+
+/* ==========================================================
    Responsive
    ========================================================== */
 
@@ -333,13 +449,108 @@
   }
 }
 
+/* ==========================================================
+   Compact Mobile Contact Cards
+   ========================================================== */
+
 @media (max-width: 520px) {
+  .contact-page__hero {
+    margin-bottom:
+      var(--space-6);
+  }
+
+  .contact-page__section {
+    margin-top:
+      var(--space-6);
+  }
+
+  .contact-page__section-header {
+    margin-bottom:
+      var(--space-3);
+  }
+
+  .contact-page__grid {
+    gap:
+      var(--space-3);
+  }
+
   .contact-page__card {
     flex-direction:
       column;
 
+    gap:
+      12px;
+
     padding:
-      var(--space-4);
+      16px;
+
+    border-radius:
+      18px;
+  }
+
+  .contact-page__icon {
+    width:
+      42px;
+
+    height:
+      42px;
+
+    flex-basis:
+      42px;
+
+    border-radius:
+      12px;
+
+    font-size:
+      1.05rem;
+  }
+
+  .contact-page__badge {
+    min-height:
+      27px;
+
+    margin-bottom:
+      10px;
+
+    padding:
+      0
+      10px;
+
+    font-size:
+      0.7rem;
+  }
+
+  .contact-page__card h3 {
+    font-size:
+      1.15rem;
+  }
+
+  .contact-page__card p {
+    margin-top:
+      8px;
+
+    font-size:
+      0.9rem;
+
+    line-height:
+      1.55;
+  }
+
+  .contact-page__card-actions {
+    margin-top:
+      14px;
+  }
+
+  .contact-page__button {
+    min-height:
+      38px;
+
+    padding:
+      9px
+      14px;
+
+    font-size:
+      0.82rem;
   }
 }
 
@@ -348,12 +559,14 @@
    ========================================================== */
 
 @media (prefers-reduced-motion: reduce) {
-  .contact-page__card {
+  .contact-page__card,
+  .contact-page__button {
     transition:
       none;
   }
 
-  .contact-page__card:hover {
+  .contact-page__card:hover,
+  .contact-page__button:hover {
     transform:
       none;
   }
