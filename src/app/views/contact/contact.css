@@ -571,3 +571,342 @@
       none;
   }
 }
+
+/* ==========================================================
+   V10.9.9 — Contact Channels UI
+   ========================================================== */
+
+.contact-channels-section {
+  margin-top:
+    var(--space-8);
+}
+
+.contact-channels-grid {
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(240px, 1fr)
+    );
+
+  gap:
+    var(--space-4);
+}
+
+.contact-channel {
+  display:
+    flex;
+
+  align-items:
+    flex-start;
+
+  gap:
+    var(--space-4);
+
+  min-height:
+    180px;
+
+  padding:
+    var(--space-5);
+
+  border:
+    1px solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-xl);
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--color-surface),
+      var(--color-background-secondary)
+    );
+
+  box-shadow:
+    var(--shadow-md);
+
+  transition:
+    transform
+      var(--transition-normal),
+    border-color
+      var(--transition-normal),
+    box-shadow
+      var(--transition-normal);
+}
+
+.contact-channel.is-active:hover {
+  transform:
+    translateY(-4px);
+
+  border-color:
+    var(--color-border-primary);
+
+  box-shadow:
+    var(--shadow-lg);
+}
+
+.contact-channel.is-coming-soon {
+  opacity:
+    0.72;
+}
+
+.contact-channel__icon {
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  width:
+    46px;
+
+  height:
+    46px;
+
+  flex:
+    0 0 46px;
+
+  border:
+    1px solid
+    var(--color-border-primary);
+
+  border-radius:
+    var(--radius-md);
+
+  background:
+    linear-gradient(
+      145deg,
+      #0b3558,
+      #10263a
+    );
+
+  color:
+    var(--color-primary);
+
+  font-size:
+    1.1rem;
+
+  font-weight:
+    var(--font-weight-bold);
+}
+
+.contact-channel__content {
+  display:
+    flex;
+
+  flex:
+    1;
+
+  flex-direction:
+    column;
+
+  min-width:
+    0;
+}
+
+.contact-channel__content h3 {
+  margin:
+    0;
+
+  color:
+    var(--color-text);
+
+  font-size:
+    var(--font-size-lg);
+}
+
+.contact-channel__content p {
+  margin:
+    var(--space-2)
+    0
+    0;
+
+  color:
+    var(--color-text-secondary);
+
+  font-size:
+    var(--font-size-sm);
+
+  line-height:
+    1.6;
+}
+
+.contact-channel__action,
+.contact-channel__status {
+  align-self:
+    flex-start;
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  min-height:
+    36px;
+
+  margin-top:
+    var(--space-4);
+
+  padding:
+    8px
+    14px;
+
+  border-radius:
+    var(--radius-pill);
+
+  font-size:
+    var(--font-size-xs);
+
+  font-weight:
+    var(--font-weight-bold);
+}
+
+.contact-channel__action {
+  border:
+    1px solid
+    var(--color-border-primary);
+
+  background:
+    var(--color-primary-soft);
+
+  color:
+    var(--color-primary);
+
+  text-decoration:
+    none;
+
+  transition:
+    transform
+      var(--transition-fast),
+    background
+      var(--transition-fast),
+    color
+      var(--transition-fast);
+}
+
+.contact-channel__action:hover {
+  transform:
+    translateY(-2px);
+
+  background:
+    var(--color-primary);
+
+  color:
+    var(--color-text-inverse);
+}
+
+.contact-channel__status {
+  border:
+    1px solid
+    var(--color-border);
+
+  background:
+    var(--color-surface-soft);
+
+  color:
+    var(--color-text-muted);
+}
+
+/* ==========================================================
+   Mobile
+   ========================================================== */
+
+@media (max-width: 520px) {
+  .contact-channels-section {
+    margin-top:
+      var(--space-6);
+  }
+
+  .contact-channels-grid {
+    grid-template-columns:
+      1fr;
+
+    gap:
+      var(--space-3);
+  }
+
+  .contact-channel {
+    min-height:
+      auto;
+
+    gap:
+      12px;
+
+    padding:
+      14px;
+
+    border-radius:
+      18px;
+  }
+
+  .contact-channel__icon {
+    width:
+      40px;
+
+    height:
+      40px;
+
+    flex-basis:
+      40px;
+
+    border-radius:
+      11px;
+
+    font-size:
+      0.95rem;
+  }
+
+  .contact-channel__content h3 {
+    font-size:
+      1rem;
+  }
+
+  .contact-channel__content p {
+    font-size:
+      0.84rem;
+
+    line-height:
+      1.5;
+  }
+
+  .contact-channel__action,
+  .contact-channel__status {
+    min-height:
+      32px;
+
+    margin-top:
+      10px;
+
+    padding:
+      7px
+      12px;
+
+    font-size:
+      0.72rem;
+  }
+}
+
+/* ==========================================================
+   Reduced Motion
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-channel,
+  .contact-channel__action {
+    transition:
+      none;
+  }
+
+  .contact-channel.is-active:hover,
+  .contact-channel__action:hover {
+    transform:
+      none;
+  }
+}
