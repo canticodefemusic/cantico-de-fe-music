@@ -375,6 +375,24 @@ function openActiveResult() {
   return true;
 }
 
+function restoreSearchTriggerFocus() {
+  const trigger =
+    lastSearchTrigger;
+
+  lastSearchTrigger = null;
+
+  if (
+    !trigger ||
+    !document.contains(trigger)
+  ) {
+    return;
+  }
+
+  window.setTimeout(() => {
+    trigger.focus();
+  }, 0);
+}
+
 function openGlobalSearch() {
   const existingInput =
     document.querySelector(
@@ -464,9 +482,12 @@ function openGlobalSearch() {
       >
         Cerrar
       </button>
-    `
+        `
+  }, {
+    onDismiss:
+      restoreSearchTriggerFocus
   });
-
+  
   const input =
     document.querySelector(
       '#globalSearchInput'
@@ -607,22 +628,11 @@ function openGlobalSearch() {
   );
 
   closeButton.addEventListener(
-  'click',
-  () => {
-    ModalService.close();
-
-    window.setTimeout(() => {
-      if (
-        lastSearchTrigger &&
-        document.contains(lastSearchTrigger)
-      ) {
-        lastSearchTrigger.focus();
-      }
-
-      lastSearchTrigger = null;
-    }, 0);
-  }
-);
+    'click',
+    () => {
+      ModalService.close();
+    }
+  );
 
   window.setTimeout(() => {
     input.focus();
