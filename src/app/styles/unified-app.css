@@ -6618,3 +6618,22 @@ button,
     transition: none;
   }
 }
+
+/* ==========================================================
+   V10.10.4 — Mobile Navigation Visibility Fix
+   ========================================================== */
+
+@media (max-width: 800px) {
+
+  /* Desktop navigation must never render on mobile */
+  .cantico-header__actions .cantico-nav--desktop {
+    display: none;
+  }
+
+  /* Mobile hamburger navigation */
+  .cantico-header__actions .cantico-mobile-nav {
+    display: block;
+    flex: 0 0 auto;
+  }
+
+}
