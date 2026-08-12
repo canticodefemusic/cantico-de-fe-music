@@ -49,6 +49,7 @@ const boundTriggers = new WeakSet();
 let shortcutInitialized = false;
 let activeResultIndex = -1;
 let searchTimeout = null;
+let lastSearchTrigger = null;
 
 function escapeHtml(value = '') {
   return String(value)
@@ -660,9 +661,12 @@ export function initGlobalSearch() {
 
       button.addEventListener(
         'click',
-        openGlobalSearch
+        () => {
+          lastSearchTrigger = button;
+          openGlobalSearch();
+        }
       );
-
+      
       boundTriggers.add(button);
     });
 
