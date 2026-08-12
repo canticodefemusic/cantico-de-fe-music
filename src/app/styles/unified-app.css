@@ -6183,3 +6183,426 @@ button,
       160px;
   }
 }
+
+/* ==========================================================
+   V10.10.1 — Professional Mobile Navigation
+   ========================================================== */
+
+/* ----------------------------------------------------------
+   Mobile Navigation — Desktop Default
+   ---------------------------------------------------------- */
+
+.cantico-mobile-nav {
+  display: none;
+}
+
+/* ----------------------------------------------------------
+   Mobile Header
+   ---------------------------------------------------------- */
+
+@media (max-width: 800px) {
+
+  .cantico-header {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    flex-wrap: nowrap;
+
+    gap: 12px;
+  }
+
+  .cantico-brand {
+    flex: 1 1 auto;
+
+    min-width: 0;
+  }
+
+  .cantico-brand__text {
+    min-width: 0;
+  }
+
+  .cantico-brand__text strong {
+    display: block;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+  }
+
+  /* Hide desktop navigation */
+
+  .cantico-nav--desktop {
+    display: none;
+  }
+
+  .cantico-header__actions {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    width: auto;
+
+    flex: 0 0 auto;
+
+    gap: 8px;
+  }
+
+  /* Search becomes icon-only */
+
+  .cantico-header__actions
+  > .cantico-search-trigger {
+    width: 42px;
+
+    height: 42px;
+
+    min-height: 42px;
+
+    flex: 0 0 42px;
+
+    padding: 0;
+
+    border-radius: 50%;
+  }
+
+  .cantico-header__actions
+  > .cantico-search-trigger
+  > span:last-child {
+    display: none;
+  }
+
+  /* --------------------------------------------------------
+     Mobile Menu
+     -------------------------------------------------------- */
+
+  .cantico-mobile-nav {
+    position: relative;
+
+    display: block;
+
+    flex: 0 0 auto;
+  }
+
+  .cantico-mobile-nav__trigger {
+    display: grid;
+
+    place-items: center;
+
+    width: 42px;
+
+    height: 42px;
+
+    padding: 0;
+
+    border:
+      1px solid
+      var(--color-border);
+
+    border-radius:
+      var(--radius-md);
+
+    background:
+      var(--color-surface-soft);
+
+    color:
+      var(--color-text);
+
+    cursor: pointer;
+
+    list-style: none;
+  }
+
+  .cantico-mobile-nav__trigger::-webkit-details-marker {
+    display: none;
+  }
+
+  .cantico-mobile-nav__trigger::marker {
+    display: none;
+    content: "";
+  }
+
+  /* Hamburger */
+
+  .cantico-mobile-nav__hamburger {
+    display: flex;
+
+    width: 18px;
+
+    flex-direction: column;
+
+    gap: 4px;
+  }
+
+  .cantico-mobile-nav__hamburger span {
+    display: block;
+
+    width: 100%;
+
+    height: 2px;
+
+    border-radius: 999px;
+
+    background:
+      currentColor;
+
+    transition:
+      transform var(--transition-fast),
+      opacity var(--transition-fast);
+  }
+
+  /* Hamburger -> X */
+
+  .cantico-mobile-nav[open]
+  .cantico-mobile-nav__hamburger
+  span:nth-child(1) {
+    transform:
+      translateY(6px)
+      rotate(45deg);
+  }
+
+  .cantico-mobile-nav[open]
+  .cantico-mobile-nav__hamburger
+  span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .cantico-mobile-nav[open]
+  .cantico-mobile-nav__hamburger
+  span:nth-child(3) {
+    transform:
+      translateY(-6px)
+      rotate(-45deg);
+  }
+
+  /* --------------------------------------------------------
+     Dropdown Panel
+     -------------------------------------------------------- */
+
+  .cantico-mobile-nav__panel {
+    position: absolute;
+
+    top: calc(100% + 12px);
+
+    right: 0;
+
+    z-index: 1200;
+
+    width:
+      min(
+        300px,
+        calc(100vw - 32px)
+      );
+
+    padding: 10px;
+
+    border:
+      1px solid
+      var(--color-border);
+
+    border-radius:
+      var(--radius-lg);
+
+    background:
+      var(--color-surface);
+
+    box-shadow:
+      var(--shadow-lg);
+  }
+
+  .cantico-mobile-nav__links {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+  }
+
+  .cantico-mobile-nav__link {
+    display: flex;
+
+    align-items: center;
+
+    min-height: 42px;
+
+    padding:
+      9px
+      12px;
+
+    border:
+      1px solid
+      transparent;
+
+    border-radius:
+      var(--radius-md);
+
+    color:
+      var(--color-text-secondary);
+
+    font-size:
+      var(--font-size-sm);
+
+    font-weight:
+      var(--font-weight-semibold);
+
+    text-decoration: none;
+  }
+
+  .cantico-mobile-nav__link:hover {
+    background:
+      var(--color-surface-soft);
+
+    color:
+      var(--color-text);
+  }
+
+  .cantico-mobile-nav__link.is-active {
+    border-color:
+      var(--color-border-primary);
+
+    background:
+      var(--color-primary-soft);
+
+    color:
+      var(--color-primary);
+  }
+
+  /* Search inside menu */
+
+  .cantico-mobile-nav__search {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    width: 100%;
+
+    min-height: 42px;
+
+    margin-top: 8px;
+
+    padding:
+      9px
+      12px;
+
+    border:
+      1px solid
+      var(--color-border);
+
+    border-radius:
+      var(--radius-md);
+
+    background:
+      var(--color-background-secondary);
+
+    color:
+      var(--color-text);
+
+    font: inherit;
+
+    font-size:
+      var(--font-size-sm);
+
+    font-weight:
+      var(--font-weight-semibold);
+
+    cursor: pointer;
+  }
+}
+
+/* ==========================================================
+   Small Mobile — 520px
+   ========================================================== */
+
+@media (max-width: 520px) {
+
+  .cantico-header {
+    padding-left: 12px;
+
+    padding-right: 12px;
+  }
+
+  .cantico-logo {
+    width: 40px;
+
+    height: 40px;
+
+    flex: 0 0 40px;
+  }
+
+  .cantico-brand {
+    gap: 10px;
+  }
+
+  .cantico-brand__text strong {
+    font-size: 0.95rem;
+  }
+
+  .cantico-brand__text small {
+    font-size: 0.65rem;
+  }
+
+  .cantico-header__actions
+  > .cantico-search-trigger {
+    width: 40px;
+
+    height: 40px;
+
+    min-height: 40px;
+
+    flex-basis: 40px;
+  }
+
+  .cantico-mobile-nav__trigger {
+    width: 40px;
+
+    height: 40px;
+  }
+
+  .cantico-mobile-nav__panel {
+    top:
+      calc(100% + 10px);
+
+    width:
+      min(
+        280px,
+        calc(100vw - 24px)
+      );
+  }
+}
+
+/* ==========================================================
+   Very Small Mobile
+   ========================================================== */
+
+@media (max-width: 380px) {
+
+  .cantico-brand__text small {
+    display: none;
+  }
+
+  .cantico-brand__text strong {
+    font-size: 0.9rem;
+  }
+}
+
+/* ==========================================================
+   Reduced Motion
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .cantico-mobile-nav__hamburger span {
+    transition: none;
+  }
+}
