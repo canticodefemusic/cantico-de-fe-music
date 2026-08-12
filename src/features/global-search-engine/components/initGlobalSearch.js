@@ -607,11 +607,22 @@ function openGlobalSearch() {
   );
 
   closeButton.addEventListener(
-    'click',
-    () => {
-      ModalService.close();
-    }
-  );
+  'click',
+  () => {
+    ModalService.close();
+
+    window.setTimeout(() => {
+      if (
+        lastSearchTrigger &&
+        document.contains(lastSearchTrigger)
+      ) {
+        lastSearchTrigger.focus();
+      }
+
+      lastSearchTrigger = null;
+    }, 0);
+  }
+);
 
   window.setTimeout(() => {
     input.focus();
