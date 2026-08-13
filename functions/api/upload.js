@@ -1,14 +1,151 @@
-// V13.2.1 Preview R2 binding deployment
-function createObjectKey(fileName = 'file') {
-  const safeName =
+// V13.2.2 — Server-Side Upload Validation
+
+const MAX_FILE_SIZE =
+  50 * 1024 * 1024;
+
+const ALLOWED_MIME_TYPES =
+  new Set([
+    'image/jpeg',
+    'image/png',
+    'image/webp',
+    'image/gif',
+
+    'audio/mpeg',
+    'audio/mp4',
+    'audio/x-m4a',
+    'audio/wav',
+    'audio/x-wav',
+    'audio/ogg',
+
+    'video/mp4',
+    'video/webm',
+
+    'application/pdf'
+  ]);
+
+const ALLOWED_EXTENSIONS =
+  new Set([
+    'jpg',
+    'jpeg',
+    'png',
+    'webp',
+    'gif',
+
+    'mp3',
+    'm4a',
+    'wav',
+    'ogg',
+
+    'mp4',
+    'webm',
+
+    'pdf'
+  ]);
+
+
+function normalizeFileName(
+  fileName = 'file'
+) {
+  const value =
     String(fileName)
       .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9._-]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+      .toLowerCase();
 
+  const lastDotIndex =
+    value.lastIndexOf('.');
+
+  const rawBaseName =
+    lastDotIndex > 0
+      ? value.slice(
+          0,
+          lastDotIndex
+        )
+      : value;
+
+  const rawExtension =
+    lastDotIndex > 0
+      ? value.slice(
+          lastDotIndex + 1
+        )
+      : '';
+
+  const safeBaseName =
+    rawBaseName
+      .normalize('NFD')
+      .replace(
+        /[\u0300-\u036f]/g,
+        ''
+      )
+      .replace(
+        /[^a-z0-9_-]+/g,
+        '-'
+      )
+      .replace(
+        /-+/g,
+        '-'
+      )
+      .replace(
+        /^[-_]+|[-_]+$/g,
+        ''
+      )
+      .slice(
+        0,
+        120
+      );
+
+  const safeExtension =
+    rawExtension
+      .replace(
+        /[^a-z0-9]+/g,
+        ''
+      )
+      .slice(
+        0,
+        12
+      );
+
+  const baseName =
+    safeBaseName ||
+    'file';
+
+  return safeExtension
+    ? `${baseName}.${safeExtension}`
+    : baseName;
+}
+
+
+function getFileExtension(
+  fileName = ''
+) {
   const normalizedName =
-    safeName || 'file';
+    String(fileName)
+      .trim()
+      .toLowerCase();
+
+  const lastDotIndex =
+    normalizedName.lastIndexOf('.');
+
+  if (
+    lastDotIndex <= 0 ||
+    lastDotIndex ===
+      normalizedName.length - 1
+  ) {
+    return '';
+  }
+
+  return normalizedName.slice(
+    lastDotIndex + 1
+  );
+}
+
+
+function createObjectKey(
+  fileName = 'file'
+) {
+  const normalizedName =
+    normalizeFileName(
+      fileName
+    );
 
   const id =
     crypto.randomUUID();
@@ -16,7 +153,10 @@ function createObjectKey(fileName = 'file') {
   const date =
     new Date()
       .toISOString()
-      .slice(0, 10);
+      .slice(
+        0,
+        10
+      );
 
   return [
     'uploads',
@@ -25,12 +165,17 @@ function createObjectKey(fileName = 'file') {
   ].join('/');
 }
 
+
 function jsonResponse(
   data,
   status = 200
 ) {
   return new Response(
-    JSON.stringify(data, null, 2),
+    JSON.stringify(
+      data,
+      null,
+      2
+    ),
     {
       status,
 
@@ -45,15 +190,121 @@ function jsonResponse(
   );
 }
 
+
+function validateUploadedFile(
+  file
+) {
+  if (
+    !file ||
+    typeof file.stream !==
+      'function'
+  ) {
+    return {
+      valid: false,
+
+      status: 400,
+
+      error:
+        'No valid file was provided.'
+    };
+  }
+
+  if (
+    !Number.isFinite(
+      Number(file.size)
+    ) ||
+    file.size <= 0
+  ) {
+    return {
+      valid: false,
+
+      status: 400,
+
+      error:
+        'The file is empty.'
+    };
+  }
+
+  if (
+    file.size >
+    MAX_FILE_SIZE
+  ) {
+    return {
+      valid: false,
+
+      status: 413,
+
+      error:
+        'The file exceeds the maximum allowed size of 50 MB.'
+    };
+  }
+
+  const mimeType =
+    String(
+      file.type || ''
+    )
+      .trim()
+      .toLowerCase();
+
+  if (
+    !mimeType ||
+    !ALLOWED_MIME_TYPES.has(
+      mimeType
+    )
+  ) {
+    return {
+      valid: false,
+
+      status: 415,
+
+      error:
+        'The file type is not allowed.'
+    };
+  }
+
+  const extension =
+    getFileExtension(
+      file.name
+    );
+
+  if (
+    !extension ||
+    !ALLOWED_EXTENSIONS.has(
+      extension
+    )
+  ) {
+    return {
+      valid: false,
+
+      status: 415,
+
+      error:
+        'The file extension is not allowed.'
+    };
+  }
+
+  return {
+    valid: true,
+
+    mimeType,
+
+    extension
+  };
+}
+
+
 export function onRequestGet({
   env
 }) {
   const connected =
-    Boolean(env.MEDIA_BUCKET);
+    Boolean(
+      env.MEDIA_BUCKET
+    );
 
   return jsonResponse(
     {
-      success: connected,
+      success:
+        connected,
 
       service:
         'cantico-r2-upload-api',
@@ -64,16 +315,31 @@ export function onRequestGet({
       bucketConnected:
         connected,
 
+      maxFileSize:
+        MAX_FILE_SIZE,
+
+      allowedMimeTypes:
+        Array.from(
+          ALLOWED_MIME_TYPES
+        ),
+
+      allowedExtensions:
+        Array.from(
+          ALLOWED_EXTENSIONS
+        ),
+
       message:
         connected
           ? 'R2 bucket binding is connected.'
           : 'R2 bucket binding is not configured.'
     },
+
     connected
       ? 200
       : 500
   );
 }
+
 
 export async function onRequestPost(
   context
@@ -83,10 +349,13 @@ export async function onRequestPost(
     env
   } = context;
 
-  if (!env.MEDIA_BUCKET) {
+  if (
+    !env.MEDIA_BUCKET
+  ) {
     return jsonResponse(
       {
         success: false,
+
         error:
           'R2 bucket binding is not configured.'
       },
@@ -107,6 +376,7 @@ export async function onRequestPost(
     return jsonResponse(
       {
         success: false,
+
         error:
           'Expected multipart/form-data.'
       },
@@ -119,38 +389,43 @@ export async function onRequestPost(
       await request.formData();
 
     const file =
-      formData.get('file');
+      formData.get(
+        'file'
+      );
+
+    const validation =
+      validateUploadedFile(
+        file
+      );
 
     if (
-      !file ||
-      typeof file.stream !==
-        'function'
+      !validation.valid
     ) {
       return jsonResponse(
         {
           success: false,
+
           error:
-            'No valid file was provided.'
+            validation.error
         },
-        400
+
+        validation.status
       );
     }
 
-    if (!file.size) {
-      return jsonResponse(
-        {
-          success: false,
-          error:
-            'The file is empty.'
-        },
-        400
+    const normalizedName =
+      normalizeFileName(
+        file.name
       );
-    }
 
     const key =
       createObjectKey(
-        file.name
+        normalizedName
       );
+
+    const uploadedAt =
+      new Date()
+        .toISOString();
 
     await env.MEDIA_BUCKET.put(
       key,
@@ -158,14 +433,20 @@ export async function onRequestPost(
       {
         httpMetadata: {
           contentType:
-            file.type ||
-            'application/octet-stream'
+            validation.mimeType
         },
 
         customMetadata: {
           originalName:
             file.name ||
-            'file'
+            'file',
+
+          normalizedName,
+
+          extension:
+            validation.extension,
+
+          uploadedAt
         }
       }
     );
@@ -177,17 +458,21 @@ export async function onRequestPost(
         key,
 
         name:
-          file.name || 'file',
+          file.name ||
+          'file',
+
+        normalizedName,
 
         type:
-          file.type ||
-          'application/octet-stream',
+          validation.mimeType,
+
+        extension:
+          validation.extension,
 
         size:
           file.size,
 
-        uploadedAt:
-          new Date().toISOString()
+        uploadedAt
       }
     });
 
@@ -209,10 +494,12 @@ export async function onRequestPost(
   }
 }
 
+
 export function onRequest() {
   return jsonResponse(
     {
       success: false,
+
       error:
         'Method not allowed.'
     },
