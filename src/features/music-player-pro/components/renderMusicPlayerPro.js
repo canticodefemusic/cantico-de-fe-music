@@ -12,15 +12,33 @@ let removeQueueTrackListener = null;
 let hymnPlayHandler = null;
 let isSeeking = false;
 
-export function renderMusicPlayerPro() {
-  service = new MusicPlayerService(playerTracks);
+function getPlayerService() {
+  if (!service) {
+    service =
+      new MusicPlayerService(
+        playerTracks
+      );
+  }
 
-  const track = service.getCurrentTrack();
+  return service;
+}
+
+export function renderMusicPlayerPro() {
+  const playerService =
+    getPlayerService();
+
+  const track =
+    playerService.getCurrentTrack();
 
   return `
-    <section class="music-player-pro" id="musicPlayerPro">
+    <section
+      class="music-player-pro"
+      id="musicPlayerPro"
+    >
       <div class="mpp-track">
-        <div class="mpp-cover">♪</div>
+        <div class="mpp-cover">
+          ♪
+        </div>
 
         <div>
           <strong id="mppTitle">
@@ -72,7 +90,9 @@ export function renderMusicPlayerPro() {
       </div>
 
       <div class="mpp-volume">
-        <span>Vol.</span>
+        <span>
+          Vol.
+        </span>
 
         <input
           id="mppVolume"
@@ -89,177 +109,257 @@ export function renderMusicPlayerPro() {
 
 export function initMusicPlayerPro() {
   const root =
-    document.getElementById('musicPlayerPro');
+    document.getElementById(
+      'musicPlayerPro'
+    );
 
-  if (!root || !service) {
+  const playerService =
+    getPlayerService();
+
+  if (!root || !playerService) {
     return;
   }
 
   const playButton =
-    root.querySelector('[data-mpp="toggle"]');
+    root.querySelector(
+      '[data-mpp="toggle"]'
+    );
 
   const previousButton =
-    root.querySelector('[data-mpp="previous"]');
+    root.querySelector(
+      '[data-mpp="previous"]'
+    );
 
   const nextButton =
-    root.querySelector('[data-mpp="next"]');
+    root.querySelector(
+      '[data-mpp="next"]'
+    );
 
   const progress =
-    root.querySelector('#mppProgress');
+    root.querySelector(
+      '#mppProgress'
+    );
 
   const volume =
-    root.querySelector('#mppVolume');
+    root.querySelector(
+      '#mppVolume'
+    );
+
+  /*
+   * Sincroniza la nueva interfaz renderizada
+   * con el estado real y persistente del audio.
+   */
+  const syncPlayerUI = () => {
+    const state =
+      playerService.getState();
+
+    updateTrackUI(
+      playerService.getCurrentTrack()
+    );
+
+    if (playButton) {
+      const actuallyPlaying =
+        state.isPlaying &&
+        !state.audio.paused;
+
+      playButton.textContent =
+        actuallyPlaying
+          ? '⏸'
+          : '▶';
+    }
+
+    if (volume) {
+      volume.value =
+        String(
+          Math.round(
+            state.volume * 100
+          )
+        );
+    }
+
+    if (
+      progress &&
+      Number.isFinite(
+        state.audio.duration
+      ) &&
+      state.audio.duration > 0
+    ) {
+      progress.value =
+        String(
+          (
+            state.audio.currentTime /
+            state.audio.duration
+          ) * 100
+        );
+    }
+  };
+
+  syncPlayerUI();
 
   playButton?.addEventListener(
     'click',
-    () => {
-      const playing = service.toggle();
+    async () => {
+      await playerService.toggle();
 
-      playButton.textContent =
-        playing ? '⏸' : '▶';
+      syncPlayerUI();
     }
   );
 
   previousButton?.addEventListener(
     'click',
     async () => {
-      const playing = await service.previous();
+      await playerService.previous();
 
-      updateTrackUI();
-
-      if (playButton) {
-        playButton.textContent =
-          playing ? '⏸' : '▶';
-      }
+      syncPlayerUI();
     }
   );
 
   nextButton?.addEventListener(
     'click',
     async () => {
-      const playing = await service.next();
+      await playerService.next();
 
-      updateTrackUI();
-
-      if (playButton) {
-        playButton.textContent =
-          playing ? '⏸' : '▶';
-      }
+      syncPlayerUI();
     }
   );
 
   progress?.addEventListener(
-  'pointerdown',
-  event => {
-    isSeeking = true;
+    'pointerdown',
+    event => {
+      isSeeking = true;
 
-    console.log(
-      '[Progress Diagnostic] pointerdown',
-      {
-        value: event.currentTarget.value,
-        isSeeking
-      }
-    );
-  }
-);
+      console.log(
+        '[Progress Diagnostic] pointerdown',
+        {
+          value:
+            event.currentTarget.value,
+          isSeeking
+        }
+      );
+    }
+  );
 
-progress?.addEventListener(
-  'input',
-  event => {
-    isSeeking = true;
+  progress?.addEventListener(
+    'input',
+    event => {
+      isSeeking = true;
 
-    const value =
-      Number(event.currentTarget.value);
+      const value =
+        Number(
+          event.currentTarget.value
+        );
 
-    const percent =
-      value / 100;
+      const percent =
+        value / 100;
 
-    console.log(
-      '[Progress Diagnostic] input',
-      {
-        value,
-        percent,
-        isSeeking
-      }
-    );
+      console.log(
+        '[Progress Diagnostic] input',
+        {
+          value,
+          percent,
+          isSeeking
+        }
+      );
 
-    service.seek(percent);
-
-    console.log(
-      '[Progress Diagnostic] after seek',
-      {
-        currentTime:
-          service.getState().audio.currentTime,
-        duration:
-          service.getState().audio.duration
-      }
-    );
-  }
-);
-
-progress?.addEventListener(
-  'change',
-  event => {
-    const value =
-      Number(event.currentTarget.value);
-
-    const percent =
-      value / 100;
-
-    console.log(
-      '[Progress Diagnostic] change',
-      {
-        value,
+      playerService.seek(
         percent
-      }
-    );
+      );
 
-    service.seek(percent);
+      console.log(
+        '[Progress Diagnostic] after seek',
+        {
+          currentTime:
+            playerService
+              .getState()
+              .audio
+              .currentTime,
 
-    isSeeking = false;
-  }
-);
+          duration:
+            playerService
+              .getState()
+              .audio
+              .duration
+        }
+      );
+    }
+  );
 
-progress?.addEventListener(
-  'pointerup',
-  () => {
-    isSeeking = false;
+  progress?.addEventListener(
+    'change',
+    event => {
+      const value =
+        Number(
+          event.currentTarget.value
+        );
 
-    console.log(
-      '[Progress Diagnostic] pointerup',
-      {
-        currentTime:
-          service.getState().audio.currentTime,
-        duration:
-          service.getState().audio.duration
-      }
-    );
-  }
-);
+      const percent =
+        value / 100;
 
-progress?.addEventListener(
-  'pointercancel',
-  () => {
-    isSeeking = false;
+      console.log(
+        '[Progress Diagnostic] change',
+        {
+          value,
+          percent
+        }
+      );
 
-    console.log(
-      '[Progress Diagnostic] pointercancel'
-    );
-  }
-);
+      playerService.seek(
+        percent
+      );
+
+      isSeeking = false;
+    }
+  );
+
+  progress?.addEventListener(
+    'pointerup',
+    () => {
+      isSeeking = false;
+
+      console.log(
+        '[Progress Diagnostic] pointerup',
+        {
+          currentTime:
+            playerService
+              .getState()
+              .audio
+              .currentTime,
+
+          duration:
+            playerService
+              .getState()
+              .audio
+              .duration
+        }
+      );
+    }
+  );
+
+  progress?.addEventListener(
+    'pointercancel',
+    () => {
+      isSeeking = false;
+
+      console.log(
+        '[Progress Diagnostic] pointercancel'
+      );
+    }
+  );
 
   volume?.addEventListener(
     'input',
     event => {
-      service.setVolume(
-        Number(event.target.value) / 100
+      playerService.setVolume(
+        Number(
+          event.target.value
+        ) / 100
       );
     }
   );
 
   /*
-   * Evita registrar varias veces el listener
-   * global si la aplicación vuelve a renderizarse.
+   * Evita listeners globales duplicados
+   * cuando la SPA vuelve a renderizar.
    */
   if (hymnPlayHandler) {
     window.removeEventListener(
@@ -268,33 +368,37 @@ progress?.addEventListener(
     );
   }
 
-  hymnPlayHandler = async event => {
-    const hymn = event.detail;
+  hymnPlayHandler =
+    async event => {
+      const hymn =
+        event.detail;
 
-    if (!hymn?.id) {
-      return;
-    }
+      if (!hymn?.id) {
+        return;
+      }
 
-    const track = service.loadById(hymn.id);
+      const track =
+        playerService.loadById(
+          hymn.id
+        );
 
-    if (!track) {
-      console.warn(
-        '[Music Player Pro] No track found for hymn:',
-        hymn.id
+      if (!track) {
+        console.warn(
+          '[Music Player Pro] No track found for hymn:',
+          hymn.id
+        );
+
+        return;
+      }
+
+      updateTrackUI(
+        track
       );
 
-      return;
-    }
+      await playerService.play();
 
-    updateTrackUI(track);
-
-    const playing = await service.play();
-
-    if (playButton) {
-      playButton.textContent =
-        playing ? '⏸' : '▶';
-    }
-  };
+      syncPlayerUI();
+    };
 
   window.addEventListener(
     'cantico:hymn-play',
@@ -302,68 +406,103 @@ progress?.addEventListener(
   );
 
   /*
-   * TRACK_CHANGED ya es emitido por QueueService.
-   * Aquí solamente actualizamos la interfaz.
-   * No volvemos a cargar ni reproducir la pista.
+   * TRACK_CHANGED ya es emitido
+   * por QueueService.
+   *
+   * Aquí únicamente sincronizamos
+   * la interfaz.
    */
   if (removeQueueTrackListener) {
     removeQueueTrackListener();
   }
 
-  removeQueueTrackListener = onQueueEvent(
-    QueueEventNames.TRACK_CHANGED,
-    event => {
-      const track = event.detail?.track;
+  removeQueueTrackListener =
+    onQueueEvent(
+      QueueEventNames.TRACK_CHANGED,
+      event => {
+        const track =
+          event.detail?.track;
 
-      if (!track) {
-        return;
+        if (!track) {
+          return;
+        }
+
+        updateTrackUI(
+          track
+        );
+
+        syncPlayerUI();
       }
-
-      updateTrackUI(track);
-    }
-  );
+    );
 
   /*
-   * Evita crear varios intervalos al volver
-   * a inicializar el reproductor.
+   * Evita varios intervalos cuando
+   * la SPA vuelve a renderizar.
    */
   if (progressIntervalId) {
-    clearInterval(progressIntervalId);
+    clearInterval(
+      progressIntervalId
+    );
   }
 
-  progressIntervalId = setInterval(
-    () => {
-      const state = service.getState();
+  progressIntervalId =
+    setInterval(
+      () => {
+        const state =
+          playerService.getState();
 
-  if (
-    state.audio.duration &&
-    progress &&
-    !isSeeking
-  ) {
-        progress.value = String(
-          (
-            state.audio.currentTime /
-            state.audio.duration
-          ) * 100
-        );
-      }
-    },
-    1000
-  );
+        if (
+          state.audio.duration &&
+          progress &&
+          !isSeeking
+        ) {
+          progress.value =
+            String(
+              (
+                state.audio.currentTime /
+                state.audio.duration
+              ) * 100
+            );
+        }
+
+        /*
+         * Mantiene Play/Pause sincronizado
+         * incluso después de navegar
+         * entre vistas.
+         */
+        if (playButton) {
+          const actuallyPlaying =
+            state.isPlaying &&
+            !state.audio.paused;
+
+          playButton.textContent =
+            actuallyPlaying
+              ? '⏸'
+              : '▶';
+        }
+      },
+      1000
+    );
 }
 
 function updateTrackUI(
-  track = service?.getCurrentTrack()
+  track =
+    service?.getCurrentTrack()
 ) {
   const title =
-    document.getElementById('mppTitle');
+    document.getElementById(
+      'mppTitle'
+    );
 
   const artist =
-    document.getElementById('mppArtist');
+    document.getElementById(
+      'mppArtist'
+    );
 
   if (title) {
     title.textContent =
-      track?.title || 'Sin canción';
+      track?.title ||
+      'Sin canción';
   }
 
   if (artist) {
