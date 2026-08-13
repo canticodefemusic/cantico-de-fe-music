@@ -6,7 +6,9 @@ import {
   QueueEventNames
 } from '../../queue-engine/index.js';
 
-let service = null;
+const service =
+  new MusicPlayerService(playerTracks);
+
 let progressIntervalId = null;
 let removeQueueTrackListener = null;
 let hymnPlayHandler = null;
