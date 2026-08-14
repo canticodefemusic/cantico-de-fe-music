@@ -1,4 +1,4 @@
-// V13.2.2 — Server-Side Upload Validation
+// V13.2.3 — Server-Side Upload Validation
 
 const MAX_FILE_SIZE =
   50 * 1024 * 1024;
@@ -117,23 +117,23 @@ function normalizeFileName(
 function getFileExtension(
   fileName = ''
 ) {
-  const normalizedName =
+  const value =
     String(fileName)
       .trim()
       .toLowerCase();
 
   const lastDotIndex =
-    normalizedName.lastIndexOf('.');
+    value.lastIndexOf('.');
 
   if (
     lastDotIndex <= 0 ||
     lastDotIndex ===
-      normalizedName.length - 1
+      value.length - 1
   ) {
     return '';
   }
 
-  return normalizedName.slice(
+  return value.slice(
     lastDotIndex + 1
   );
 }
@@ -201,39 +201,36 @@ function validateUploadedFile(
   ) {
     return {
       valid: false,
-
       status: 400,
-
       error:
         'No valid file was provided.'
     };
   }
 
+  const fileSize =
+    Number(file.size);
+
   if (
     !Number.isFinite(
-      Number(file.size)
+      fileSize
     ) ||
-    file.size <= 0
+    fileSize <= 0
   ) {
     return {
       valid: false,
-
       status: 400,
-
       error:
         'The file is empty.'
     };
   }
 
   if (
-    file.size >
+    fileSize >
     MAX_FILE_SIZE
   ) {
     return {
       valid: false,
-
       status: 413,
-
       error:
         'The file exceeds the maximum allowed size of 50 MB.'
     };
@@ -254,9 +251,7 @@ function validateUploadedFile(
   ) {
     return {
       valid: false,
-
       status: 415,
-
       error:
         'The file type is not allowed.'
     };
@@ -275,9 +270,7 @@ function validateUploadedFile(
   ) {
     return {
       valid: false,
-
       status: 415,
-
       error:
         'The file extension is not allowed.'
     };
@@ -285,10 +278,9 @@ function validateUploadedFile(
 
   return {
     valid: true,
-
     mimeType,
-
-    extension
+    extension,
+    fileSize
   };
 }
 
@@ -317,6 +309,9 @@ export function onRequestGet({
 
       maxFileSize:
         MAX_FILE_SIZE,
+
+      maxFileSizeMB:
+        50,
 
       allowedMimeTypes:
         Array.from(
@@ -470,7 +465,7 @@ export async function onRequestPost(
           validation.extension,
 
         size:
-          file.size,
+          validation.fileSize,
 
         uploadedAt
       }
