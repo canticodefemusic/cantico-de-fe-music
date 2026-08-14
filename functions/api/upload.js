@@ -1,46 +1,81 @@
-// V13.2.3 — Server-Side Upload Validation
+// V13.2.5 — Server-Side File Signature Validation
 
 const MAX_FILE_SIZE =
   50 * 1024 * 1024;
 
-const ALLOWED_MIME_TYPES =
-  new Set([
-    'image/jpeg',
-    'image/png',
-    'image/webp',
-    'image/gif',
+const ALLOWED_FILE_RULES = {
+  'image/jpeg': {
+    extensions: [
+      'jpg',
+      'jpeg'
+    ],
+    signature: 'jpeg'
+  },
 
-    'audio/mpeg',
-    'audio/mp4',
-    'audio/x-m4a',
-    'audio/wav',
-    'audio/x-wav',
-    'audio/ogg',
+  'image/png': {
+    extensions: [
+      'png'
+    ],
+    signature: 'png'
+  },
 
-    'video/mp4',
-    'video/webm',
+  'image/webp': {
+    extensions: [
+      'webp'
+    ],
+    signature: 'webp'
+  },
 
-    'application/pdf'
-  ]);
+  'audio/mpeg': {
+    extensions: [
+      'mp3'
+    ],
+    signature: 'mp3'
+  },
 
-const ALLOWED_EXTENSIONS =
-  new Set([
-    'jpg',
-    'jpeg',
-    'png',
-    'webp',
-    'gif',
+  'audio/mp4': {
+    extensions: [
+      'm4a',
+      'mp4'
+    ],
+    signature: 'mp4'
+  },
 
-    'mp3',
-    'm4a',
-    'wav',
-    'ogg',
+  'audio/wav': {
+    extensions: [
+      'wav'
+    ],
+    signature: 'wav'
+  },
 
-    'mp4',
-    'webm',
+  'audio/flac': {
+    extensions: [
+      'flac'
+    ],
+    signature: 'flac'
+  },
 
-    'pdf'
-  ]);
+  'video/mp4': {
+    extensions: [
+      'mp4'
+    ],
+    signature: 'mp4'
+  },
+
+  'video/webm': {
+    extensions: [
+      'webm'
+    ],
+    signature: 'webm'
+  },
+
+  'application/pdf': {
+    extensions: [
+      'pdf'
+    ],
+    signature: 'pdf'
+  }
+};
 
 
 function normalizeFileName(
@@ -191,7 +226,230 @@ function jsonResponse(
 }
 
 
-function validateUploadedFile(
+function bytesMatch(
+  bytes,
+  expected,
+  offset = 0
+) {
+  if (
+    bytes.length <
+    offset + expected.length
+  ) {
+    return false;
+  }
+
+  return expected.every(
+    (value, index) =>
+      bytes[offset + index] ===
+      value
+  );
+}
+
+
+function asciiMatch(
+  bytes,
+  text,
+  offset = 0
+) {
+  const expected =
+    Array.from(text)
+      .map(
+        character =>
+          character.charCodeAt(0)
+      );
+
+  return bytesMatch(
+    bytes,
+    expected,
+    offset
+  );
+}
+
+
+function isJpeg(bytes) {
+  return bytesMatch(
+    bytes,
+    [
+      0xff,
+      0xd8,
+      0xff
+    ]
+  );
+}
+
+
+function isPng(bytes) {
+  return bytesMatch(
+    bytes,
+    [
+      0x89,
+      0x50,
+      0x4e,
+      0x47,
+      0x0d,
+      0x0a,
+      0x1a,
+      0x0a
+    ]
+  );
+}
+
+
+function isWebp(bytes) {
+  return (
+    asciiMatch(
+      bytes,
+      'RIFF',
+      0
+    ) &&
+    asciiMatch(
+      bytes,
+      'WEBP',
+      8
+    )
+  );
+}
+
+
+function isPdf(bytes) {
+  return asciiMatch(
+    bytes,
+    '%PDF-',
+    0
+  );
+}
+
+
+function isMp3(bytes) {
+  const hasId3Header =
+    asciiMatch(
+      bytes,
+      'ID3',
+      0
+    );
+
+  const hasFrameSync =
+    bytes.length >= 2 &&
+    bytes[0] === 0xff &&
+    (
+      bytes[1] & 0xe0
+    ) === 0xe0;
+
+  return (
+    hasId3Header ||
+    hasFrameSync
+  );
+}
+
+
+function isMp4(bytes) {
+  return (
+    bytes.length >= 12 &&
+    asciiMatch(
+      bytes,
+      'ftyp',
+      4
+    )
+  );
+}
+
+
+function isWav(bytes) {
+  return (
+    asciiMatch(
+      bytes,
+      'RIFF',
+      0
+    ) &&
+    asciiMatch(
+      bytes,
+      'WAVE',
+      8
+    )
+  );
+}
+
+
+function isFlac(bytes) {
+  return asciiMatch(
+    bytes,
+    'fLaC',
+    0
+  );
+}
+
+
+function isWebm(bytes) {
+  return bytesMatch(
+    bytes,
+    [
+      0x1a,
+      0x45,
+      0xdf,
+      0xa3
+    ],
+    0
+  );
+}
+
+
+function validateSignature(
+  signature,
+  bytes
+) {
+  switch (signature) {
+    case 'jpeg':
+      return isJpeg(bytes);
+
+    case 'png':
+      return isPng(bytes);
+
+    case 'webp':
+      return isWebp(bytes);
+
+    case 'pdf':
+      return isPdf(bytes);
+
+    case 'mp3':
+      return isMp3(bytes);
+
+    case 'mp4':
+      return isMp4(bytes);
+
+    case 'wav':
+      return isWav(bytes);
+
+    case 'flac':
+      return isFlac(bytes);
+
+    case 'webm':
+      return isWebm(bytes);
+
+    default:
+      return false;
+  }
+}
+
+
+async function readSignatureBytes(
+  file
+) {
+  const header =
+    file.slice(
+      0,
+      32
+    );
+
+  const buffer =
+    await header.arrayBuffer();
+
+  return new Uint8Array(
+    buffer
+  );
+}
+
+
+async function validateUploadedFile(
   file
 ) {
   if (
@@ -243,12 +501,12 @@ function validateUploadedFile(
       .trim()
       .toLowerCase();
 
-  if (
-    !mimeType ||
-    !ALLOWED_MIME_TYPES.has(
+  const rule =
+    ALLOWED_FILE_RULES[
       mimeType
-    )
-  ) {
+    ];
+
+  if (!rule) {
     return {
       valid: false,
       status: 415,
@@ -264,7 +522,7 @@ function validateUploadedFile(
 
   if (
     !extension ||
-    !ALLOWED_EXTENSIONS.has(
+    !rule.extensions.includes(
       extension
     )
   ) {
@@ -272,14 +530,37 @@ function validateUploadedFile(
       valid: false,
       status: 415,
       error:
-        'The file extension is not allowed.'
+        'The file extension does not match the declared file type.'
+    };
+  }
+
+  const signatureBytes =
+    await readSignatureBytes(
+      file
+    );
+
+  const signatureValid =
+    validateSignature(
+      rule.signature,
+      signatureBytes
+    );
+
+  if (!signatureValid) {
+    return {
+      valid: false,
+      status: 415,
+      error:
+        'The file contents do not match the declared file type.'
     };
   }
 
   return {
     valid: true,
+
     mimeType,
+
     extension,
+
     fileSize
   };
 }
@@ -301,6 +582,9 @@ export function onRequestGet({
       service:
         'cantico-r2-upload-api',
 
+      version:
+        'V13.2.5',
+
       binding:
         'MEDIA_BUCKET',
 
@@ -314,14 +598,25 @@ export function onRequestGet({
         50,
 
       allowedMimeTypes:
-        Array.from(
-          ALLOWED_MIME_TYPES
+        Object.keys(
+          ALLOWED_FILE_RULES
         ),
 
       allowedExtensions:
         Array.from(
-          ALLOWED_EXTENSIONS
+          new Set(
+            Object.values(
+              ALLOWED_FILE_RULES
+            )
+              .flatMap(
+                rule =>
+                  rule.extensions
+              )
+          )
         ),
+
+      signatureValidation:
+        true,
 
       message:
         connected
@@ -389,7 +684,7 @@ export async function onRequestPost(
       );
 
     const validation =
-      validateUploadedFile(
+      await validateUploadedFile(
         file
       );
 
@@ -441,6 +736,12 @@ export async function onRequestPost(
           extension:
             validation.extension,
 
+          validatedMimeType:
+            validation.mimeType,
+
+          signatureValidated:
+            'true',
+
           uploadedAt
         }
       }
@@ -466,6 +767,9 @@ export async function onRequestPost(
 
         size:
           validation.fileSize,
+
+        signatureValidated:
+          true,
 
         uploadedAt
       }
