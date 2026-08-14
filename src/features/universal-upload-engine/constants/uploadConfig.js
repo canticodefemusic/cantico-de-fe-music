@@ -1,6 +1,6 @@
 export const uploadConfig = {
   maxFileSize:
-    1024 * 1024 * 500,
+    50 * 1024 * 1024,
 
   maxFiles:
     100,
