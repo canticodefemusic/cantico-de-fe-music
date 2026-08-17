@@ -1,13 +1,14 @@
 /**
  * Cántico de Fe Music
- * V13.4.16 — Hymn Library R2 Metadata Sync
+ * V13.4.19 — Hymn Library R2 Metadata & Cover Sync
  *
  * Funciones:
  * - Mantener hymnCatalog como fuente base
  * - Sincronizar metadatos persistentes desde R2
  * - Relacionar himnos mediante r2Key
+ * - Resolver coverKey a una URL R2 real
  * - Mantener list(), search() y findById()
- * - No modificar rutas de audio ni IDs
+ * - No modificar IDs ni rutas de audio
  */
 
 import {
@@ -142,16 +143,121 @@ function getCopyright(
   return copyright;
 }
 
+function getR2FileUrl(
+  key = ''
+) {
+  const cleanKey =
+    normalizeText(
+      key
+    );
+
+  if (!cleanKey) {
+    return '';
+  }
+
+  return (
+    '/api/media/file?key=' +
+    encodeURIComponent(
+      cleanKey
+    )
+  );
+}
+
+function resolveCover(
+  hymn,
+  objectMap
+) {
+  const coverKey =
+    normalizeText(
+      hymn?.coverKey
+    );
+
+  if (!coverKey) {
+    return {
+      cover:
+        hymn?.cover || '',
+
+      coverKey:
+        '',
+
+      coverSynced:
+        false
+    };
+  }
+
+  const coverObject =
+    objectMap.get(
+      coverKey
+    );
+
+  if (!coverObject) {
+    return {
+      cover:
+        hymn?.cover || '',
+
+      coverKey,
+
+      coverSynced:
+        false
+    };
+  }
+
+  const contentType =
+    normalizeText(
+      coverObject
+        ?.httpMetadata
+        ?.contentType
+    );
+
+  if (
+    contentType &&
+    !contentType.startsWith(
+      'image/'
+    )
+  ) {
+    return {
+      cover:
+        hymn?.cover || '',
+
+      coverKey,
+
+      coverSynced:
+        false
+    };
+  }
+
+  return {
+    cover:
+      getR2FileUrl(
+        coverKey
+      ),
+
+    coverKey,
+
+    coverSynced:
+      true
+  };
+}
+
 function mergeHymnWithR2Metadata(
   hymn,
-  object
+  object,
+  objectMap
 ) {
   if (
     !hymn ||
     !object
   ) {
+    const coverState =
+      resolveCover(
+        hymn,
+        objectMap
+      );
+
     return {
-      ...hymn
+      ...hymn,
+
+      ...coverState
     };
   }
 
@@ -180,6 +286,12 @@ function mergeHymnWithR2Metadata(
   const metadataTags =
     normalizeTags(
       metadata.tags
+    );
+
+  const coverState =
+    resolveCover(
+      hymn,
+      objectMap
     );
 
   return {
@@ -216,6 +328,8 @@ function mergeHymnWithR2Metadata(
         hymn.copyright
       ),
 
+    ...coverState,
+
     r2Metadata: {
       key:
         object.key,
@@ -228,7 +342,13 @@ function mergeHymnWithR2Metadata(
           metadata
             .metadataUpdatedAt
         ) ||
-        null
+        null,
+
+      coverKey:
+        coverState.coverKey,
+
+      coverSynced:
+        coverState.coverSynced
     }
   };
 }
@@ -329,8 +449,16 @@ export class HymnLibraryService {
               );
 
             if (!r2Key) {
+              const coverState =
+                resolveCover(
+                  hymn,
+                  objectMap
+                );
+
               return {
-                ...hymn
+                ...hymn,
+
+                ...coverState
               };
             }
 
@@ -340,8 +468,16 @@ export class HymnLibraryService {
               );
 
             if (!object) {
+              const coverState =
+                resolveCover(
+                  hymn,
+                  objectMap
+                );
+
               return {
                 ...hymn,
+
+                ...coverState,
 
                 r2Metadata: {
                   key:
@@ -351,14 +487,21 @@ export class HymnLibraryService {
                     false,
 
                   updatedAt:
-                    null
+                    null,
+
+                  coverKey:
+                    coverState.coverKey,
+
+                  coverSynced:
+                    coverState.coverSynced
                 }
               };
             }
 
             return mergeHymnWithR2Metadata(
               hymn,
-              object
+              object,
+              objectMap
             );
           }
         );
@@ -412,5 +555,7 @@ export {
   normalizeText,
   normalizeTags,
   getCopyright,
+  getR2FileUrl,
+  resolveCover,
   mergeHymnWithR2Metadata
 };
