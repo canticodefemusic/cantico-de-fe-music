@@ -1382,3 +1382,33 @@
     padding-right: 38px;
   }
 }
+
+/* V13.4.24 — Full Hymn Cover 16:9 */
+
+.hymn-library-card__cover {
+  width: 180px;
+  height: auto;
+  aspect-ratio: 16 / 9;
+
+  flex: 0 0 180px;
+
+  align-self: center;
+
+  overflow: hidden;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  background: var(--color-background-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.hymn-library-card__cover img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  object-position: center;
+}
