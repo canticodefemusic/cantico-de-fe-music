@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V13.7.2 — Render R2 Media Item
+ * V13.7.3 — Render R2 Media Item
  *
  * Funciones:
  * - Vista previa real
@@ -8,6 +8,7 @@
  * - Selección múltiple
  * - Menú profesional de acciones
  * - Ver archivo
+ * - Detalles y metadatos
  * - Copiar enlace
  * - Descargar
  * - Eliminar
@@ -162,7 +163,7 @@ function getMediaType(
 
   if (
     contentType ===
-    'application/pdf'
+      'application/pdf'
   ) {
     return 'document';
   }
@@ -251,7 +252,6 @@ function renderPreview({
   safeName,
   safeContentType
 }) {
-
   if (
     mediaType ===
     'image'
@@ -278,7 +278,6 @@ function renderPreview({
           media-library-item__media--audio
         "
       >
-
         <span
           class="media-library-item__icon"
           aria-hidden="true"
@@ -298,7 +297,6 @@ function renderPreview({
 
           Tu navegador no puede reproducir este audio.
         </audio>
-
       </div>
     `;
   }
@@ -334,7 +332,6 @@ function renderPreview({
           media-library-item__media--document
         "
       >
-
         <span
           class="media-library-item__icon"
           aria-hidden="true"
@@ -347,7 +344,6 @@ function renderPreview({
         >
           PDF
         </span>
-
       </div>
     `;
   }
@@ -359,7 +355,6 @@ function renderPreview({
         media-library-item__media--file
       "
     >
-
       <span
         class="media-library-item__icon"
         aria-hidden="true"
@@ -374,7 +369,6 @@ function renderPreview({
       >
         Archivo
       </span>
-
     </div>
   `;
 }
@@ -393,7 +387,6 @@ function renderActionMenu({
       class="media-library-item__menu"
       data-media-menu
     >
-
       <summary
         class="media-library-item__menu-trigger"
         aria-label="Acciones para ${safeName}"
@@ -409,7 +402,6 @@ function renderActionMenu({
       <div
         class="media-library-item__menu-panel"
       >
-
         <a
           href="${safeMediaUrl}"
           target="_blank"
@@ -427,6 +419,22 @@ function renderActionMenu({
             Ver
           </span>
         </a>
+
+        <button
+          type="button"
+          class="media-library-item__menu-action"
+          data-media-details="${safeKey}"
+        >
+          <span
+            aria-hidden="true"
+          >
+            ⓘ
+          </span>
+
+          <span>
+            Detalles
+          </span>
+        </button>
 
         <button
           type="button"
@@ -485,9 +493,7 @@ function renderActionMenu({
             Eliminar
           </span>
         </button>
-
       </div>
-
     </details>
   `;
 }
@@ -578,11 +584,9 @@ export function renderR2MediaItem(
           : 'false'
       }"
     >
-
       <div
         class="media-library-item__topbar"
       >
-
         <label
           class="media-library-item__selector"
           title="Seleccionar ${safeName}"
@@ -615,7 +619,6 @@ export function renderR2MediaItem(
           safeName,
           safeMediaUrl
         })}
-
       </div>
 
       <div
@@ -636,7 +639,6 @@ export function renderR2MediaItem(
       <div
         class="media-library-item__content"
       >
-
         <h3
           class="media-library-item__name"
           title="${safeName}"
@@ -647,7 +649,6 @@ export function renderR2MediaItem(
         <div
           class="media-library-item__meta"
         >
-
           <span>
             ${safeContentType}
           </span>
@@ -659,17 +660,14 @@ export function renderR2MediaItem(
           ${
             uploaded
               ? `
-                <span>
-                  ${uploaded}
-                </span>
-              `
+                  <span>
+                    ${uploaded}
+                  </span>
+                `
               : ''
           }
-
         </div>
-
       </div>
-
     </article>
   `;
 }
