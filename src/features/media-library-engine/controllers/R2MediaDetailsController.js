@@ -1,10 +1,21 @@
 /**
  * Cántico de Fe Music
- * V13.4.5 — R2 Media Details Controller
+ * V13.4.11 — R2 Media Details Controller
+ *
+ * Funciones:
+ * - Abrir/cerrar detalles
+ * - Copiar enlace
+ * - Activar edición
+ * - Cancelar edición
+ * - Guardar metadatos persistentes en R2
+ * - Refrescar biblioteca después de guardar
  */
 
 import adaptR2MediaObject
   from '../services/R2MediaMetadataAdapter.js';
+
+import r2MediaMetadataService
+  from '../services/R2MediaMetadataService.js';
 
 import renderR2MediaDetails
   from '../components/renderR2MediaDetails.js';
@@ -25,8 +36,19 @@ export class R2MediaDetailsController {
     this.libraryController =
       libraryController;
 
+    this.currentKey =
+      null;
+
+    this.saving =
+      false;
+
     this.handleClick =
       this.handleClick.bind(
+        this
+      );
+
+    this.handleSubmit =
+      this.handleSubmit.bind(
         this
       );
 
@@ -54,6 +76,11 @@ export class R2MediaDetailsController {
       this.handleClick
     );
 
+    this.host.addEventListener(
+      'submit',
+      this.handleSubmit
+    );
+
     document.addEventListener(
       'keydown',
       this.handleKeyDown
@@ -77,7 +104,9 @@ export class R2MediaDetailsController {
       const objects =
         controller.getObjects();
 
-      return Array.isArray(objects)
+      return Array.isArray(
+        objects
+      )
         ? objects
         : [];
     }
@@ -95,7 +124,9 @@ export class R2MediaDetailsController {
         controller.state?.objects
       )
     ) {
-      return controller.state.objects;
+      return controller
+        .state
+        .objects;
     }
 
     return [];
@@ -127,15 +158,20 @@ export class R2MediaDetailsController {
   open(
     key = ''
   ) {
+    const cleanKey =
+      String(
+        key || ''
+      ).trim();
+
     const object =
       this.getObjectByKey(
-        key
+        cleanKey
       );
 
     if (!object) {
       console.error(
         '[R2MediaDetailsController] No se encontró el objeto R2:',
-        key
+        cleanKey
       );
 
       return false;
@@ -149,11 +185,17 @@ export class R2MediaDetailsController {
     if (!media) {
       console.error(
         '[R2MediaDetailsController] No se pudo adaptar el objeto R2:',
-        key
+        cleanKey
       );
 
       return false;
     }
+
+    this.currentKey =
+      cleanKey;
+
+    this.saving =
+      false;
 
     this.host.innerHTML =
       renderR2MediaDetails({
@@ -170,10 +212,19 @@ export class R2MediaDetailsController {
   }
 
   close() {
+    if (
+      this.saving
+    ) {
+      return false;
+    }
+
     if (this.host) {
       this.host.innerHTML =
         '';
     }
+
+    this.currentKey =
+      null;
 
     document.body
       .classList
@@ -182,6 +233,367 @@ export class R2MediaDetailsController {
       );
 
     return true;
+  }
+
+  getForm() {
+    return (
+      this.host
+        ?.querySelector(
+          '[data-r2-media-metadata-form]'
+        ) ||
+      null
+    );
+  }
+
+  getReadonlySection() {
+    return (
+      this.host
+        ?.querySelector(
+          '[data-r2-media-details-readonly]'
+        ) ||
+      null
+    );
+  }
+
+  getActions() {
+    return (
+      this.host
+        ?.querySelector(
+          '[data-r2-media-details-actions]'
+        ) ||
+      null
+    );
+  }
+
+  getStatus() {
+    return (
+      this.host
+        ?.querySelector(
+          '[data-r2-media-metadata-status]'
+        ) ||
+      null
+    );
+  }
+
+  setStatus(
+    message = '',
+    {
+      error = false
+    } = {}
+  ) {
+    const status =
+      this.getStatus();
+
+    if (!status) {
+      return;
+    }
+
+    status.textContent =
+      message;
+
+    status.dataset.state =
+      error
+        ? 'error'
+        : (
+            message
+              ? 'success'
+              : ''
+          );
+  }
+
+  setSaving(
+    value
+  ) {
+    this.saving =
+      Boolean(
+        value
+      );
+
+    const form =
+      this.getForm();
+
+    if (!form) {
+      return;
+    }
+
+    form
+      .querySelectorAll(
+        'input, textarea, button'
+      )
+      .forEach(
+        element => {
+          element.disabled =
+            this.saving;
+        }
+      );
+
+    const saveButton =
+      form.querySelector(
+        '[data-r2-media-metadata-save]'
+      );
+
+    if (saveButton) {
+      saveButton.textContent =
+        this.saving
+          ? 'Guardando...'
+          : 'Guardar cambios';
+    }
+  }
+
+  startEditing() {
+    const form =
+      this.getForm();
+
+    const readonly =
+      this.getReadonlySection();
+
+    const actions =
+      this.getActions();
+
+    if (
+      !form ||
+      !readonly
+    ) {
+      return false;
+    }
+
+    readonly.hidden =
+      true;
+
+    form.hidden =
+      false;
+
+    if (actions) {
+      actions.hidden =
+        true;
+    }
+
+    this.setStatus('');
+
+    form
+      .querySelector(
+        '[name="displayName"]'
+      )
+      ?.focus();
+
+    return true;
+  }
+
+  cancelEditing() {
+    if (
+      this.saving
+    ) {
+      return false;
+    }
+
+    if (!this.currentKey) {
+      return false;
+    }
+
+    return this.open(
+      this.currentKey
+    );
+  }
+
+  getFormValues(
+    form
+  ) {
+    const formData =
+      new FormData(
+        form
+      );
+
+    const getText =
+      name =>
+        String(
+          formData.get(
+            name
+          ) ?? ''
+        ).trim();
+
+    return {
+      displayName:
+        getText(
+          'displayName'
+        ),
+
+      description:
+        getText(
+          'description'
+        ),
+
+      alt:
+        getText(
+          'alt'
+        ),
+
+      category:
+        getText(
+          'category'
+        ),
+
+      tags:
+        getText(
+          'tags'
+        )
+          .split(',')
+          .map(
+            tag =>
+              tag.trim()
+          )
+          .filter(Boolean),
+
+      featured:
+        formData.get(
+          'featured'
+        ) === 'on',
+
+      copyright: {
+        author:
+          getText(
+            'copyrightAuthor'
+          ),
+
+        holder:
+          getText(
+            'copyrightHolder'
+          ),
+
+        license:
+          getText(
+            'copyrightLicense'
+          ),
+
+        source:
+          getText(
+            'copyrightSource'
+          ),
+
+        year:
+          getText(
+            'copyrightYear'
+          )
+      }
+    };
+  }
+
+  async saveMetadata(
+    form
+  ) {
+    if (
+      this.saving ||
+      !form
+    ) {
+      return false;
+    }
+
+    const key =
+      String(
+        form.getAttribute(
+          'data-r2-media-key'
+        ) ||
+        this.currentKey ||
+        ''
+      ).trim();
+
+    if (!key) {
+      this.setStatus(
+        'No se pudo identificar el archivo.',
+        {
+          error: true
+        }
+      );
+
+      return false;
+    }
+
+    const values =
+      this.getFormValues(
+        form
+      );
+
+    if (!values.displayName) {
+      this.setStatus(
+        'El nombre visible es obligatorio.',
+        {
+          error: true
+        }
+      );
+
+      form
+        .querySelector(
+          '[name="displayName"]'
+        )
+        ?.focus();
+
+      return false;
+    }
+
+    this.setSaving(
+      true
+    );
+
+    this.setStatus(
+      'Guardando cambios...'
+    );
+
+    try {
+      await r2MediaMetadataService
+        .update(
+          key,
+          values
+        );
+
+      this.setStatus(
+        'Metadatos guardados correctamente.'
+      );
+
+      if (
+        typeof this
+          .libraryController
+          ?.refresh ===
+        'function'
+      ) {
+        await this
+          .libraryController
+          .refresh();
+      }
+
+      this.currentKey =
+        key;
+
+      const reopened =
+        this.open(
+          key
+        );
+
+      if (!reopened) {
+        this.close();
+      }
+
+      return true;
+
+    } catch (error) {
+      console.error(
+        '[R2MediaDetailsController] No se pudieron guardar los metadatos:',
+        error
+      );
+
+      this.setSaving(
+        false
+      );
+
+      this.setStatus(
+        error instanceof Error
+          ? error.message
+          : 'No se pudieron guardar los metadatos.',
+        {
+          error: true
+        }
+      );
+
+      return false;
+    }
   }
 
   async copyLink(
@@ -247,6 +659,25 @@ export class R2MediaDetailsController {
     }
   }
 
+  async handleSubmit(
+    event
+  ) {
+    const form =
+      event?.target?.closest?.(
+        '[data-r2-media-metadata-form]'
+      );
+
+    if (!form) {
+      return;
+    }
+
+    event.preventDefault();
+
+    await this.saveMetadata(
+      form
+    );
+  }
+
   async handleClick(
     event
   ) {
@@ -288,6 +719,32 @@ export class R2MediaDetailsController {
       this.open(
         key
       );
+
+      return;
+    }
+
+    const editButton =
+      target.closest(
+        '[data-r2-media-metadata-edit]'
+      );
+
+    if (editButton) {
+      event.preventDefault();
+
+      this.startEditing();
+
+      return;
+    }
+
+    const cancelButton =
+      target.closest(
+        '[data-r2-media-metadata-cancel]'
+      );
+
+    if (cancelButton) {
+      event.preventDefault();
+
+      this.cancelEditing();
 
       return;
     }
@@ -339,6 +796,14 @@ export class R2MediaDetailsController {
 
     event.preventDefault();
 
+    if (
+      !this.getForm()?.hidden
+    ) {
+      this.cancelEditing();
+
+      return;
+    }
+
     this.close();
   }
 
@@ -355,12 +820,20 @@ export class R2MediaDetailsController {
         'click',
         this.handleClick
       );
+
+      this.host.removeEventListener(
+        'submit',
+        this.handleSubmit
+      );
     }
 
     document.removeEventListener(
       'keydown',
       this.handleKeyDown
     );
+
+    this.saving =
+      false;
 
     this.close();
 
@@ -371,6 +844,9 @@ export class R2MediaDetailsController {
       null;
 
     this.libraryController =
+      null;
+
+    this.currentKey =
       null;
   }
 
