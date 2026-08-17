@@ -14,6 +14,8 @@ export const hymnCatalog = [
 
     artist: 'Cántico de Fe Music',
 
+    r2Key: 'fe-que-mueve-montanas.mp3',
+    
     audio: '/assets/audio/himnos/fe-que-mueve-montanas.mp3',
     src: '/assets/audio/himnos/fe-que-mueve-montanas.mp3',
     cover: '',
@@ -61,6 +63,8 @@ export const hymnCatalog = [
 
     artist: 'Cántico de Fe Music',
 
+    r2Key: 'quince-anos-mas.m4a',
+    
     audio: '/assets/audio/himnos/quince-anos-mas.m4a',
     src: '/assets/audio/himnos/quince-anos-mas.m4a',
     cover: '',
