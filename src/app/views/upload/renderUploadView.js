@@ -9,10 +9,14 @@ import {
   R2MediaLightboxController
 } from '../../../features/media-library-engine/index.js';
 
+import R2MediaDetailsController
+  from '../../../features/media-library-engine/controllers/R2MediaDetailsController.js';
+
 let uploadController = null;
 let mediaLibraryController = null;
 let mediaMenuController = null;
 let mediaLightboxController = null;
+let mediaDetailsController = null;
 
 let unsubscribeUploadCompleted = null;
 
@@ -55,6 +59,10 @@ export function renderUploadView() {
         ></div>
       </section>
 
+      <div
+        data-r2-media-details-host
+      ></div>
+
     </main>
   `;
 }
@@ -67,6 +75,12 @@ function cleanupControllers() {
     unsubscribeUploadCompleted();
 
     unsubscribeUploadCompleted = null;
+  }
+
+  if (mediaDetailsController) {
+    mediaDetailsController.destroy?.();
+
+    mediaDetailsController = null;
   }
 
   if (mediaLightboxController) {
@@ -129,6 +143,11 @@ export function initUploadView() {
       '[data-r2-media-root]'
     );
 
+  const mediaDetailsHost =
+    document.querySelector(
+      '[data-r2-media-details-host]'
+    );
+
   cleanupControllers();
 
   if (uploadRoot) {
@@ -165,6 +184,22 @@ export function initUploadView() {
       });
 
     mediaLightboxController.init();
+
+    if (mediaDetailsHost) {
+      mediaDetailsController =
+        new R2MediaDetailsController({
+          root:
+            mediaRoot,
+
+          host:
+            mediaDetailsHost,
+
+          libraryController:
+            mediaLibraryController
+        });
+
+      mediaDetailsController.init();
+    }
   }
 
   connectUploadRefresh();
@@ -173,6 +208,7 @@ export function initUploadView() {
     uploadController,
     mediaLibraryController,
     mediaMenuController,
-    mediaLightboxController
+    mediaLightboxController,
+    mediaDetailsController
   };
 }
