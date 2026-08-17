@@ -53,6 +53,9 @@ function getObjectName(
   return (
     object
       ?.customMetadata
+      ?.displayName ||
+    object
+      ?.customMetadata
       ?.originalName ||
     String(
       object?.key || ''
