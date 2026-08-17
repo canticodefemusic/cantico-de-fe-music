@@ -47,10 +47,13 @@ function getFileName(
   );
 }
 
-function getOriginalName(
+function getDisplayName(
   object
 ) {
   return (
+    object
+      ?.customMetadata
+      ?.displayName ||
     object
       ?.customMetadata
       ?.originalName ||
@@ -469,7 +472,7 @@ export function renderR2MediaListRow(
   }
 
   const name =
-    getOriginalName(
+    getDisplayName(
       object
     );
 
