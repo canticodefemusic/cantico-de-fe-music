@@ -1,10 +1,10 @@
 /**
  * Cántico de Fe Music
- * V13.4.3 — R2 Media Metadata Adapter
+ * V13.4.9 — R2 Media Metadata Adapter
  *
  * Convierte objetos de Cloudflare R2
- * al modelo utilizado por el
- * Media Metadata Editor.
+ * al modelo utilizado por la
+ * Biblioteca Multimedia.
  */
 
 function normalizeText(
@@ -15,12 +15,78 @@ function normalizeText(
   ).trim();
 }
 
+function normalizeTags(
+  value = []
+) {
+  if (
+    Array.isArray(
+      value
+    )
+  ) {
+    return [
+      ...new Set(
+        value
+          .map(
+            normalizeText
+          )
+          .filter(Boolean)
+      )
+    ];
+  }
+
+  const text =
+    normalizeText(
+      value
+    );
+
+  if (!text) {
+    return [];
+  }
+
+  try {
+    const parsed =
+      JSON.parse(
+        text
+      );
+
+    if (
+      Array.isArray(
+        parsed
+      )
+    ) {
+      return [
+        ...new Set(
+          parsed
+            .map(
+              normalizeText
+            )
+            .filter(Boolean)
+        )
+      ];
+    }
+  } catch {
+    // Continúa con formato CSV.
+  }
+
+  return [
+    ...new Set(
+      text
+        .split(',')
+        .map(
+          normalizeText
+        )
+        .filter(Boolean)
+    )
+  ];
+}
+
 function getFileName(
   key = ''
 ) {
   const parts =
-    normalizeText(key)
-      .split('/');
+    normalizeText(
+      key
+    ).split('/');
 
   return (
     parts[
@@ -40,6 +106,21 @@ function getOriginalName(
     ) ||
     getFileName(
       object?.key
+    )
+  );
+}
+
+function getDisplayName(
+  object = {}
+) {
+  return (
+    normalizeText(
+      object
+        ?.customMetadata
+        ?.displayName
+    ) ||
+    getOriginalName(
+      object
     )
   );
 }
@@ -165,10 +246,14 @@ function formatFileSize(
   bytes = 0
 ) {
   const size =
-    Number(bytes);
+    Number(
+      bytes
+    );
 
   if (
-    !Number.isFinite(size) ||
+    !Number.isFinite(
+      size
+    ) ||
     size < 0
   ) {
     return 'No disponible';
@@ -189,8 +274,12 @@ function formatFileSize(
   const unitIndex =
     Math.min(
       Math.floor(
-        Math.log(size) /
-        Math.log(1024)
+        Math.log(
+          size
+        ) /
+        Math.log(
+          1024
+        )
       ),
       units.length - 1
     );
@@ -213,7 +302,9 @@ function formatFileSize(
       }
     )
   } ${
-    units[unitIndex]
+    units[
+      unitIndex
+    ]
   }`;
 }
 
@@ -237,6 +328,42 @@ function normalizeBooleanMetadata(
   }
 
   return null;
+}
+
+function getCopyright(
+  customMetadata = {}
+) {
+  return {
+    author:
+      normalizeText(
+        customMetadata
+          .copyrightAuthor
+      ),
+
+    holder:
+      normalizeText(
+        customMetadata
+          .copyrightHolder
+      ),
+
+    license:
+      normalizeText(
+        customMetadata
+          .copyrightLicense
+      ),
+
+    source:
+      normalizeText(
+        customMetadata
+          .copyrightSource
+      ),
+
+    year:
+      normalizeText(
+        customMetadata
+          .copyrightYear
+      )
+  };
 }
 
 export function adaptR2MediaObject(
@@ -294,15 +421,26 @@ export function adaptR2MediaObject(
       object.uploaded
     );
 
+  const featured =
+    normalizeBooleanMetadata(
+      customMetadata
+        .featured
+    );
+
   return {
     id:
       key,
 
     name:
-      originalName,
+      getDisplayName(
+        object
+      ),
 
     description:
-      '',
+      normalizeText(
+        customMetadata
+          .description
+      ),
 
     type:
       getMediaType(
@@ -310,6 +448,10 @@ export function adaptR2MediaObject(
       ),
 
     category:
+      normalizeText(
+        customMetadata
+          .category
+      ) ||
       'uploads',
 
     path:
@@ -323,13 +465,26 @@ export function adaptR2MediaObject(
     extension,
 
     alt:
-      '',
+      normalizeText(
+        customMetadata
+          .alt
+      ),
 
     tags:
-      [],
+      normalizeTags(
+        customMetadata
+          .tags
+      ),
 
     featured:
-      false,
+      featured === null
+        ? false
+        : featured,
+
+    copyright:
+      getCopyright(
+        customMetadata
+      ),
 
     order:
       0,
@@ -347,7 +502,14 @@ export function adaptR2MediaObject(
       fileSize:
         formatFileSize(
           object.size
-        )
+        ),
+
+      updatedAt:
+        normalizeText(
+          customMetadata
+            .metadataUpdatedAt
+        ) ||
+        null
     },
 
     r2: {
@@ -368,6 +530,12 @@ export function adaptR2MediaObject(
 
       originalName,
 
+      displayName:
+        normalizeText(
+          customMetadata
+            .displayName
+        ),
+
       normalizedName:
         normalizeText(
           customMetadata
@@ -383,6 +551,13 @@ export function adaptR2MediaObject(
           customMetadata
             .signatureValidated
         ),
+
+      metadataUpdatedAt:
+        normalizeText(
+          customMetadata
+            .metadataUpdatedAt
+        ) ||
+        null,
 
       httpMetadata,
 
@@ -401,14 +576,17 @@ export function adaptR2MediaObject(
 
 export {
   normalizeText,
+  normalizeTags,
   getFileName,
   getOriginalName,
+  getDisplayName,
   getContentType,
   getExtension,
   getMediaType,
   getMediaUrl,
   formatFileSize,
-  normalizeBooleanMetadata
+  normalizeBooleanMetadata,
+  getCopyright
 };
 
 export default
