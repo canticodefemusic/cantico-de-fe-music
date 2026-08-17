@@ -16,7 +16,14 @@
  */
 
 @import './design-tokens.css';
+
 @import '../../features/universal-upload-engine/styles/universal-upload.css';
+
+@import '../../features/media-library-engine/styles/r2-media-library.css';
+@import '../../features/media-library-engine/styles/r2-media-list.css';
+@import '../../features/media-library-engine/styles/r2-media-manager-toolbar.css';
+@import '../../features/media-library-engine/styles/r2-media-lightbox.css';
+@import '../../features/media-library-engine/styles/r2-media-details.css';
 
 /* ================================================================== */
 /* Documento                                                          */
