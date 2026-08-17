@@ -76,7 +76,7 @@ export function renderHymnLibrary() {
   `;
 }
 
-export function initHymnLibrary({ onPlay } = {}) {
+export async function initHymnLibrary({ onPlay } = {}) {
   const search = document.getElementById(
     'hymnLibrarySearch'
   );
@@ -93,9 +93,11 @@ export function initHymnLibrary({ onPlay } = {}) {
     'hymnLibraryLoadMore'
   );
 
-  if (!grid) {
+    if (!grid) {
     return;
   }
+
+  await service.syncR2Metadata();
 
   let currentQuery = '';
   let currentResults = [];
