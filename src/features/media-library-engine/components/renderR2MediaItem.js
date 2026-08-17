@@ -111,6 +111,9 @@ function getOriginalName(
   return (
     object
       ?.customMetadata
+      ?.displayName ||
+    object
+      ?.customMetadata
       ?.originalName ||
     getFileName(
       object?.key
