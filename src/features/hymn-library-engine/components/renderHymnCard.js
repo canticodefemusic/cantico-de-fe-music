@@ -173,12 +173,33 @@ export function renderHymnCard(
         </svg>
       </button>
 
-      <div
-        class="hymn-library-card__icon"
-        aria-hidden="true"
-      >
-        ♪
-      </div>
+            ${
+        hymn.cover
+          ? `
+              <div
+                class="hymn-library-card__cover"
+              >
+                <img
+                  src="${escapeHtml(
+                    hymn.cover
+                  )}"
+                  alt="${escapeHtml(
+                    hymn.title
+                  )}"
+                  loading="lazy"
+                  decoding="async"
+                >
+              </div>
+            `
+          : `
+              <div
+                class="hymn-library-card__icon"
+                aria-hidden="true"
+              >
+                ♪
+              </div>
+            `
+      }
 
       <div
         class="hymn-library-card__body"
