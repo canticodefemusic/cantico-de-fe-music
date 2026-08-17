@@ -1,6 +1,11 @@
 /**
  * Cántico de Fe Music
- * V13.4.5 — Render R2 Media Details
+ * V13.4.10 — Render R2 Media Details
+ *
+ * Muestra:
+ * - Información física del archivo R2
+ * - Metadatos persistentes
+ * - Copyright
  */
 
 function escapeHtml(
@@ -72,6 +77,51 @@ function renderValue(
   `;
 }
 
+function renderTags(
+  tags = []
+) {
+  if (
+    !Array.isArray(tags) ||
+    !tags.length
+  ) {
+    return 'No disponible';
+  }
+
+  return tags
+    .filter(Boolean)
+    .join(', ');
+}
+
+function getCopyrightText(
+  copyright = {}
+) {
+  const values = [
+    copyright?.author
+      ? `Autor: ${copyright.author}`
+      : '',
+
+    copyright?.holder
+      ? `Titular: ${copyright.holder}`
+      : '',
+
+    copyright?.license
+      ? `Licencia: ${copyright.license}`
+      : '',
+
+    copyright?.source
+      ? `Fuente: ${copyright.source}`
+      : '',
+
+    copyright?.year
+      ? `Año: ${copyright.year}`
+      : ''
+  ].filter(Boolean);
+
+  return values.length
+    ? values.join(' · ')
+    : 'No disponible';
+}
+
 export function renderR2MediaDetails({
   media = null
 } = {}) {
@@ -95,6 +145,32 @@ export function renderR2MediaDetails({
     r2.url ||
     media.path ||
     '';
+
+  const displayName =
+    media.name ||
+    r2.displayName ||
+    r2.originalName ||
+    '';
+
+  const originalName =
+    r2.originalName ||
+    displayName;
+
+  const category =
+    media.category &&
+    media.category !== 'uploads'
+      ? media.category
+      : 'No disponible';
+
+  const featured =
+    media.featured
+      ? 'Sí'
+      : 'No';
+
+  const copyrightText =
+    getCopyrightText(
+      media.copyright
+    );
 
   return `
     <section
@@ -149,7 +225,8 @@ export function renderR2MediaDetails({
                         mediaUrl
                       )}"
                       alt="${escapeHtml(
-                        media.name
+                        media.alt ||
+                        displayName
                       )}"
                       loading="lazy"
                     />
@@ -162,9 +239,49 @@ export function renderR2MediaDetails({
             class="r2-media-details__list"
           >
             ${renderValue(
+              'Nombre',
+              displayName
+            )}
+
+            ${renderValue(
               'Nombre original',
-              r2.originalName ||
-              media.name
+              originalName
+            )}
+
+            ${renderValue(
+              'Descripción',
+              media.description
+            )}
+
+            ${renderValue(
+              'Categoría',
+              category
+            )}
+
+            ${renderValue(
+              'Etiquetas',
+              renderTags(
+                media.tags
+              )
+            )}
+
+            ${renderValue(
+              'Destacado',
+              featured
+            )}
+
+            ${
+              media.type === 'image'
+                ? renderValue(
+                    'Texto ALT',
+                    media.alt
+                  )
+                : ''
+            }
+
+            ${renderValue(
+              'Copyright',
+              copyrightText
             )}
 
             ${renderValue(
@@ -195,6 +312,13 @@ export function renderR2MediaDetails({
               'Fecha de subida',
               formatDate(
                 r2.uploaded
+              )
+            )}
+
+            ${renderValue(
+              'Metadatos actualizados',
+              formatDate(
+                r2.metadataUpdatedAt
               )
             )}
 
