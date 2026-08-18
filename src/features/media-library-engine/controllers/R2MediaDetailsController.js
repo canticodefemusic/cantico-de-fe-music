@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V13.4.11 — R2 Media Details Controller
+ * V13.4.31 — R2 Media Details Controller + Cover Key
  *
  * Funciones:
  * - Abrir/cerrar detalles
@@ -8,6 +8,7 @@
  * - Activar edición
  * - Cancelar edición
  * - Guardar metadatos persistentes en R2
+ * - Guardar asociación de portada mediante coverKey
  * - Refrescar biblioteca después de guardar
  */
 
@@ -432,6 +433,11 @@ export class R2MediaDetailsController {
           'category'
         ),
 
+      coverKey:
+        getText(
+          'coverKey'
+        ),
+
       tags:
         getText(
           'tags'
@@ -568,6 +574,9 @@ export class R2MediaDetailsController {
         );
 
       if (!reopened) {
+        this.saving =
+          false;
+
         this.close();
       }
 
