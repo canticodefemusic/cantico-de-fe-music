@@ -1,12 +1,14 @@
 /**
  * Cántico de Fe Music
- * V13.4.37 — Unified Shared Hymn Library
+ * V13.4.45 — Instant Hymn Detail Return
  *
  * Funciones:
  * - Usar una sola instancia compartida de HymnLibraryService
- * - Sincronizar R2 antes de renderizar vistas dependientes de himnos
- * - Soportar himnos dinámicos R2 en detalle y reproducción
- * - Mantener cola, favoritos, playlists y demás vistas
+ * - Sincronizar R2 antes del render inicial
+ * - Soportar himnos dinámicos R2
+ * - Mantener reproducción, favoritos y playlists
+ * - Cerrar detalle de himno instantáneamente
+ * - Restaurar Biblioteca de Himnos sin recargar la página
  */
 
 import {
@@ -92,6 +94,7 @@ import {
   hymnLibraryService,
   renderHymnLibrary,
   renderHymnDetail,
+  renderHymnCard,
   initHymnLibrary,
   initHymnDetail,
   initHymnCardInteractions,
@@ -161,7 +164,14 @@ const views = {
 const queueService =
   new QueueService();
 
+/* ==========================================================
+   Global Event Handlers
+   ========================================================== */
+
 let playlistRefreshHandler =
+  null;
+
+let hymnDetailCloseHandler =
   null;
 
 /* ==========================================================
@@ -239,6 +249,136 @@ function createHymnPlayHandler() {
       )
     );
   };
+}
+
+/* ==========================================================
+   Immediate Hymn Library Render
+   ========================================================== */
+
+function renderCachedHymnLibrary({
+  root,
+  handleHymnPlay
+}) {
+  const main =
+    root.querySelector(
+      '.cantico-main'
+    );
+
+  if (!main) {
+    return false;
+  }
+
+  /*
+   * Cambiamos la URL sin hacer reload.
+   */
+
+  window.history.replaceState(
+    {},
+    '',
+    '/?page=himnos'
+  );
+
+  const route =
+    resolveRoute();
+
+  setPageSEO(
+    route
+  );
+
+  /*
+   * Reconstruimos inmediatamente
+   * el shell de la Biblioteca.
+   */
+
+  main.innerHTML =
+    renderHymnLibrary();
+
+  /*
+   * Pintamos inmediatamente los himnos
+   * que YA están almacenados en la
+   * instancia compartida.
+   *
+   * No esperamos otra petición R2 para
+   * que el usuario vuelva a ver las tarjetas.
+   */
+
+  const grid =
+    main.querySelector(
+      '#hymnLibraryGrid'
+    );
+
+  if (grid) {
+    const hymns =
+      hymnLibraryService.list();
+
+    grid.innerHTML =
+      hymns
+        .map(
+          hymn =>
+            renderHymnCard(
+              hymn
+            )
+        )
+        .join('');
+  }
+
+  /*
+   * Activamos inmediatamente botones
+   * de reproducción, favoritos y playlists.
+   */
+
+  initHymnCardInteractions({
+    onPlay:
+      handleHymnPlay
+  });
+
+  /*
+   * Inicializamos el resto de la Biblioteca:
+   * búsqueda, ordenamiento y carga incremental.
+   *
+   * Puede sincronizar R2 nuevamente en segundo
+   * plano, pero las tarjetas ya están visibles.
+   */
+
+  initHymnLibrary({
+    onPlay:
+      handleHymnPlay
+  });
+
+  initShareButtons();
+
+  return true;
+}
+
+/* ==========================================================
+   Hymn Detail Close
+   ========================================================== */
+
+function registerHymnDetailClose({
+  root,
+  handleHymnPlay
+}) {
+  if (
+    hymnDetailCloseHandler
+  ) {
+    window.removeEventListener(
+      'cantico:hymn-detail-close',
+      hymnDetailCloseHandler
+    );
+  }
+
+  hymnDetailCloseHandler =
+    () => {
+      renderCachedHymnLibrary({
+        root,
+        handleHymnPlay
+      });
+    };
+
+  window.addEventListener(
+    'cantico:hymn-detail-close',
+    hymnDetailCloseHandler
+  );
 }
 
 /* ==========================================================
@@ -335,7 +475,7 @@ function initializeCurrentView({
   ) {
     initHymnDetail();
   }
-  
+
   initShareButtons();
 
   if (
@@ -409,14 +549,13 @@ export async function startUnifiedCanticoApp(
     resolveRoute();
 
   /*
-   * Sincronizamos ANTES del render.
+   * Sincronizamos antes del render inicial.
    *
-   * Esto permite que una URL directa como:
+   * Esto permite abrir directamente:
    *
    * ?page=himnos&id=tumba-sellada
    *
-   * encuentre el himno dinámico R2 antes de
-   * ejecutar renderHymnDetail().
+   * y encontrar el himno dinámico R2.
    */
 
   await syncSharedHymnLibrary();
@@ -475,6 +614,11 @@ export async function startUnifiedCanticoApp(
         handleHymnPlay
       });
 
+      registerHymnDetailClose({
+        root,
+        handleHymnPlay
+      });
+
       initializeCurrentView({
         route,
         handleHymnPlay
@@ -485,10 +629,11 @@ export async function startUnifiedCanticoApp(
 }
 
 /* ==========================================================
-   Exports auxiliares
+   Auxiliary Exports
    ========================================================== */
 
 export {
   syncSharedHymnLibrary,
-  createHymnPlayHandler
+  createHymnPlayHandler,
+  renderCachedHymnLibrary
 };
