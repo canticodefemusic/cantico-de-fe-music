@@ -34,7 +34,8 @@ export {
 } from './components/renderHymnLibrary.js';
 
 export {
-  renderHymnDetail
+  renderHymnDetail,
+  initHymnDetail
 } from './components/renderHymnDetail.js';
 
 /* ----------------------------------------------------------
