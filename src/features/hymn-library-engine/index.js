@@ -1,17 +1,53 @@
-export { hymnCatalog } from './data/hymnCatalog.js';
-export { HymnLibraryService } from './services/HymnLibraryService.js';
+/**
+ * Cántico de Fe Music
+ * V13.4.34 — Hymn Library Public API
+ */
 
-export { renderHymnCard } from './components/renderHymnCard.js';
+export {
+  hymnCatalog
+} from './data/hymnCatalog.js';
+
+export {
+  HymnLibraryService
+} from './services/HymnLibraryService.js';
+
+/* ----------------------------------------------------------
+   Shared Hymn Library Instance
+   ---------------------------------------------------------- */
+
+export {
+  hymnLibraryService
+} from './services/hymnLibraryServiceInstance.js';
+
+/* ----------------------------------------------------------
+   Components
+   ---------------------------------------------------------- */
+
+export {
+  renderHymnCard
+} from './components/renderHymnCard.js';
+
 export {
   renderHymnLibrary,
   initHymnLibrary,
   initHymnCardInteractions
 } from './components/renderHymnLibrary.js';
-export { renderHymnDetail } from './components/renderHymnDetail.js';
 
-export { initShareButtons } from './services/shareService.js';
+export {
+  renderHymnDetail
+} from './components/renderHymnDetail.js';
 
-// Collections Engine (V9.0.4)
+/* ----------------------------------------------------------
+   Share
+   ---------------------------------------------------------- */
+
+export {
+  initShareButtons
+} from './services/shareService.js';
+
+/* ----------------------------------------------------------
+   Collections Engine — V9.0.4
+   ---------------------------------------------------------- */
 
 export {
   CollectionService
@@ -29,7 +65,9 @@ export {
   CollectionEngine
 } from './collections/CollectionEngine.js';
 
-// Sort Engine (V9.0.5)
+/* ----------------------------------------------------------
+   Sort Engine — V9.0.5
+   ---------------------------------------------------------- */
 
 export {
   SortService
