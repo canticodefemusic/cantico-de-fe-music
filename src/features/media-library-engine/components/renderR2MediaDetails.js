@@ -1,11 +1,12 @@
 /**
  * Cántico de Fe Music
- * V13.4.11 — Render R2 Media Details
+ * V13.4.30 — Render R2 Media Details + Cover Key
  *
  * Funciones:
  * - Mostrar información del archivo R2
  * - Mostrar metadatos persistentes
  * - Formulario para editar metadatos
+ * - Editar asociación de portada mediante coverKey
  */
 
 function escapeHtml(
@@ -122,6 +123,17 @@ function getCopyrightText(
     : 'No disponible';
 }
 
+function getCoverKey(
+  media = {}
+) {
+  return String(
+    media.coverKey ||
+    media?.r2?.coverKey ||
+    media?.r2?.customMetadata?.coverKey ||
+    ''
+  ).trim();
+}
+
 function renderMetadataForm(
   media
 ) {
@@ -137,6 +149,11 @@ function renderMetadataForm(
     )
       ? media.tags.join(', ')
       : '';
+
+  const coverKey =
+    getCoverKey(
+      media
+    );
 
   return `
     <form
@@ -228,6 +245,30 @@ function renderMetadataForm(
           autocomplete="off"
           placeholder="Ej. himnos"
         />
+      </div>
+
+      <div
+        class="r2-media-details__field"
+      >
+        <label>
+          Portada (R2 Key)
+        </label>
+
+        <input
+          type="text"
+          name="coverKey"
+          value="${escapeHtml(
+            coverKey
+          )}"
+          autocomplete="off"
+          placeholder="Ej. uploads/2026-08-17/portada.jpg"
+          data-r2-media-cover-key
+        />
+
+        <small>
+          R2 Key de la imagen que se utilizará
+          como portada de este archivo.
+        </small>
       </div>
 
       <div
@@ -439,6 +480,11 @@ export function renderR2MediaDetails({
       media.copyright
     );
 
+  const coverKey =
+    getCoverKey(
+      media
+    );
+
   return `
     <section
       class="r2-media-details"
@@ -526,6 +572,11 @@ export function renderR2MediaDetails({
               ${renderValue(
                 'Categoría',
                 category
+              )}
+
+              ${renderValue(
+                'Portada (R2 Key)',
+                coverKey
               )}
 
               ${renderValue(
@@ -661,6 +712,16 @@ export function renderR2MediaDetails({
     </section>
   `;
 }
+
+export {
+  escapeHtml,
+  formatDate,
+  renderValue,
+  renderTags,
+  getCopyrightText,
+  getCoverKey,
+  renderMetadataForm
+};
 
 export default
   renderR2MediaDetails;
