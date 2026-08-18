@@ -24,9 +24,12 @@ export const hymnCatalog = [
 
     artist: 'Cántico de Fe Music',
 
-    r2Key: 'fe-que-mueve-montanas.mp3',
-    coverKey: '',
+    r2Key:
+      'uploads/2026-08-10/bf48f5d5-8d12-45da-baa9-3aa3d454287f-fe-que-mueve-montan-as.mp3',
 
+    coverKey:
+      'uploads/2026-08-18/22955efa-6c98-4b64-a55b-65c1eea263dd-chatgpt-image-jun-16-2026-09_02_26-pm.png',
+    
     audio: '/assets/audio/himnos/fe-que-mueve-montanas.mp3',
     src: '/assets/audio/himnos/fe-que-mueve-montanas.mp3',
     cover: '',
