@@ -1,3 +1,14 @@
+/**
+ * Cántico de Fe Music
+ * V13.4.37 — Unified Shared Hymn Library
+ *
+ * Funciones:
+ * - Usar una sola instancia compartida de HymnLibraryService
+ * - Sincronizar R2 antes de renderizar vistas dependientes de himnos
+ * - Soportar himnos dinámicos R2 en detalle y reproducción
+ * - Mantener cola, favoritos, playlists y demás vistas
+ */
+
 import {
   appConfig
 } from './config/appConfig.js';
@@ -78,10 +89,7 @@ import {
 } from '../features/queue-engine/index.js';
 
 import {
-  HymnLibraryService
-} from '../features/hymn-library-engine/services/HymnLibraryService.js';
-
-import {
+  hymnLibraryService,
   renderHymnLibrary,
   renderHymnDetail,
   initHymnLibrary,
@@ -98,33 +106,104 @@ import {
   initAdminStudio
 } from '../features/admin-studio/index.js';
 
+/* ==========================================================
+   Views
+   ========================================================== */
+
 const views = {
-  home: renderHomeView,
+  home:
+    renderHomeView,
 
-  himnos: route =>
-    route.id
-      ? renderHymnDetail(route.id)
-      : renderHymnLibrary(),
+  himnos:
+    route =>
+      route.id
+        ? renderHymnDetail(
+            route.id
+          )
+        : renderHymnLibrary(),
 
-  favoritos: renderFavoritesView,
-  albumes: renderAlbumsView,
-  playlists: renderPlaylistsView,
-  historial: renderHistoryView,
-  recomendados: renderRecommendationsView,
-  devocionales: renderDevotionalsView,
-  videos: renderVideosView,
-  contacto: renderContactView,
-  upload: renderUploadView,
-  admin: renderAdminLayout
+  favoritos:
+    renderFavoritesView,
+
+  albumes:
+    renderAlbumsView,
+
+  playlists:
+    renderPlaylistsView,
+
+  historial:
+    renderHistoryView,
+
+  recomendados:
+    renderRecommendationsView,
+
+  devocionales:
+    renderDevotionalsView,
+
+  videos:
+    renderVideosView,
+
+  contacto:
+    renderContactView,
+
+  upload:
+    renderUploadView,
+
+  admin:
+    renderAdminLayout
 };
+
+/* ==========================================================
+   Queue
+   ========================================================== */
 
 const queueService =
   new QueueService();
 
-const hymnLibraryService =
-  new HymnLibraryService();
+let playlistRefreshHandler =
+  null;
 
-let playlistRefreshHandler = null;
+/* ==========================================================
+   Hymn Sync
+   ========================================================== */
+
+async function syncSharedHymnLibrary() {
+  try {
+    const result =
+      await hymnLibraryService
+        .syncR2Metadata();
+
+    if (
+      !result?.success
+    ) {
+      console.warn(
+        '[Cántico] La biblioteca R2 no pudo sincronizarse. Se utilizará el catálogo base.'
+      );
+    }
+
+    return result;
+
+  } catch (error) {
+    console.error(
+      '[Cántico] Error al sincronizar la biblioteca compartida:',
+      error
+    );
+
+    return {
+      success:
+        false,
+
+      hymns:
+        hymnLibraryService.list(),
+
+      error
+    };
+  }
+}
+
+/* ==========================================================
+   Play Handler
+   ========================================================== */
 
 function createHymnPlayHandler() {
   return hymn => {
@@ -138,7 +217,8 @@ function createHymnPlayHandler() {
     const startIndex =
       hymns.findIndex(
         item =>
-          item.id === hymn.id
+          item.id ===
+          hymn.id
       );
 
     queueService.load(
@@ -152,65 +232,78 @@ function createHymnPlayHandler() {
       new CustomEvent(
         'cantico:hymn-play',
         {
-          detail: hymn
+          detail:
+            hymn
         }
       )
     );
   };
 }
 
+/* ==========================================================
+   Playlist Refresh
+   ========================================================== */
+
 function registerPlaylistRefresh({
   root,
   handleHymnPlay
 }) {
-  if (playlistRefreshHandler) {
+  if (
+    playlistRefreshHandler
+  ) {
     window.removeEventListener(
       'cantico:playlists-refresh',
       playlistRefreshHandler
     );
   }
 
-  playlistRefreshHandler = () => {
-    const currentRoute =
-      resolveRoute();
+  playlistRefreshHandler =
+    () => {
+      const currentRoute =
+        resolveRoute();
 
-    if (
-      currentRoute.page !==
-      'playlists'
-    ) {
-      return;
-    }
+      if (
+        currentRoute.page !==
+        'playlists'
+      ) {
+        return;
+      }
 
-    const main =
-      root.querySelector(
-        '.cantico-main'
-      );
+      const main =
+        root.querySelector(
+          '.cantico-main'
+        );
 
-    if (!main) {
-      return;
-    }
+      if (!main) {
+        return;
+      }
 
-    setPageSEO(
-      currentRoute
-    );
-
-    main.innerHTML =
-      renderPlaylistsView(
+      setPageSEO(
         currentRoute
       );
 
-    initPlaylistsView();
+      main.innerHTML =
+        renderPlaylistsView(
+          currentRoute
+        );
 
-    initHymnCardInteractions({
-      onPlay: handleHymnPlay
-    });
-  };
+      initPlaylistsView();
+
+      initHymnCardInteractions({
+        onPlay:
+          handleHymnPlay
+      });
+    };
 
   window.addEventListener(
     'cantico:playlists-refresh',
     playlistRefreshHandler
   );
 }
+
+/* ==========================================================
+   Current View Initialization
+   ========================================================== */
 
 function initializeCurrentView({
   route,
@@ -219,60 +312,74 @@ function initializeCurrentView({
   initGlobalSearch();
 
   initHymnCardInteractions({
-    onPlay: handleHymnPlay
+    onPlay:
+      handleHymnPlay
   });
 
   if (
-    route.page === 'himnos' &&
+    route.page ===
+      'himnos' &&
     !route.id
   ) {
     initHymnLibrary({
-      onPlay: handleHymnPlay
+      onPlay:
+        handleHymnPlay
     });
   }
 
   initShareButtons();
 
   if (
-    route.page === 'favoritos'
+    route.page ===
+    'favoritos'
   ) {
     initFavoritesView({
-      onPlay: handleHymnPlay
+      onPlay:
+        handleHymnPlay
     });
   }
 
   if (
-    route.page === 'playlists'
+    route.page ===
+    'playlists'
   ) {
     initPlaylistsView();
   }
 
   if (
-    route.page === 'historial'
+    route.page ===
+    'historial'
   ) {
     initHistoryView();
   }
 
   if (
-    route.page === 'recomendados'
+    route.page ===
+    'recomendados'
   ) {
     initRecommendationsView();
   }
 
-    if (
-    route.page === 'admin'
+  if (
+    route.page ===
+    'admin'
   ) {
     initAdminStudio();
   }
 
   if (
-    route.page === 'upload'
+    route.page ===
+    'upload'
   ) {
     initUploadView();
   }
 }
 
-export function startUnifiedCanticoApp(
+/* ==========================================================
+   App Start
+   ========================================================== */
+
+export async function startUnifiedCanticoApp(
   rootSelector = '#app'
 ) {
   const root =
@@ -292,26 +399,51 @@ export function startUnifiedCanticoApp(
   const route =
     resolveRoute();
 
+  /*
+   * Sincronizamos ANTES del render.
+   *
+   * Esto permite que una URL directa como:
+   *
+   * ?page=himnos&id=tumba-sellada
+   *
+   * encuentre el himno dinámico R2 antes de
+   * ejecutar renderHymnDetail().
+   */
+
+  await syncSharedHymnLibrary();
+
   const renderView =
-    views[route.page] ||
+    views[
+      route.page
+    ] ||
     views.home;
 
-  setPageSEO(route);
+  setPageSEO(
+    route
+  );
 
   root.innerHTML = `
-    <div class="cantico-app-shell">
+    <div
+      class="cantico-app-shell"
+    >
       ${renderNavigation(
         appConfig.navigation,
         route.page
       )}
 
-      <main class="cantico-main">
-        ${renderView(route)}
+      <main
+        class="cantico-main"
+      >
+        ${renderView(
+          route
+        )}
       </main>
 
       ${renderMusicPlayerPro()}
 
-      <footer class="cantico-footer">
+      <footer
+        class="cantico-footer"
+      >
         <p>
           © 2026 Cántico de Fe Music.
           Todos los derechos reservados.
@@ -320,21 +452,34 @@ export function startUnifiedCanticoApp(
     </div>
   `;
 
-  window.setTimeout(() => {
-    initMusicPlayerPro();
-    queueService.restore();
+  window.setTimeout(
+    () => {
+      initMusicPlayerPro();
 
-    const handleHymnPlay =
-      createHymnPlayHandler();
+      queueService.restore();
 
-    registerPlaylistRefresh({
-      root,
-      handleHymnPlay
-    });
+      const handleHymnPlay =
+        createHymnPlayHandler();
 
-    initializeCurrentView({
-      route,
-      handleHymnPlay
-    });
-  }, 0);
+      registerPlaylistRefresh({
+        root,
+        handleHymnPlay
+      });
+
+      initializeCurrentView({
+        route,
+        handleHymnPlay
+      });
+    },
+    0
+  );
 }
+
+/* ==========================================================
+   Exports auxiliares
+   ========================================================== */
+
+export {
+  syncSharedHymnLibrary,
+  createHymnPlayHandler
+};
