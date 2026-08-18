@@ -1,14 +1,18 @@
 /**
  * Cántico de Fe Music
- * V13.4.19 — Hymn Library R2 Metadata & Cover Sync
+ * V13.4.32 — Dynamic R2 Hymn Discovery
  *
  * Funciones:
- * - Mantener hymnCatalog como fuente base
+ * - Mantener hymnCatalog como catálogo base
  * - Sincronizar metadatos persistentes desde R2
- * - Relacionar himnos mediante r2Key
+ * - Relacionar himnos existentes mediante r2Key
  * - Resolver coverKey a una URL R2 real
+ * - Descubrir automáticamente nuevos himnos desde R2
+ * - Detectar audios con categoría "himnos"
+ * - Evitar duplicados por r2Key
+ * - Generar IDs para nuevos himnos R2
+ * - Usar audio R2 directamente para himnos dinámicos
  * - Mantener list(), search() y findById()
- * - No modificar IDs ni rutas de audio
  */
 
 import {
@@ -22,12 +26,26 @@ import {
 import r2MediaService
   from '../../media-library-engine/services/R2MediaService.js';
 
+/* ==========================================================
+   Normalización
+   ========================================================== */
+
 function normalizeText(
   value = ''
 ) {
   return String(
     value ?? ''
   ).trim();
+}
+
+function normalizeLowerText(
+  value = ''
+) {
+  return normalizeText(
+    value
+  ).toLocaleLowerCase(
+    'es'
+  );
 }
 
 function normalizeTags(
@@ -82,6 +100,10 @@ function normalizeTags(
     )
     .filter(Boolean);
 }
+
+/* ==========================================================
+   Copyright
+   ========================================================== */
 
 function getCopyright(
   metadata = {},
@@ -143,6 +165,10 @@ function getCopyright(
   return copyright;
 }
 
+/* ==========================================================
+   R2
+   ========================================================== */
+
 function getR2FileUrl(
   key = ''
 ) {
@@ -162,6 +188,56 @@ function getR2FileUrl(
     )
   );
 }
+
+function getObjectMetadata(
+  object = {}
+) {
+  return (
+    object.customMetadata &&
+    typeof object.customMetadata ===
+      'object'
+  )
+    ? object.customMetadata
+    : {};
+}
+
+function getObjectContentType(
+  object = {}
+) {
+  return normalizeText(
+    object
+      ?.httpMetadata
+      ?.contentType
+  );
+}
+
+function isAudioObject(
+  object = {}
+) {
+  return getObjectContentType(
+    object
+  ).startsWith(
+    'audio/'
+  );
+}
+
+function isHymnCategory(
+  value = ''
+) {
+  const category =
+    normalizeLowerText(
+      value
+    );
+
+  return (
+    category === 'himno' ||
+    category === 'himnos'
+  );
+}
+
+/* ==========================================================
+   Portadas
+   ========================================================== */
 
 function resolveCover(
   hymn,
@@ -203,10 +279,8 @@ function resolveCover(
   }
 
   const contentType =
-    normalizeText(
+    getObjectContentType(
       coverObject
-        ?.httpMetadata
-        ?.contentType
     );
 
   if (
@@ -239,6 +313,10 @@ function resolveCover(
   };
 }
 
+/* ==========================================================
+   Himnos existentes
+   ========================================================== */
+
 function mergeHymnWithR2Metadata(
   hymn,
   object,
@@ -262,11 +340,9 @@ function mergeHymnWithR2Metadata(
   }
 
   const metadata =
-    object.customMetadata &&
-    typeof object.customMetadata ===
-      'object'
-      ? object.customMetadata
-      : {};
+    getObjectMetadata(
+      object
+    );
 
   const displayName =
     normalizeText(
@@ -288,30 +364,26 @@ function mergeHymnWithR2Metadata(
       metadata.tags
     );
 
-  /* ----------------------------------------------------------
-   V13.4.26 — Dynamic R2 Cover Metadata
-   ---------------------------------------------------------- */
-
-const metadataCoverKey =
-  normalizeText(
-    metadata.coverKey
-  );
-
-const hymnWithCoverKey = {
-  ...hymn,
-
-  coverKey:
-    metadataCoverKey ||
+  const metadataCoverKey =
     normalizeText(
-      hymn.coverKey
-    )
-};
+      metadata.coverKey
+    );
 
-const coverState =
-  resolveCover(
-    hymnWithCoverKey,
-    objectMap
-  );
+  const hymnWithCoverKey = {
+    ...hymn,
+
+    coverKey:
+      metadataCoverKey ||
+      normalizeText(
+        hymn.coverKey
+      )
+  };
+
+  const coverState =
+    resolveCover(
+      hymnWithCoverKey,
+      objectMap
+    );
 
   return {
     ...hymn,
@@ -356,6 +428,9 @@ const coverState =
       synced:
         true,
 
+      dynamic:
+        false,
+
       updatedAt:
         normalizeText(
           metadata
@@ -371,6 +446,318 @@ const coverState =
     }
   };
 }
+
+/* ==========================================================
+   IDs dinámicos
+   ========================================================== */
+
+function slugify(
+  value = ''
+) {
+  return normalizeText(
+    value
+  )
+    .normalize(
+      'NFD'
+    )
+    .replace(
+      /[\u0300-\u036f]/g,
+      ''
+    )
+    .toLowerCase()
+    .replace(
+      /[^a-z0-9]+/g,
+      '-'
+    )
+    .replace(
+      /^-+|-+$/g,
+      ''
+    );
+}
+
+function getFileNameFromKey(
+  key = ''
+) {
+  const cleanKey =
+    normalizeText(
+      key
+    );
+
+  if (!cleanKey) {
+    return '';
+  }
+
+  const parts =
+    cleanKey.split('/');
+
+  return (
+    parts[
+      parts.length - 1
+    ] ||
+    ''
+  );
+}
+
+function stripExtension(
+  value = ''
+) {
+  return normalizeText(
+    value
+  ).replace(
+    /\.[^.]+$/,
+    ''
+  );
+}
+
+function stripUploadUuid(
+  value = ''
+) {
+  return normalizeText(
+    value
+  ).replace(
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-/i,
+    ''
+  );
+}
+
+function createDynamicHymnId(
+  object,
+  metadata = {}
+) {
+  const originalName =
+    normalizeText(
+      metadata.originalName
+    );
+
+  const fileName =
+    originalName ||
+    getFileNameFromKey(
+      object?.key
+    );
+
+  const cleanFileName =
+    stripUploadUuid(
+      stripExtension(
+        fileName
+      )
+    );
+
+  const displayName =
+    normalizeText(
+      metadata.displayName
+    );
+
+  return (
+    slugify(
+      cleanFileName
+    ) ||
+    slugify(
+      displayName
+    ) ||
+    `r2-hymn-${Date.now()}`
+  );
+}
+
+/* ==========================================================
+   Himnos dinámicos R2
+   ========================================================== */
+
+function isDynamicR2Hymn(
+  object = {}
+) {
+  if (
+    !object?.key ||
+    !isAudioObject(
+      object
+    )
+  ) {
+    return false;
+  }
+
+  const metadata =
+    getObjectMetadata(
+      object
+    );
+
+  return isHymnCategory(
+    metadata.category
+  );
+}
+
+function createDynamicR2Hymn(
+  object,
+  objectMap
+) {
+  const metadata =
+    getObjectMetadata(
+      object
+    );
+
+  const key =
+    normalizeText(
+      object.key
+    );
+
+  if (!key) {
+    return null;
+  }
+
+  const displayName =
+    normalizeText(
+      metadata.displayName
+    );
+
+  const description =
+    normalizeText(
+      metadata.description
+    );
+
+  const category =
+    normalizeText(
+      metadata.category
+    );
+
+  const coverKey =
+    normalizeText(
+      metadata.coverKey
+    );
+
+  const tags =
+    normalizeTags(
+      metadata.tags
+    );
+
+  const originalName =
+    normalizeText(
+      metadata.originalName
+    ) ||
+    getFileNameFromKey(
+      key
+    );
+
+  const title =
+    displayName ||
+    stripUploadUuid(
+      stripExtension(
+        originalName
+      )
+    ) ||
+    'Himno sin título';
+
+  const audioUrl =
+    getR2FileUrl(
+      key
+    );
+
+  const baseHymn = {
+    id:
+      createDynamicHymnId(
+        object,
+        metadata
+      ),
+
+    title,
+
+    subtitle:
+      '',
+
+    category:
+      category ||
+      'Himnos',
+
+    theme:
+      '',
+
+    scriptures:
+      [],
+
+    scripture:
+      '',
+
+    artist:
+      'Cántico de Fe Music',
+
+    r2Key:
+      key,
+
+    coverKey,
+
+    audio:
+      audioUrl,
+
+    src:
+      audioUrl,
+
+    cover:
+      '',
+
+    duration:
+      '',
+
+    description:
+      description ||
+      'Himno cristiano de Cántico de Fe Music.',
+
+    lyrics:
+      [],
+
+    tags,
+
+    copyright:
+      getCopyright(
+        metadata,
+        {
+          holder:
+            'Cántico de Fe Music',
+
+          license:
+            'Todos los derechos reservados'
+        }
+      ),
+
+    source:
+      'r2'
+  };
+
+  const coverState =
+    resolveCover(
+      baseHymn,
+      objectMap
+    );
+
+  return {
+    ...baseHymn,
+
+    ...coverState,
+
+    r2Metadata: {
+      key,
+
+      synced:
+        true,
+
+      dynamic:
+        true,
+
+      updatedAt:
+        normalizeText(
+          metadata
+            .metadataUpdatedAt
+        ) ||
+        null,
+
+      coverKey:
+        coverState.coverKey,
+
+      coverSynced:
+        coverState.coverSynced
+    }
+  };
+}
+
+/* ==========================================================
+   Servicio
+   ========================================================== */
 
 export class HymnLibraryService {
 
@@ -444,9 +831,16 @@ export class HymnLibraryService {
               100
           });
 
+      const safeObjects =
+        Array.isArray(
+          objects
+        )
+          ? objects
+          : [];
+
       const objectMap =
         new Map(
-          objects
+          safeObjects
             .filter(
               object =>
                 object?.key
@@ -459,7 +853,11 @@ export class HymnLibraryService {
             )
         );
 
-      this.catalog =
+      /* ------------------------------------------------------
+         1. Sincronizar catálogo base
+         ------------------------------------------------------ */
+
+      const syncedBaseCatalog =
         this.baseCatalog.map(
           hymn => {
             const r2Key =
@@ -505,6 +903,9 @@ export class HymnLibraryService {
                   synced:
                     false,
 
+                  dynamic:
+                    false,
+
                   updatedAt:
                     null,
 
@@ -525,6 +926,116 @@ export class HymnLibraryService {
           }
         );
 
+      /* ------------------------------------------------------
+         2. Keys ya utilizadas por catálogo base
+         ------------------------------------------------------ */
+
+      const existingR2Keys =
+        new Set(
+          this.baseCatalog
+            .map(
+              hymn =>
+                normalizeText(
+                  hymn.r2Key
+                )
+            )
+            .filter(Boolean)
+        );
+
+      const existingIds =
+        new Set(
+          syncedBaseCatalog
+            .map(
+              hymn =>
+                normalizeText(
+                  hymn.id
+                )
+            )
+            .filter(Boolean)
+        );
+
+      /* ------------------------------------------------------
+         3. Descubrir nuevos himnos R2
+         ------------------------------------------------------ */
+
+      const dynamicHymns =
+        safeObjects
+          .filter(
+            object =>
+              isDynamicR2Hymn(
+                object
+              )
+          )
+          .filter(
+            object =>
+              !existingR2Keys.has(
+                normalizeText(
+                  object.key
+                )
+              )
+          )
+          .map(
+            object =>
+              createDynamicR2Hymn(
+                object,
+                objectMap
+              )
+          )
+          .filter(Boolean)
+          .map(
+            hymn => {
+              let candidateId =
+                hymn.id;
+
+              if (
+                !existingIds.has(
+                  candidateId
+                )
+              ) {
+                existingIds.add(
+                  candidateId
+                );
+
+                return hymn;
+              }
+
+              let suffix =
+                2;
+
+              while (
+                existingIds.has(
+                  `${candidateId}-${suffix}`
+                )
+              ) {
+                suffix +=
+                  1;
+              }
+
+              candidateId =
+                `${candidateId}-${suffix}`;
+
+              existingIds.add(
+                candidateId
+              );
+
+              return {
+                ...hymn,
+
+                id:
+                  candidateId
+              };
+            }
+          );
+
+      /* ------------------------------------------------------
+         4. Catálogo final
+         ------------------------------------------------------ */
+
+      this.catalog = [
+        ...syncedBaseCatalog,
+        ...dynamicHymns
+      ];
+
       this.r2Synced =
         true;
 
@@ -533,7 +1044,10 @@ export class HymnLibraryService {
           true,
 
         hymns:
-          this.list()
+          this.list(),
+
+        dynamicCount:
+          dynamicHymns.length
       };
 
     } catch (error) {
@@ -559,6 +1073,9 @@ export class HymnLibraryService {
         hymns:
           this.list(),
 
+        dynamicCount:
+          0,
+
         error
       };
     }
@@ -570,11 +1087,26 @@ export class HymnLibraryService {
 
 }
 
+/* ==========================================================
+   Exports
+   ========================================================== */
+
 export {
   normalizeText,
   normalizeTags,
   getCopyright,
   getR2FileUrl,
+  getObjectMetadata,
+  getObjectContentType,
+  isAudioObject,
+  isHymnCategory,
   resolveCover,
-  mergeHymnWithR2Metadata
+  mergeHymnWithR2Metadata,
+  slugify,
+  getFileNameFromKey,
+  stripExtension,
+  stripUploadUuid,
+  createDynamicHymnId,
+  isDynamicR2Hymn,
+  createDynamicR2Hymn
 };
