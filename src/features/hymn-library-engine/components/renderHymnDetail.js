@@ -70,19 +70,10 @@ function renderLyrics(
 }
 
 function closeHymnDetail() {
-  const modal =
-    document.querySelector(
-      '[data-hymn-detail-modal]'
-    );
-
-  if (modal) {
-    modal.remove();
-  }
-
-  window.history.replaceState(
-    {},
-    '',
-    '/?page=himnos'
+  window.dispatchEvent(
+    new CustomEvent(
+      'cantico:hymn-detail-close'
+    )
   );
 }
 
