@@ -106,6 +106,11 @@ function normalizeMetadata(
         source.category
       ),
 
+    coverKey:
+      normalizeText(
+        source.coverKey
+      ),
+    
     tags:
       normalizeTags(
         source.tags
