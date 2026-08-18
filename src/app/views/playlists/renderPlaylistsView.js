@@ -8,11 +8,11 @@ import {
 } from '../../../features/favorites-engine/index.js';
 
 import {
-  HymnLibraryService
+  hymnLibraryService
 } from '../../../features/hymn-library-engine/index.js';
 
 const hymnService =
-  new HymnLibraryService();
+  hymnLibraryService;
 
 function escapeHtml(value = '') {
   return String(value)
