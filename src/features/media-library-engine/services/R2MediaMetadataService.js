@@ -1,10 +1,12 @@
 /**
  * Cántico de Fe Music
- * V13.4.8 — R2 Media Metadata Service
+ * V13.4.48 — R2 Partial Metadata Updates
  *
  * Funciones:
  * - Leer metadatos persistentes desde R2
  * - Guardar metadatos persistentes en R2
+ * - Actualizar campos individuales sin borrar los demás
+ * - Mantener coverKey, tags, copyright y featured
  * - Normalizar respuestas de la API
  */
 
@@ -110,7 +112,7 @@ function normalizeMetadata(
       normalizeText(
         source.coverKey
       ),
-    
+
     tags:
       normalizeTags(
         source.tags
@@ -131,6 +133,135 @@ function normalizeMetadata(
         source.metadataUpdatedAt
       )
   };
+}
+
+function mergeMetadata(
+  current = {},
+  changes = {}
+) {
+  const currentMetadata =
+    normalizeMetadata(
+      current
+    );
+
+  const source =
+    changes &&
+    typeof changes ===
+      'object'
+      ? changes
+      : {};
+
+  const merged = {
+    ...currentMetadata
+  };
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      source,
+      'displayName'
+    )
+  ) {
+    merged.displayName =
+      normalizeText(
+        source.displayName
+      );
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      source,
+      'description'
+    )
+  ) {
+    merged.description =
+      normalizeText(
+        source.description
+      );
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      source,
+      'alt'
+    )
+  ) {
+    merged.alt =
+      normalizeText(
+        source.alt
+      );
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      source,
+      'category'
+    )
+  ) {
+    merged.category =
+      normalizeText(
+        source.category
+      );
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      source,
+      'coverKey'
+    )
+  ) {
+    merged.coverKey =
+      normalizeText(
+        source.coverKey
+      );
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      source,
+      'tags'
+    )
+  ) {
+    merged.tags =
+      normalizeTags(
+        source.tags
+      );
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      source,
+      'featured'
+    )
+  ) {
+    merged.featured =
+      Boolean(
+        source.featured
+      );
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      source,
+      'copyright'
+    )
+  ) {
+    merged.copyright = {
+      ...currentMetadata
+        .copyright,
+
+      ...normalizeCopyright(
+        {
+          ...currentMetadata
+            .copyright,
+
+          ...source
+            .copyright
+        }
+      )
+    };
+  }
+
+  return merged;
 }
 
 function buildUrl(
@@ -289,6 +420,27 @@ export class R2MediaMetadataService {
     };
   }
 
+  async patch(
+    key,
+    changes = {}
+  ) {
+    const current =
+      await this.get(
+        key
+      );
+
+    const merged =
+      mergeMetadata(
+        current.metadata,
+        changes
+      );
+
+    return this.update(
+      key,
+      merged
+    );
+  }
+
 }
 
 export const r2MediaMetadataService =
@@ -299,6 +451,7 @@ export {
   normalizeTags,
   normalizeCopyright,
   normalizeMetadata,
+  mergeMetadata,
   buildUrl
 };
 
