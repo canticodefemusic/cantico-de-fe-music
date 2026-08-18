@@ -1,4 +1,6 @@
-import { isFavorite } from '../../favorites-engine/index.js';
+import {
+  isFavorite
+} from '../../favorites-engine/index.js';
 
 function escapeHtml(value = '') {
   return String(value)
@@ -17,97 +19,233 @@ function normalizeForSearch(value = '') {
     .replace(/ñ/g, 'n');
 }
 
-function highlightText(value = '', query = '') {
-  const source = String(value);
-  const normalizedQuery = normalizeForSearch(query).trim();
+function highlightText(
+  value = '',
+  query = ''
+) {
+  const source =
+    String(value);
+
+  const normalizedQuery =
+    normalizeForSearch(query)
+      .trim();
 
   if (!normalizedQuery) {
     return escapeHtml(source);
   }
 
   let normalizedSource = '';
+
   const startMap = [];
   const endMap = [];
 
   let sourceIndex = 0;
 
   for (const character of source) {
-    const normalizedCharacter = normalizeForSearch(character);
+    const normalizedCharacter =
+      normalizeForSearch(character);
 
-    for (const normalizedPart of normalizedCharacter) {
-      normalizedSource += normalizedPart;
-      startMap.push(sourceIndex);
-      endMap.push(sourceIndex + character.length);
+    for (
+      const normalizedPart
+      of normalizedCharacter
+    ) {
+      normalizedSource +=
+        normalizedPart;
+
+      startMap.push(
+        sourceIndex
+      );
+
+      endMap.push(
+        sourceIndex +
+        character.length
+      );
     }
 
-    sourceIndex += character.length;
+    sourceIndex +=
+      character.length;
   }
 
-  const matchIndex = normalizedSource.indexOf(normalizedQuery);
+  const matchIndex =
+    normalizedSource.indexOf(
+      normalizedQuery
+    );
 
   if (matchIndex === -1) {
     return escapeHtml(source);
   }
 
-  const originalStart = startMap[matchIndex];
-  const originalEnd = endMap[matchIndex + normalizedQuery.length - 1];
+  const originalStart =
+    startMap[
+      matchIndex
+    ];
+
+  const originalEnd =
+    endMap[
+      matchIndex +
+      normalizedQuery.length -
+      1
+    ];
 
   return [
-    escapeHtml(source.slice(0, originalStart)),
-    `<mark class="hymn-library-card__highlight">${escapeHtml(
-      source.slice(originalStart, originalEnd)
-    )}</mark>`,
-    escapeHtml(source.slice(originalEnd))
+    escapeHtml(
+      source.slice(
+        0,
+        originalStart
+      )
+    ),
+
+    `
+      <mark
+        class="hymn-library-card__highlight"
+      >
+        ${escapeHtml(
+          source.slice(
+            originalStart,
+            originalEnd
+          )
+        )}
+      </mark>
+    `,
+
+    escapeHtml(
+      source.slice(
+        originalEnd
+      )
+    )
   ].join('');
 }
 
-export function renderHymnCard(hymn, query = '') {
-  const favorite = isFavorite(hymn.id);
-  const safeId = escapeHtml(hymn.id);
-  const safeTitle = escapeHtml(hymn.title);
+export function renderHymnCard(
+  hymn,
+  query = ''
+) {
+  const favorite =
+    isFavorite(hymn.id);
+
+  const safeId =
+    escapeHtml(hymn.id);
+
+  const safeTitle =
+    escapeHtml(hymn.title);
 
   return `
-    <article class="hymn-library-card" data-hymn-id="${safeId}">
+    <article
+      class="hymn-library-card"
+      data-hymn-id="${safeId}"
+    >
       <button
-  type="button"
-  class="hymn-library-card__favorite"
-  data-hymn-favorite="${safeId}"
-  aria-label="${
-    favorite
-      ? `Quitar ${safeTitle} de favoritos`
-      : `Agregar ${safeTitle} a favoritos`
-  }"
-  aria-pressed="${favorite}"
-  title="${favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}"
->
-  <svg
-    class="favorite-icon"
-    viewBox="0 0 24 24"
-    aria-hidden="true"
-  >
-    <path
-      d="M12 2.5l2.94 5.96 6.58.96-4.76 4.64 1.12 6.56L12 17.77 6.12 20.62l1.12-6.56L2.48 9.42l6.58-.96L12 2.5z"
-    />
-  </svg>
-</button>
+        type="button"
+        class="hymn-library-card__favorite"
+        data-hymn-favorite="${safeId}"
+        aria-label="${
+          favorite
+            ? `Quitar ${safeTitle} de favoritos`
+            : `Agregar ${safeTitle} a favoritos`
+        }"
+        aria-pressed="${favorite}"
+        title="${
+          favorite
+            ? 'Quitar de favoritos'
+            : 'Agregar a favoritos'
+        }"
+      >
+        <svg
+          class="favorite-icon"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            d="
+              M12 2.5
+              l2.94 5.96
+              6.58.96
+              -4.76 4.64
+              1.12 6.56
+              L12 17.77
+              6.12 20.62
+              l1.12-6.56
+              -4.76-4.64
+              6.58-.96
+              L12 2.5z
+            "
+          />
+        </svg>
+      </button>
 
-      <div class="hymn-library-card__icon">♪</div>
+            ${
+        hymn.cover
+          ? `
+              <div
+                class="hymn-library-card__cover"
+              >
+                <img
+                  src="${escapeHtml(
+                    hymn.cover
+                  )}"
+                  alt="${escapeHtml(
+                    hymn.title
+                  )}"
+                  loading="lazy"
+                  decoding="async"
+                >
+              </div>
+            `
+          : `
+              <div
+                class="hymn-library-card__icon"
+                aria-hidden="true"
+              >
+                ♪
+              </div>
+            `
+      }
 
-      <div class="hymn-library-card__body">
-        <p class="hymn-library-card__category">
-          ${highlightText(hymn.category, query)}
+      <div
+        class="hymn-library-card__body"
+      >
+        <p
+          class="hymn-library-card__category"
+        >
+          ${highlightText(
+            hymn.category,
+            query
+          )}
         </p>
 
-        <h3>${highlightText(hymn.title, query)}</h3>
+        <h3>
+          ${highlightText(
+            hymn.title,
+            query
+          )}
+        </h3>
 
-        <p class="hymn-library-card__scripture">
-          ${highlightText(hymn.scripture, query)}
+        <p
+          class="hymn-library-card__scripture"
+        >
+          ${highlightText(
+            hymn.scripture,
+            query
+          )}
         </p>
 
-        <p>${highlightText(hymn.description, query)}</p>
+        <p
+          class="hymn-library-card__description"
+        >
+          ${highlightText(
+            hymn.description,
+            query
+          )}
+        </p>
 
-        <div class="hymn-library-card__actions">
-          <a href="/?page=himnos&id=${encodeURIComponent(hymn.id)}">
+        <div
+          class="hymn-library-card__actions"
+        >
+          <a
+            href="/?page=himnos&id=${encodeURIComponent(
+              hymn.id
+            )}"
+          >
             Ver letra
           </a>
 
@@ -117,13 +255,14 @@ export function renderHymnCard(hymn, query = '') {
           >
             ▶ Escuchar
           </button>
-        <button
-  type="button"
-  data-hymn-add-playlist="${safeId}"
->
-  ＋ Agregar a playlist
-</button>
-</div>
+
+          <button
+            type="button"
+            data-hymn-add-playlist="${safeId}"
+          >
+            ＋ Agregar a playlist
+          </button>
+        </div>
       </div>
     </article>
   `;

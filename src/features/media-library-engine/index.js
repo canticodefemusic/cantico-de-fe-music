@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V13.0.8 — Media Library Engine Public API
+ * V13.7.4 — Media Library Engine Public API
  */
 
 import mediaLibraryData
@@ -15,8 +15,16 @@ import MediaSelectionService
 import MediaFilterService
   from './services/MediaFilterService.js';
 
+import renderMediaManagerToolbar
+  from './components/renderMediaManagerToolbar.js';
+
 import MediaMetadataService
   from './services/MediaMetadataService.js';
+
+import {
+  R2MediaService,
+  r2MediaService
+} from './services/R2MediaService.js';
 
 import MediaLibraryState
   from './state/MediaLibraryState.js';
@@ -42,6 +50,14 @@ import renderMediaCardMenu
 import renderMediaMetadataEditor
   from './components/renderMediaMetadataEditor.js';
 
+import {
+  renderR2MediaItem
+} from './components/renderR2MediaItem.js';
+
+import {
+  renderR2MediaLibrary
+} from './components/renderR2MediaLibrary.js';
+
 import MediaBrowserController
   from './controllers/MediaBrowserController.js';
 
@@ -51,13 +67,32 @@ import MediaCardMenuController
 import MediaMetadataController
   from './controllers/MediaMetadataController.js';
 
+import {
+  R2MediaLibraryController
+} from './controllers/R2MediaLibraryController.js';
+
+import R2MediaMenuController
+  from './controllers/R2MediaMenuController.js';
+
+import R2MediaLightboxController
+  from './controllers/R2MediaLightboxController.js';
+
+import MediaSelectionController
+  from './controllers/MediaSelectionController.js';
+
 export {
   mediaLibraryData,
+
   MediaLibraryService,
   MediaSelectionService,
   MediaFilterService,
   MediaMetadataService,
+  
+  R2MediaService,
+  r2MediaService,
+
   MediaLibraryState,
+
   renderMediaCard,
   renderMediaGrid,
   renderMediaToolbar,
@@ -65,18 +100,33 @@ export {
   renderMediaPreview,
   renderMediaCardMenu,
   renderMediaMetadataEditor,
+  renderMediaManagerToolbar,
+  renderR2MediaItem,
+  renderR2MediaLibrary,
+
   MediaBrowserController,
   MediaCardMenuController,
-  MediaMetadataController
+  MediaMetadataController,
+  MediaSelectionController,
+  
+  R2MediaLibraryController,
+  R2MediaMenuController,
+  R2MediaLightboxController
 };
 
 export default {
   mediaLibraryData,
+
   MediaLibraryService,
   MediaSelectionService,
   MediaFilterService,
   MediaMetadataService,
+
+  R2MediaService,
+  r2MediaService,
+
   MediaLibraryState,
+
   renderMediaCard,
   renderMediaGrid,
   renderMediaToolbar,
@@ -84,7 +134,16 @@ export default {
   renderMediaPreview,
   renderMediaCardMenu,
   renderMediaMetadataEditor,
+  renderMediaManagerToolbar,
+  renderR2MediaItem,
+  renderR2MediaLibrary,
+
   MediaBrowserController,
   MediaCardMenuController,
-  MediaMetadataController
+  MediaMetadataController,
+  MediaSelectionController,
+  
+  R2MediaLibraryController,
+  R2MediaMenuController,
+  R2MediaLightboxController
 };

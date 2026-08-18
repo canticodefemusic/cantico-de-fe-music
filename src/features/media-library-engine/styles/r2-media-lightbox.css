@@ -1,0 +1,603 @@
+/**
+ * Cántico de Fe Music
+ * V13.7.6 — R2 Media Lightbox Pro
+ *
+ * Funciones visuales:
+ * - Visor profesional
+ * - Navegación anterior / siguiente
+ * - Indicador 1 de N
+ * - Imagen contenida
+ * - Mejor aprovechamiento de pantalla
+ * - Hover y transiciones
+ * - Responsive tablet / móvil
+ */
+
+/* ================================================================ */
+/* Modal principal                                                   */
+/* ================================================================ */
+
+.cantico-modal--media-lightbox {
+  width: min(
+    94vw,
+    1380px
+  );
+
+  max-width: 1380px;
+  max-height: 94vh;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  border: 1px solid
+    rgba(244, 208, 111, 0.34);
+
+  border-radius: 22px;
+
+  background:
+    #0b1014;
+
+  box-shadow:
+    0 34px 100px
+    rgba(0, 0, 0, 0.68);
+}
+
+/* ================================================================ */
+/* Header                                                            */
+/* ================================================================ */
+
+.cantico-modal--media-lightbox
+.cantico-modal__header {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+
+  min-height: 58px;
+
+  padding:
+    14px
+    20px;
+
+  border-bottom: 1px solid
+    rgba(255, 255, 255, 0.07);
+
+  background:
+    rgba(10, 15, 19, 0.99);
+}
+
+.cantico-modal--media-lightbox
+.cantico-modal__header h2 {
+  margin: 0;
+
+  min-width: 0;
+
+  overflow: hidden;
+
+  color: #ffffff;
+
+  font-size: 1rem;
+  font-weight: 750;
+  line-height: 1.4;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ================================================================ */
+/* Content                                                           */
+/* ================================================================ */
+
+.cantico-modal--media-lightbox
+.cantico-modal__content {
+  min-height: 0;
+
+  flex: 1;
+
+  display: flex;
+
+  padding: 0;
+
+  overflow: hidden;
+
+  background:
+    #05080a;
+}
+
+/* ================================================================ */
+/* Lightbox                                                          */
+/* ================================================================ */
+
+.media-lightbox {
+  width: 100%;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* ================================================================ */
+/* Viewer                                                            */
+/* ================================================================ */
+
+.media-lightbox__viewer {
+  position: relative;
+
+  min-height: 0;
+
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding:
+    22px
+    74px;
+
+  overflow: auto;
+
+  background:
+    radial-gradient(
+      circle at 50% 45%,
+      rgba(255, 255, 255, 0.055),
+      rgba(255, 255, 255, 0.015) 38%,
+      transparent 68%
+    ),
+    #05080a;
+}
+
+/* ================================================================ */
+/* Imagen                                                            */
+/* ================================================================ */
+
+.media-lightbox__image {
+  display: block;
+
+  width: auto;
+  height: auto;
+
+  max-width: 100%;
+  max-height: 72vh;
+
+  object-fit: contain;
+
+  border-radius: 11px;
+
+  box-shadow:
+    0 22px 70px
+    rgba(0, 0, 0, 0.48);
+
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    opacity 180ms ease;
+}
+
+.media-lightbox__image:hover {
+  transform:
+    scale(1.008);
+
+  box-shadow:
+    0 28px 84px
+    rgba(0, 0, 0, 0.58);
+}
+
+/* ================================================================ */
+/* Flechas de navegación                                             */
+/* ================================================================ */
+
+.media-lightbox__nav {
+  position: absolute;
+
+  z-index: 10;
+
+  top: 50%;
+
+  width: 48px;
+  height: 58px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  transform:
+    translateY(-50%);
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.15);
+
+  border-radius: 14px;
+
+  background:
+    rgba(10, 15, 18, 0.78);
+
+  color:
+    rgba(255, 255, 255, 0.9);
+
+  font: inherit;
+  font-size: 2rem;
+  line-height: 1;
+
+  cursor: pointer;
+
+  backdrop-filter:
+    blur(12px);
+
+  box-shadow:
+    0 8px 24px
+    rgba(0, 0, 0, 0.28);
+
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.media-lightbox__nav--previous {
+  left: 14px;
+}
+
+.media-lightbox__nav--next {
+  right: 14px;
+}
+
+.media-lightbox__nav:hover {
+  transform:
+    translateY(-50%)
+    scale(1.05);
+
+  border-color:
+    rgba(244, 208, 111, 0.62);
+
+  background:
+    rgba(22, 27, 30, 0.96);
+
+  color:
+    #f4d06f;
+}
+
+.media-lightbox__nav:focus-visible {
+  outline:
+    2px solid #f4d06f;
+
+  outline-offset: 3px;
+}
+
+/* ================================================================ */
+/* Información inferior                                              */
+/* ================================================================ */
+
+.media-lightbox__details {
+  flex-shrink: 0;
+
+  min-height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 18px;
+
+  padding:
+    11px
+    20px;
+
+  border-top: 1px solid
+    rgba(255, 255, 255, 0.065);
+
+  background:
+    rgba(10, 15, 19, 0.99);
+}
+
+.media-lightbox__name {
+  min-width: 0;
+
+  overflow: hidden;
+
+  color:
+    rgba(255, 255, 255, 0.76);
+
+  font-size: 0.82rem;
+  font-weight: 600;
+
+  text-overflow:
+    ellipsis;
+
+  white-space:
+    nowrap;
+}
+
+/* ================================================================ */
+/* Indicador 1 de N                                                  */
+/* ================================================================ */
+
+.media-lightbox__position {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 28px;
+
+  padding:
+    5px
+    10px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.1);
+
+  border-radius: 999px;
+
+  background:
+    rgba(255, 255, 255, 0.05);
+
+  color:
+    rgba(255, 255, 255, 0.68);
+
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* ================================================================ */
+/* Acciones                                                          */
+/* ================================================================ */
+
+.cantico-modal--media-lightbox
+.cantico-modal__actions {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 9px;
+
+  padding:
+    13px
+    20px;
+
+  border-top: 1px solid
+    rgba(255, 255, 255, 0.075);
+
+  background:
+    #0b1014;
+}
+
+.cantico-modal--media-lightbox
+.cantico-modal__actions button,
+.cantico-modal--media-lightbox
+.media-lightbox__download {
+  min-height: 40px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding:
+    8px
+    14px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.13);
+
+  border-radius: 10px;
+
+  background:
+    rgba(255, 255, 255, 0.045);
+
+  color: #ffffff;
+
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease,
+    color 150ms ease;
+}
+
+.cantico-modal--media-lightbox
+.cantico-modal__actions button:hover:not(
+  :disabled
+),
+.cantico-modal--media-lightbox
+.media-lightbox__download:hover {
+  transform:
+    translateY(-1px);
+
+  border-color:
+    rgba(244, 208, 111, 0.5);
+
+  background:
+    rgba(244, 208, 111, 0.08);
+
+  color:
+    #f8dc89;
+}
+
+.cantico-modal--media-lightbox
+.cantico-modal__actions button:focus-visible,
+.cantico-modal--media-lightbox
+.media-lightbox__download:focus-visible {
+  outline:
+    2px solid #f4d06f;
+
+  outline-offset: 2px;
+}
+
+.cantico-modal--media-lightbox
+.cantico-modal__actions button:disabled {
+  opacity: 0.5;
+
+  cursor: default;
+}
+
+/* ================================================================ */
+/* Backdrop                                                          */
+/* ================================================================ */
+
+.cantico-modal-backdrop:has(
+  .cantico-modal--media-lightbox
+) {
+  background:
+    rgba(0, 0, 0, 0.88);
+
+  backdrop-filter:
+    blur(6px);
+}
+
+/* ================================================================ */
+/* Tablet                                                            */
+/* ================================================================ */
+
+@media (
+  max-width: 900px
+) {
+
+  .cantico-modal--media-lightbox {
+    width: 96vw;
+    max-height: 95vh;
+  }
+
+  .media-lightbox__viewer {
+    padding:
+      18px
+      58px;
+  }
+
+  .media-lightbox__image {
+    max-height: 68vh;
+  }
+
+  .media-lightbox__nav {
+    width: 42px;
+    height: 52px;
+
+    font-size: 1.8rem;
+  }
+
+  .media-lightbox__nav--previous {
+    left: 9px;
+  }
+
+  .media-lightbox__nav--next {
+    right: 9px;
+  }
+}
+
+/* ================================================================ */
+/* Móvil                                                             */
+/* ================================================================ */
+
+@media (
+  max-width: 560px
+) {
+
+  .cantico-modal--media-lightbox {
+    width: 100vw;
+    max-width: none;
+
+    height: 100dvh;
+    max-height: 100dvh;
+
+    border: 0;
+    border-radius: 0;
+  }
+
+  .cantico-modal--media-lightbox
+  .cantico-modal__header {
+    min-height: 52px;
+
+    padding:
+      11px
+      14px;
+  }
+
+  .media-lightbox__viewer {
+    padding:
+      10px
+      42px;
+  }
+
+  .media-lightbox__image {
+    max-height: 65vh;
+
+    border-radius: 7px;
+  }
+
+  .media-lightbox__nav {
+    width: 34px;
+    height: 46px;
+
+    border-radius: 11px;
+
+    font-size: 1.6rem;
+  }
+
+  .media-lightbox__nav--previous {
+    left: 4px;
+  }
+
+  .media-lightbox__nav--next {
+    right: 4px;
+  }
+
+  .media-lightbox__details {
+    min-height: 44px;
+
+    padding:
+      9px
+      14px;
+  }
+
+  .media-lightbox__name {
+    font-size: 0.76rem;
+  }
+
+  .media-lightbox__position {
+    min-height: 26px;
+
+    padding:
+      4px
+      8px;
+
+    font-size: 0.7rem;
+  }
+
+  .cantico-modal--media-lightbox
+  .cantico-modal__actions {
+    display: grid;
+
+    grid-template-columns:
+      1fr
+      1fr;
+
+    padding:
+      11px
+      14px;
+  }
+
+  .cantico-modal--media-lightbox
+  .cantico-modal__actions button,
+  .cantico-modal--media-lightbox
+  .media-lightbox__download {
+    width: 100%;
+  }
+
+  .cantico-modal--media-lightbox
+  [data-media-lightbox-close] {
+    grid-column:
+      1 / -1;
+  }
+}

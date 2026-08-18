@@ -1,126 +1,498 @@
-import { HymnLibraryService } from '../services/HymnLibraryService.js';
-import { updateSeo } from '../services/seoService.js';
-import { updateStructuredData } from '../services/structuredDataService.js';
-const service = new HymnLibraryService();
+/**
+ * Cántico de Fe Music
+ * V13.4.41 — Hymn Detail Modal
+ *
+ * Funciones:
+ * - Usar la biblioteca compartida
+ * - Mostrar himnos base y dinámicos R2
+ * - Modal centrado
+ * - Cerrar con X
+ * - Cerrar haciendo clic fuera
+ * - Cerrar con Escape
+ * - Mantener reproducción, compartir e impresión
+ */
 
-export function renderHymnDetail(id) {
-  const hymn = service.findById(id);
-  
+import hymnLibraryService
+  from '../services/hymnLibraryServiceInstance.js';
+
+import {
+  updateSeo
+} from '../services/seoService.js';
+
+import {
+  updateStructuredData
+} from '../services/structuredDataService.js';
+
+let hymnDetailKeyHandler =
+  null;
+
+function escapeHtml(
+  value = ''
+) {
+  return String(
+    value ?? ''
+  )
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function renderLyrics(
+  hymn
+) {
+  const lyrics =
+    Array.isArray(
+      hymn?.lyrics
+    )
+      ? hymn.lyrics
+      : [];
+
+  if (!lyrics.length) {
+    return `
+      <p
+        class="hymn-detail__empty-lyrics"
+      >
+        La letra de este himno todavía no está disponible.
+      </p>
+    `;
+  }
+
+  return lyrics
+    .map(
+      line =>
+        line
+          ? `<p>${escapeHtml(line)}</p>`
+          : '<br>'
+    )
+    .join('');
+}
+
+function closeHymnDetail() {
+  window.dispatchEvent(
+    new CustomEvent(
+      'cantico:hymn-detail-close'
+    )
+  );
+}
+
+export function renderHymnDetail(
+  id
+) {
+  const hymn =
+    hymnLibraryService
+      .findById(
+        id
+      );
+
   if (!hymn) {
     return `
-      <section class="hymn-detail">
-        <a class="hymn-detail__back" href="/?page=himnos">← Volver a himnos</a>
-        <article class="hymn-detail__card">
-          <h1>Himno no encontrado</h1>
-          <p>No pudimos encontrar el himno solicitado.</p>
-        </article>
+      <section
+        class="hymn-detail"
+      >
+        <div
+          class="hymn-detail__backdrop"
+          data-hymn-detail-modal
+        >
+          <article
+            class="hymn-detail__card"
+            data-hymn-detail-dialog
+          >
+            <a
+              class="hymn-detail__close"
+              href="/?page=himnos"
+              aria-label="Cerrar"
+              title="Cerrar"
+            >
+              ×
+            </a>
+
+            <h1>
+              Himno no encontrado
+            </h1>
+
+            <p>
+              No pudimos encontrar el himno solicitado.
+            </p>
+          </article>
+        </div>
       </section>
     `;
   }
-  
-updateSeo({
-  title: hymn.title,
-  description: hymn.description,
-  url: window.location.href,
-  image: hymn.cover
-});
+
+  updateSeo({
+    title:
+      hymn.title,
+
+    description:
+      hymn.description,
+
+    url:
+      window.location.href,
+
+    image:
+      hymn.cover
+  });
 
   updateStructuredData({
-  title: hymn.title,
-  description: hymn.description,
-  url: window.location.href,
-  image: hymn.cover,
-  artist: hymn.artist || 'Cántico de Fe Music',
-  category: hymn.category || 'Himno cristiano',
-  scripture: hymn.scripture || ''
-});
-  
-  const lyrics = Array.isArray(hymn.lyrics)
-    ? hymn.lyrics.map(line => line ? `<p>${line}</p>` : '<br>').join('')
-    : '';
+    title:
+      hymn.title,
+
+    description:
+      hymn.description,
+
+    url:
+      window.location.href,
+
+    image:
+      hymn.cover,
+
+    artist:
+      hymn.artist ||
+      'Cántico de Fe Music',
+
+    category:
+      hymn.category ||
+      'Himno cristiano',
+
+    scripture:
+      hymn.scripture ||
+      ''
+  });
+
+  const safeId =
+    escapeHtml(
+      hymn.id
+    );
+
+  const safeTitle =
+    escapeHtml(
+      hymn.title
+    );
+
+  const safeCategory =
+    escapeHtml(
+      hymn.category ||
+      'Himno'
+    );
+
+  const safeScripture =
+    escapeHtml(
+      hymn.scripture ||
+      ''
+    );
+
+  const safeDescription =
+    escapeHtml(
+      hymn.description ||
+      ''
+    );
+
+  const safeArtist =
+    escapeHtml(
+      hymn.artist ||
+      'Cántico de Fe Music'
+    );
+
+  const safeCover =
+    escapeHtml(
+      hymn.cover ||
+      ''
+    );
 
   return `
-    <section class="hymn-detail" data-hymn-id="${hymn.id}">
-      <a class="hymn-detail__back" href="/?page=himnos">← Volver a himnos</a>
+    <section
+      class="hymn-detail"
+      data-hymn-id="${safeId}"
+    >
+      <div
+        class="hymn-detail__backdrop"
+        data-hymn-detail-modal
+      >
+        <article
+          class="hymn-detail__card"
+          data-hymn-detail-dialog
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="hymnDetailTitle"
+        >
+          <button
+            type="button"
+            class="hymn-detail__close"
+            data-hymn-detail-close
+            aria-label="Cerrar"
+            title="Cerrar"
+          >
+            ×
+          </button>
 
-      <article class="hymn-detail__card">
-        <p class="hymn-detail__category">${hymn.category || 'Himno'}</p>
-        <h1>${hymn.title}</h1>
+          <div
+            class="hymn-detail__content"
+          >
+            ${
+              safeCover
+                ? `
+                    <div
+                      class="hymn-detail__cover"
+                    >
+                      <img
+                        src="${safeCover}"
+                        alt="${safeTitle}"
+                        loading="eager"
+                        decoding="async"
+                      >
+                    </div>
+                  `
+                : ''
+            }
 
-        <p class="hymn-detail__scripture">${hymn.scripture || ''}</p>
-        <p class="hymn-detail__description">${hymn.description || ''}</p>
+            <div
+              class="hymn-detail__main"
+            >
+              <p
+                class="hymn-detail__category"
+              >
+                ${safeCategory}
+              </p>
 
-        <div class="hymn-detail__actions">
-  <button type="button" data-hymn-play="${hymn.id}">▶ Escuchar</button>
+              <h1
+                id="hymnDetailTitle"
+              >
+                ${safeTitle}
+              </h1>
 
-  <button type="button" data-hymn-copy-link="${hymn.id}">
-    📋 Copiar enlace
-  </button>
+              ${
+                safeScripture
+                  ? `
+                      <p
+                        class="hymn-detail__scripture"
+                      >
+                        ${safeScripture}
+                      </p>
+                    `
+                  : ''
+              }
 
-  <button
-    type="button"
-    data-share-whatsapp="${hymn.id}">
-    🟢 WhatsApp
-  </button>
+              ${
+                safeDescription
+                  ? `
+                      <p
+                        class="hymn-detail__description"
+                      >
+                        ${safeDescription}
+                      </p>
+                    `
+                  : ''
+              }
 
-  <button
-    type="button"
-    data-share-facebook="${hymn.id}">
-    🔵 Facebook
-  </button>
+              <div
+                class="hymn-detail__actions"
+              >
+                <button
+                  type="button"
+                  data-hymn-play="${safeId}"
+                >
+                  ▶ Escuchar
+                </button>
 
-  <button
-    type="button"
-    data-share-x="${hymn.id}">
-    ⚫ X
-  </button>
+                <button
+                  type="button"
+                  data-hymn-copy-link="${safeId}"
+                >
+                  📋 Copiar enlace
+                </button>
 
-  <button
-    type="button"
-    data-share-email="${hymn.id}">
-    ✉️ Email
-  </button>
+                <button
+                  type="button"
+                  data-share-whatsapp="${safeId}"
+                >
+                  🟢 WhatsApp
+                </button>
 
-<button
-  type="button"
-  data-share-native="${hymn.id}"
-  hidden>
-  📤 Compartir
-</button>
+                <button
+                  type="button"
+                  data-share-facebook="${safeId}"
+                >
+                  🔵 Facebook
+                </button>
 
-  <button type="button" onclick="window.print()">
-    🖨 Imprimir
-  </button>
-</div>
+                <button
+                  type="button"
+                  data-share-x="${safeId}"
+                >
+                  ⚫ X
+                </button>
 
-        <div class="hymn-detail__print-meta">
+                <button
+                  type="button"
+                  data-share-email="${safeId}"
+                >
+                  ✉️ Email
+                </button>
 
-  <div class="print-row">
-    <span class="label">Artista:</span>
-    <span>${hymn.artist || 'Cántico de Fe Music'}</span>
-  </div>
+                <button
+                  type="button"
+                  data-share-native="${safeId}"
+                  hidden
+                >
+                  📤 Compartir
+                </button>
 
-  <div class="print-row">
-    <span class="label">Categoría:</span>
-    <span>${hymn.category || 'Himno'}</span>
-  </div>
-
-  <div class="print-row">
-    <span class="label">Referencia:</span>
-    <span>${hymn.scripture || 'Sin referencia'}</span>
-  </div>
-
-</div>
-
-        <hr>
-
-        <section class="hymn-detail__lyrics-section">
-          <h2>Letra</h2>
-          <div class="hymn-detail__lyrics">
-            ${lyrics}
+                <button
+                  type="button"
+                  onclick="window.print()"
+                >
+                  🖨 Imprimir
+                </button>
+              </div>
+            </div>
           </div>
-        </section>
-      </article>
+
+          <div
+            class="hymn-detail__print-meta"
+          >
+            <div
+              class="print-row"
+            >
+              <span
+                class="label"
+              >
+                Artista:
+              </span>
+
+              <span>
+                ${safeArtist}
+              </span>
+            </div>
+
+            <div
+              class="print-row"
+            >
+              <span
+                class="label"
+              >
+                Categoría:
+              </span>
+
+              <span>
+                ${safeCategory}
+              </span>
+            </div>
+
+            <div
+              class="print-row"
+            >
+              <span
+                class="label"
+              >
+                Referencia:
+              </span>
+
+              <span>
+                ${
+                  safeScripture ||
+                  'Sin referencia'
+                }
+              </span>
+            </div>
+          </div>
+
+          <section
+            class="hymn-detail__lyrics-section"
+          >
+            <h2>
+              Letra
+            </h2>
+
+            <div
+              class="hymn-detail__lyrics"
+            >
+              ${renderLyrics(
+                hymn
+              )}
+            </div>
+          </section>
+        </article>
+      </div>
     </section>
   `;
 }
+
+export function initHymnDetail() {
+  const modal =
+    document.querySelector(
+      '[data-hymn-detail-modal]'
+    );
+
+  if (!modal) {
+    return false;
+  }
+
+  const closeButton =
+    modal.querySelector(
+      '[data-hymn-detail-close]'
+    );
+
+  closeButton
+    ?.addEventListener(
+      'click',
+      event => {
+        event.preventDefault();
+
+        closeHymnDetail();
+      }
+    );
+
+  modal.addEventListener(
+    'click',
+    event => {
+      if (
+        event.target !==
+        modal
+      ) {
+        return;
+      }
+
+      closeHymnDetail();
+    }
+  );
+
+  if (
+    hymnDetailKeyHandler
+  ) {
+    document.removeEventListener(
+      'keydown',
+      hymnDetailKeyHandler
+    );
+  }
+
+  hymnDetailKeyHandler =
+    event => {
+      if (
+        event.key !==
+        'Escape'
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      closeHymnDetail();
+    };
+
+  document.addEventListener(
+    'keydown',
+    hymnDetailKeyHandler
+  );
+
+  closeButton?.focus();
+
+  return true;
+}
+
+export {
+  escapeHtml,
+  renderLyrics,
+  closeHymnDetail
+};

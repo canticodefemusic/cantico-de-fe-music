@@ -1,0 +1,794 @@
+/**
+ * Cántico de Fe Music
+ * V13.9.2 — Professional Media Manager Toolbar
+ *
+ * - Buscador profesional
+ * - Filtros compactos
+ * - Selector de orden
+ * - Cuadrícula / Lista
+ * - Contador de resultados
+ * - Responsive
+ */
+
+.media-manager-toolbar {
+  width: 100%;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 14px;
+
+  padding: 16px;
+
+  box-sizing: border-box;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.09);
+
+  border-radius: 16px;
+
+  background:
+    rgba(13, 17, 17, 0.97);
+
+  box-shadow:
+    0 16px 38px
+    rgba(0, 0, 0, 0.14);
+
+  margin-bottom: 20px;
+}
+
+/* ================================================================ */
+/* Línea principal                                                   */
+/* ================================================================ */
+
+.media-manager-toolbar__primary {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  min-width: 0;
+}
+
+.media-manager-toolbar__primary-actions {
+  display: flex;
+  align-items: flex-end;
+
+  gap: 12px;
+
+  flex-shrink: 0;
+}
+
+/* ================================================================ */
+/* Búsqueda                                                          */
+/* ================================================================ */
+
+.media-manager-toolbar__search {
+  flex: 1 1 420px;
+
+  min-width: 220px;
+}
+
+.media-manager-toolbar__search-label,
+.media-manager-toolbar__sort-label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color:
+    rgba(255, 255, 255, 0.62);
+
+  font-size: 0.7rem;
+  font-weight: 800;
+
+  letter-spacing: 0.055em;
+
+  text-transform: uppercase;
+}
+
+.media-manager-toolbar__search-control {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  min-height: 44px;
+}
+
+.media-manager-toolbar__search-icon {
+  position: absolute;
+
+  left: 13px;
+
+  z-index: 1;
+
+  pointer-events: none;
+
+  opacity: 0.65;
+
+  font-size: 0.92rem;
+}
+
+.media-manager-toolbar__search-input {
+  width: 100%;
+  height: 44px;
+
+  box-sizing: border-box;
+
+  padding:
+    0
+    42px
+    0
+    40px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.09);
+
+  border-radius: 12px;
+
+  outline: 0;
+
+  background:
+    rgba(255, 255, 255, 0.035);
+
+  color: #ffffff;
+
+  font: inherit;
+  font-size: 0.88rem;
+
+  transition:
+    border-color 150ms ease,
+    background 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.media-manager-toolbar__search-input::placeholder {
+  color:
+    rgba(255, 255, 255, 0.34);
+}
+
+.media-manager-toolbar__search-input:hover {
+  border-color:
+    rgba(255, 255, 255, 0.15);
+}
+
+.media-manager-toolbar__search-input:focus {
+  border-color:
+    rgba(244, 208, 111, 0.58);
+
+  background:
+    rgba(255, 255, 255, 0.055);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(244, 208, 111, 0.08);
+}
+
+.media-manager-toolbar__search-clear {
+  position: absolute;
+
+  right: 9px;
+
+  width: 28px;
+  height: 28px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 8px;
+
+  background:
+    transparent;
+
+  color:
+    rgba(255, 255, 255, 0.58);
+
+  font-size: 1.15rem;
+
+  cursor: pointer;
+}
+
+.media-manager-toolbar__search-clear:hover {
+  background:
+    rgba(255, 255, 255, 0.07);
+
+  color: #ffffff;
+}
+
+/* ================================================================ */
+/* Ordenamiento                                                      */
+/* ================================================================ */
+
+.media-manager-toolbar__sort {
+  flex: 0 0 auto;
+}
+
+.media-manager-toolbar__sort-select {
+  min-width: 160px;
+  height: 44px;
+
+  padding:
+    0
+    36px
+    0
+    13px;
+
+  box-sizing: border-box;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.09);
+
+  border-radius: 12px;
+
+  background:
+    rgba(255, 255, 255, 0.04);
+
+  color: #ffffff;
+
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  outline: 0;
+}
+
+.media-manager-toolbar__sort-select:hover {
+  border-color:
+    rgba(255, 255, 255, 0.16);
+}
+
+.media-manager-toolbar__sort-select:focus {
+  border-color:
+    rgba(244, 208, 111, 0.55);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(244, 208, 111, 0.08);
+}
+
+/* ================================================================ */
+/* Selector Cuadrícula / Lista                                       */
+/* ================================================================ */
+
+.media-manager-toolbar__views {
+  height: 44px;
+
+  display: inline-flex;
+
+  padding: 3px;
+
+  box-sizing: border-box;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.09);
+
+  border-radius: 12px;
+
+  background:
+    rgba(255, 255, 255, 0.035);
+}
+
+.media-manager-toolbar__view {
+  min-width: 104px;
+  height: 36px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding:
+    0
+    12px;
+
+  border: 0;
+  border-radius: 9px;
+
+  background:
+    transparent;
+
+  color:
+    rgba(255, 255, 255, 0.63);
+
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition:
+    background 140ms ease,
+    color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.media-manager-toolbar__view:hover {
+  color: #ffffff;
+
+  background:
+    rgba(255, 255, 255, 0.055);
+}
+
+.media-manager-toolbar__view.is-active {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(201, 158, 18, 0.95),
+      rgba(160, 119, 0, 0.95)
+    );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 4px 13px
+    rgba(0, 0, 0, 0.2);
+}
+
+.media-manager-toolbar__view-icon {
+  font-size: 0.95rem;
+
+  line-height: 1;
+}
+
+/* ================================================================ */
+/* Línea secundaria                                                  */
+/* ================================================================ */
+
+.media-manager-toolbar__secondary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 14px;
+
+  min-width: 0;
+}
+
+/* ================================================================ */
+/* Filtros                                                           */
+/* ================================================================ */
+
+.media-manager-toolbar__filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 7px;
+}
+
+.media-manager-toolbar__filter {
+  min-height: 34px;
+
+  padding:
+    0
+    13px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.09);
+
+  border-radius: 999px;
+
+  background:
+    rgba(255, 255, 255, 0.025);
+
+  color:
+    rgba(255, 255, 255, 0.68);
+
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition:
+    border-color 140ms ease,
+    background 140ms ease,
+    color 140ms ease;
+}
+
+.media-manager-toolbar__filter:hover {
+  border-color:
+    rgba(255, 255, 255, 0.16);
+
+  background:
+    rgba(255, 255, 255, 0.055);
+
+  color: #ffffff;
+}
+
+.media-manager-toolbar__filter.is-active {
+  border-color:
+    rgba(218, 174, 30, 0.6);
+
+  background:
+    rgba(190, 143, 0, 0.16);
+
+  color:
+    #f4d06f;
+}
+
+/* ================================================================ */
+/* Resultados                                                        */
+/* ================================================================ */
+
+.media-manager-toolbar__results {
+  flex-shrink: 0;
+
+  color:
+    rgba(255, 255, 255, 0.54);
+
+  font-size: 0.76rem;
+
+  white-space: nowrap;
+}
+
+.media-manager-toolbar__results strong {
+  color:
+    rgba(255, 255, 255, 0.88);
+
+  font-weight: 800;
+}
+
+/* ================================================================ */
+/* Focus accesible                                                   */
+/* ================================================================ */
+
+.media-manager-toolbar__view:focus-visible,
+.media-manager-toolbar__filter:focus-visible,
+.media-manager-toolbar__search-clear:focus-visible {
+  outline:
+    2px solid #f4d06f;
+
+  outline-offset: 2px;
+}
+
+/* ================================================================ */
+/* Tablet                                                            */
+/* ================================================================ */
+
+@media (
+  max-width: 900px
+) {
+
+  .media-manager-toolbar__primary {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+  .media-manager-toolbar__search {
+    flex-basis: auto;
+
+    width: 100%;
+  }
+
+  .media-manager-toolbar__primary-actions {
+    justify-content: space-between;
+  }
+
+  .media-manager-toolbar__sort {
+    flex: 1;
+  }
+
+  .media-manager-toolbar__sort-select {
+    width: 100%;
+  }
+
+}
+
+/* ================================================================ */
+/* Móvil                                                             */
+/* ================================================================ */
+
+@media (
+  max-width: 600px
+) {
+
+  .media-manager-toolbar {
+    padding: 12px;
+
+    border-radius: 14px;
+  }
+
+  .media-manager-toolbar__primary-actions {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+  .media-manager-toolbar__views {
+    width: 100%;
+  }
+
+  .media-manager-toolbar__view {
+    flex: 1;
+
+    min-width: 0;
+  }
+
+  .media-manager-toolbar__secondary {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+  .media-manager-toolbar__filters {
+    gap: 6px;
+  }
+
+  .media-manager-toolbar__filter {
+    flex: 1 1 auto;
+  }
+
+  .media-manager-toolbar__results {
+    text-align: right;
+  }
+
+}
+
+/* ================================================================== */
+/* V13.10.0 — Toolbar Pro Layout Polish                               */
+/* ================================================================== */
+
+.media-manager-toolbar {
+  gap: 12px;
+
+  padding: 15px 16px;
+
+  border-radius: 15px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Primera fila                                                       */
+/* ------------------------------------------------------------------ */
+
+.media-manager-toolbar__primary {
+  display: grid;
+
+  grid-template-columns:
+    minmax(280px, 1fr)
+    auto;
+
+  align-items: end;
+
+  gap: 16px;
+}
+
+.media-manager-toolbar__primary-actions {
+  display: flex;
+
+  align-items: end;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Buscador                                                           */
+/* ------------------------------------------------------------------ */
+
+.media-manager-toolbar__search {
+  width: 100%;
+
+  min-width: 0;
+}
+
+.media-manager-toolbar__search-label,
+.media-manager-toolbar__sort-label {
+  margin-bottom: 6px;
+
+  font-size: 0.67rem;
+
+  letter-spacing: 0.06em;
+}
+
+.media-manager-toolbar__search-control {
+  min-height: 42px;
+}
+
+.media-manager-toolbar__search-input {
+  height: 42px;
+
+  border-radius: 11px;
+
+  font-size: 0.84rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Ordenar                                                            */
+/* ------------------------------------------------------------------ */
+
+.media-manager-toolbar__sort-select {
+  min-width: 170px;
+  height: 42px;
+
+  border-radius: 11px;
+
+  font-size: 0.8rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Cuadrícula / Lista                                                 */
+/* ------------------------------------------------------------------ */
+
+.media-manager-toolbar__views {
+  height: 42px;
+
+  padding: 3px;
+
+  border-radius: 11px;
+}
+
+.media-manager-toolbar__view {
+  min-width: 104px;
+  height: 34px;
+
+  padding:
+    0
+    13px;
+
+  border-radius: 8px;
+
+  font-size: 0.76rem;
+}
+
+.media-manager-toolbar__view.is-active {
+  box-shadow:
+    0 4px 12px
+    rgba(0, 0, 0, 0.18);
+}
+
+/* ------------------------------------------------------------------ */
+/* Segunda fila                                                       */
+/* ------------------------------------------------------------------ */
+
+.media-manager-toolbar__secondary {
+  min-height: 36px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 18px;
+
+  padding-top: 1px;
+}
+
+.media-manager-toolbar__filters {
+  flex: 1;
+
+  min-width: 0;
+
+  gap: 7px;
+}
+
+.media-manager-toolbar__filter {
+  min-height: 32px;
+
+  padding:
+    0
+    12px;
+
+  font-size: 0.73rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Contador                                                           */
+/* ------------------------------------------------------------------ */
+
+.media-manager-toolbar__results {
+  min-width: 82px;
+
+  text-align: right;
+
+  font-size: 0.73rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Desktop ancho                                                      */
+/* ------------------------------------------------------------------ */
+
+@media (
+  min-width: 1100px
+) {
+
+  .media-manager-toolbar__search {
+    max-width: none;
+  }
+
+  .media-manager-toolbar__primary-actions {
+    min-width: 410px;
+  }
+
+}
+
+/* ------------------------------------------------------------------ */
+/* Tablet                                                             */
+/* ------------------------------------------------------------------ */
+
+@media (
+  max-width: 900px
+) {
+
+  .media-manager-toolbar__primary {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .media-manager-toolbar__primary-actions {
+    width: 100%;
+  }
+
+  .media-manager-toolbar__sort {
+    flex: 1;
+  }
+
+  .media-manager-toolbar__views {
+    flex-shrink: 0;
+  }
+
+}
+
+/* ------------------------------------------------------------------ */
+/* Móvil                                                              */
+/* ------------------------------------------------------------------ */
+
+@media (
+  max-width: 600px
+) {
+
+  .media-manager-toolbar {
+    padding: 12px;
+
+    gap: 10px;
+  }
+
+  .media-manager-toolbar__primary-actions {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .media-manager-toolbar__sort-select {
+    width: 100%;
+  }
+
+  .media-manager-toolbar__views {
+    width: 100%;
+  }
+
+  .media-manager-toolbar__view {
+    flex: 1;
+
+    min-width: 0;
+  }
+
+  .media-manager-toolbar__secondary {
+    align-items: stretch;
+
+    flex-direction: column;
+
+    gap: 10px;
+  }
+
+  .media-manager-toolbar__results {
+    width: 100%;
+
+    text-align: right;
+  }
+
+}

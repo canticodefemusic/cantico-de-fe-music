@@ -1,10 +1,10 @@
 /**
  * Cántico de Fe Music
- * V13.0.11 — Service Worker Cache Update
+ * V13.4.1 — Service Worker API Bypass
  */
 
 const CACHE_VERSION =
-  'v13.0.11';
+  'v13.4.1';
 
 const STATIC_CACHE =
   `cantico-static-${CACHE_VERSION}`;
@@ -17,6 +17,18 @@ const APP_SHELL = [
   '/index.html',
   '/manifest.json'
 ];
+
+function isApiRequest(
+  url
+) {
+  return (
+    url.pathname ===
+      '/api' ||
+    url.pathname.startsWith(
+      '/api/'
+    )
+  );
+}
 
 function isAudioRequest(
   request,
@@ -266,13 +278,29 @@ self.addEventListener(
     }
 
     /*
+     * API:
+     *
+     * Nunca interceptar ni almacenar
+     * respuestas de Pages Functions.
+     *
+     * Esto incluye:
+     * /api/media
+     * /api/upload
+     * y futuras rutas /api/*
+     */
+    if (
+      isApiRequest(
+        requestUrl
+      )
+    ) {
+      return;
+    }
+
+    /*
      * Navegación:
      *
      * Siempre intenta obtener la versión
      * más reciente de la aplicación.
-     *
-     * Si no hay conexión, utiliza la
-     * versión almacenada.
      */
     if (
       request.mode ===
@@ -294,10 +322,7 @@ self.addEventListener(
     /*
      * Audio:
      *
-     * No interceptarlo.
-     *
-     * Esto evita problemas con Range
-     * Requests, streaming y reproducción.
+     * No interceptar.
      */
     if (
       isAudioRequest(
@@ -311,11 +336,7 @@ self.addEventListener(
     /*
      * JavaScript y CSS:
      *
-     * NETWORK FIRST.
-     *
-     * Esta es la corrección principal.
-     * Evita que una versión antigua del
-     * sitio permanezca atrapada en caché.
+     * Network first.
      */
     if (
       isApplicationCode(
@@ -333,9 +354,7 @@ self.addEventListener(
     }
 
     /*
-     * Manifest:
-     *
-     * Preferimos la versión más reciente.
+     * Manifest.
      */
     if (
       requestUrl.pathname ===
@@ -355,11 +374,8 @@ self.addEventListener(
     }
 
     /*
-     * Imágenes, fuentes y otros recursos:
-     *
-     * Se pueden mostrar inmediatamente
-     * desde caché mientras se actualizan
-     * silenciosamente en segundo plano.
+     * Imágenes, fuentes y otros
+     * recursos estáticos.
      */
     event.respondWith(
       staleWhileRevalidate(

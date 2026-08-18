@@ -49,6 +49,7 @@ const boundTriggers = new WeakSet();
 let shortcutInitialized = false;
 let activeResultIndex = -1;
 let searchTimeout = null;
+let lastSearchTrigger = null;
 
 function escapeHtml(value = '') {
   return String(value)
@@ -374,6 +375,24 @@ function openActiveResult() {
   return true;
 }
 
+function restoreSearchTriggerFocus() {
+  const trigger =
+    lastSearchTrigger;
+
+  lastSearchTrigger = null;
+
+  if (
+    !trigger ||
+    !document.contains(trigger)
+  ) {
+    return;
+  }
+
+  window.setTimeout(() => {
+    trigger.focus();
+  }, 0);
+}
+
 function openGlobalSearch() {
   const existingInput =
     document.querySelector(
@@ -463,9 +482,12 @@ function openGlobalSearch() {
       >
         Cerrar
       </button>
-    `
+        `
+  }, {
+    onDismiss:
+      restoreSearchTriggerFocus
   });
-
+  
   const input =
     document.querySelector(
       '#globalSearchInput'
@@ -660,9 +682,12 @@ export function initGlobalSearch() {
 
       button.addEventListener(
         'click',
-        openGlobalSearch
+        () => {
+          lastSearchTrigger = button;
+          openGlobalSearch();
+        }
       );
-
+      
       boundTriggers.add(button);
     });
 

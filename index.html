@@ -124,6 +124,21 @@
 
   <link
     rel="stylesheet"
+    href="/src/features/media-library-engine/styles/r2-media-lightbox.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="/src/features/media-library-engine/styles/r2-media-list.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="/src/features/media-library-engine/styles/r2-media-manager-toolbar.css"
+  />
+  
+  <link
+    rel="stylesheet"
     href="/src/features/music-player-pro/styles/music-player-pro.css"
   >
 
@@ -132,6 +147,26 @@
     href="/src/features/hymn-library-engine/styles/hymn-library.css"
   >
 
+  <link
+    rel="stylesheet"
+    href="/src/features/playlist-engine/styles/playlists.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/src/app/views/videos/videos.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/src/app/views/devotionals/devotionals.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/src/app/views/contact/contact.css"
+  >
+  
   <link
     rel="stylesheet"
     href="/src/features/hymn-detail-engine/styles/hymn-detail.css"
@@ -146,12 +181,21 @@
     rel="stylesheet"
     href="/src/features/toast-engine/styles/toast-engine.css"
   >
-  
+
   <link
     rel="stylesheet"
     href="/src/features/admin-studio/styles/admin-studio.css"
   >
-  
+
+  <!--
+    V13.7.1
+    Media Manager Pro Layout
+  -->
+  <link
+    rel="stylesheet"
+    href="/src/features/media-library-engine/styles/r2-media-library.css"
+  >
+
   <script
     type="application/ld+json"
     id="schemaData"
@@ -168,22 +212,31 @@
 
   <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker
-          .register('/service-worker.js')
-          .then(registration => {
-            console.log(
-              'Service Worker registrado:',
-              registration.scope
+      window.addEventListener(
+        'load',
+        () => {
+          navigator.serviceWorker
+            .register(
+              '/service-worker.js'
+            )
+            .then(
+              registration => {
+                console.log(
+                  'Service Worker registrado:',
+                  registration.scope
+                );
+              }
+            )
+            .catch(
+              error => {
+                console.error(
+                  'Error registrando Service Worker:',
+                  error
+                );
+              }
             );
-          })
-          .catch(error => {
-            console.error(
-              'Error registrando Service Worker:',
-              error
-            );
-          });
-      });
+        }
+      );
     }
   </script>
 </body>
