@@ -1,5 +1,5 @@
 /**
- * Cántico de Fe Music
+ * CÃ¡ntico de Fe Music
  * Hymn Library Engine
  *
  * Dark Visual Design System Integration
@@ -12,7 +12,7 @@
  * - Ordenamiento
  * - Detalle del himno
  * - Acciones
- * - Cargar más
+ * - Cargar mÃ¡s
  * - Estados hover / focus
  * - Responsive
  * - Reduced motion
@@ -175,6 +175,7 @@
 
 /* ==========================================================
    Hymn Grid
+   V13.4.33 â€” 3 cards desktop / 2 tablet / 1 mobile
    ========================================================== */
 
 .hymn-library__grid,
@@ -183,10 +184,7 @@
     grid;
 
   grid-template-columns:
-    repeat(
-      auto-fit,
-      minmax(260px, 1fr)
-    );
+    repeat(3, minmax(0, 1fr));
 
   gap:
     22px;
@@ -1278,20 +1276,51 @@
 }
 
 /* ==========================================================
-   V13.4.22 — Hymn Card Cover Layout
+   V13.4.33 â€” Final 3-Column Hymn Card Layout
    ========================================================== */
 
-.hymn-library-card__cover {
-  position: relative;
+/*
+ * Desktop:
+ * - 3 tarjetas por fila.
+ * - Contenido vertical para evitar texto comprimido.
+ * - Portada completa y centrada.
+ *
+ * Tablet:
+ * - 2 tarjetas por fila.
+ *
+ * Mobile:
+ * - 1 tarjeta por fila.
+ */
 
-  width: 150px;
-  height: 150px;
+.hymn-library-card {
+  flex-direction:
+    column;
+
+  gap:
+    var(--space-4);
+
+  min-height:
+    100%;
+}
+
+.hymn-library-card__cover {
+  position:
+    relative;
+
+  width:
+    100%;
+
+  height:
+    auto;
+
+  aspect-ratio:
+    16 / 9;
 
   flex:
-    0 0 150px;
+    none;
 
   align-self:
-    flex-start;
+    stretch;
 
   overflow:
     hidden;
@@ -1311,63 +1340,121 @@
 }
 
 .hymn-library-card__cover img {
-  display: block;
+  display:
+    block;
 
-  width: 100%;
-  height: 100%;
+  width:
+    100%;
 
-  object-fit: contain;
-  object-position: center;
+  height:
+    100%;
+
+  object-fit:
+    contain;
+
+  object-position:
+    center;
+
+  background:
+    var(--color-background-secondary);
 }
 
 .hymn-library-card:has(
   .hymn-library-card__cover
 )
 .hymn-library-card__body {
+  width:
+    100%;
+
   flex:
     1 1 auto;
 
-  min-width: 0;
+  min-width:
+    0;
+
+  padding-right:
+    52px;
 }
 
 .hymn-library-card__favorite {
-  z-index: 3;
+  z-index:
+    3;
 }
 
-@media (max-width: 900px) {
-  .hymn-library-card__cover {
-    width: 120px;
-    height: 120px;
+.hymn-library-card__actions {
+  width:
+    100%;
+}
 
-    flex-basis: 120px;
+.hymn-library-card__actions a,
+.hymn-library-card__actions button {
+  white-space:
+    normal;
+
+  text-align:
+    center;
+}
+
+/* ==========================================================
+   Medium Desktop / Tablet
+   ========================================================== */
+
+@media (max-width: 1180px) {
+  .hymn-library__grid,
+  .hymn-library-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
   }
 }
+
+/* ==========================================================
+   Mobile
+   ========================================================== */
 
 @media (max-width: 640px) {
-  .hymn-library-card:has(
-    .hymn-library-card__cover
-  ) {
-    flex-direction: column;
+  .hymn-library__grid,
+  .hymn-library-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .hymn-library-card {
+    padding:
+      var(--space-4);
+
+    border-radius:
+      var(--radius-lg);
   }
 
   .hymn-library-card__cover {
-    width: 100%;
-    height: auto;
+    width:
+      100%;
 
-    aspect-ratio: 16 / 9;
+    max-width:
+      100%;
 
-    flex: none;
+    aspect-ratio:
+      16 / 9;
+
+    flex:
+      none;
   }
 
   .hymn-library-card:has(
     .hymn-library-card__cover
   )
   .hymn-library-card__body {
-    width: 100%;
+    width:
+      100%;
 
-    padding-right: 44px;
+    padding-right:
+      44px;
   }
 }
+
+/* ==========================================================
+   Small Mobile
+   ========================================================== */
 
 @media (max-width: 420px) {
   .hymn-library-card__cover {
@@ -1379,83 +1466,7 @@
     .hymn-library-card__cover
   )
   .hymn-library-card__body {
-    padding-right: 38px;
-  }
-}
-
-/* V13.4.24 — Full Hymn Cover 16:9 */
-
-.hymn-library-card__cover {
-  width: 180px;
-  height: auto;
-  aspect-ratio: 16 / 9;
-
-  flex: 0 0 180px;
-
-  align-self: center;
-
-  overflow: hidden;
-
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-
-  background: var(--color-background-secondary);
-  box-shadow: var(--shadow-sm);
-}
-
-.hymn-library-card__cover img {
-  display: block;
-
-  width: 100%;
-  height: 100%;
-
-  object-fit: contain;
-  object-position: center;
-}
-
-/* ==========================================================
-   V13.4.25 — Final Hymn Cover Size
-   ========================================================== */
-
-.hymn-library-card__cover {
-  width: 210px;
-  height: auto;
-
-  aspect-ratio: 16 / 9;
-
-  flex: 0 0 210px;
-
-  align-self: center;
-}
-
-.hymn-library-card__cover img {
-  display: block;
-
-  width: 100%;
-  height: 100%;
-
-  object-fit: contain;
-  object-position: center;
-}
-
-/* Tablet */
-
-@media (max-width: 900px) {
-  .hymn-library-card__cover {
-    width: 180px;
-    flex-basis: 180px;
-  }
-}
-
-/* Mobile */
-
-@media (max-width: 640px) {
-  .hymn-library-card__cover {
-    width: 100%;
-    max-width: 100%;
-
-    aspect-ratio: 16 / 9;
-
-    flex: none;
+    padding-right:
+      38px;
   }
 }
