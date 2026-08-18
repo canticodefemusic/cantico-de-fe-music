@@ -70,8 +70,20 @@ function renderLyrics(
 }
 
 function closeHymnDetail() {
-  window.location.href =
-    '/?page=himnos';
+  const modal =
+    document.querySelector(
+      '[data-hymn-detail-modal]'
+    );
+
+  if (modal) {
+    modal.remove();
+  }
+
+  window.history.replaceState(
+    {},
+    '',
+    '/?page=himnos'
+  );
 }
 
 export function renderHymnDetail(
