@@ -40,13 +40,6 @@ export function renderDevotionalsView() {
             Lecturas para cada día
           </h2>
         </div>
-
-        <span
-          class="devotionals-count"
-          aria-label="${devotionalCount} devocional${devotionalCount === 1 ? '' : 'es'}"
-        >
-          ${devotionalCount}
-        </span>
       </div>
 
       ${
