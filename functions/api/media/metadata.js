@@ -117,6 +117,12 @@ function readEditableMetadata(
           .category
       ),
 
+    coverKey:
+      normalizeText(
+        customMetadata
+          .coverKey
+      ),
+    
     tags:
       normalizeTags(
         safeJsonParse(
@@ -207,6 +213,11 @@ function buildMetadata(
         input.category
       ),
 
+    coverKey:
+      normalizeText(
+        input.coverKey
+      ),
+    
     tags:
       JSON.stringify(
         normalizeTags(
