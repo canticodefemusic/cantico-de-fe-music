@@ -93,6 +93,7 @@ import {
   renderHymnLibrary,
   renderHymnDetail,
   initHymnLibrary,
+  initHymnDetail,
   initHymnCardInteractions,
   initShareButtons
 } from '../features/hymn-library-engine/index.js';
@@ -327,6 +328,14 @@ function initializeCurrentView({
     });
   }
 
+  if (
+    route.page ===
+      'himnos' &&
+    route.id
+  ) {
+    initHymnDetail();
+  }
+  
   initShareButtons();
 
   if (
