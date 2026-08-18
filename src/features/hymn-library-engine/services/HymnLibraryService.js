@@ -288,11 +288,30 @@ function mergeHymnWithR2Metadata(
       metadata.tags
     );
 
-  const coverState =
-    resolveCover(
-      hymn,
-      objectMap
-    );
+  /* ----------------------------------------------------------
+   V13.4.26 — Dynamic R2 Cover Metadata
+   ---------------------------------------------------------- */
+
+const metadataCoverKey =
+  normalizeText(
+    metadata.coverKey
+  );
+
+const hymnWithCoverKey = {
+  ...hymn,
+
+  coverKey:
+    metadataCoverKey ||
+    normalizeText(
+      hymn.coverKey
+    )
+};
+
+const coverState =
+  resolveCover(
+    hymnWithCoverKey,
+    objectMap
+  );
 
   return {
     ...hymn,
