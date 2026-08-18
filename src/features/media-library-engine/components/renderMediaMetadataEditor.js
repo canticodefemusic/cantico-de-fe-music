@@ -564,6 +564,36 @@ function renderGeneralFields(
           Etiquetas
         </span>
 
+      <label
+        class="
+          media-metadata-editor__field
+          media-metadata-editor__field--full
+        "
+        for="mediaMetadataCoverKey"
+      >
+        <span>
+          Portada (R2 Key)
+        </span>
+
+        <input
+          id="mediaMetadataCoverKey"
+          type="text"
+          name="coverKey"
+          maxlength="500"
+          autocomplete="off"
+          value="${escapeHtml(
+            media.coverKey || ''
+          )}"
+          placeholder="Ejemplo: uploads/2026-08-17/portada.jpg"
+          data-media-metadata-cover-key
+        >
+
+        <small>
+          Clave del archivo de imagen en R2 que
+          se utilizará como portada de este recurso.
+        </small>
+      </label>
+        
         <input
           id="mediaMetadataTags"
           type="text"
