@@ -1,14 +1,15 @@
 /**
  * Cántico de Fe Music
- * V13.4.36 — Shared Hymn Detail
+ * V13.4.41 — Hymn Detail Modal
  *
  * Funciones:
- * - Usar la instancia compartida de HymnLibraryService
- * - Renderizar himnos base y dinámicos R2
- * - Mantener SEO
- * - Mantener datos estructurados
- * - Mantener acciones de compartir
- * - Mostrar estado correcto cuando no hay letra
+ * - Usar la biblioteca compartida
+ * - Mostrar himnos base y dinámicos R2
+ * - Modal centrado
+ * - Cerrar con X
+ * - Cerrar haciendo clic fuera
+ * - Cerrar con Escape
+ * - Mantener reproducción, compartir e impresión
  */
 
 import hymnLibraryService
@@ -21,6 +22,9 @@ import {
 import {
   updateStructuredData
 } from '../services/structuredDataService.js';
+
+let hymnDetailKeyHandler =
+  null;
 
 function escapeHtml(
   value = ''
@@ -65,6 +69,11 @@ function renderLyrics(
     .join('');
 }
 
+function closeHymnDetail() {
+  window.location.href =
+    '/?page=himnos';
+}
+
 export function renderHymnDetail(
   id
 ) {
@@ -79,24 +88,32 @@ export function renderHymnDetail(
       <section
         class="hymn-detail"
       >
-        <a
-          class="hymn-detail__back"
-          href="/?page=himnos"
+        <div
+          class="hymn-detail__backdrop"
+          data-hymn-detail-modal
         >
-          ← Volver a himnos
-        </a>
+          <article
+            class="hymn-detail__card"
+            data-hymn-detail-dialog
+          >
+            <a
+              class="hymn-detail__close"
+              href="/?page=himnos"
+              aria-label="Cerrar"
+              title="Cerrar"
+            >
+              ×
+            </a>
 
-        <article
-          class="hymn-detail__card"
-        >
-          <h1>
-            Himno no encontrado
-          </h1>
+            <h1>
+              Himno no encontrado
+            </h1>
 
-          <p>
-            No pudimos encontrar el himno solicitado.
-          </p>
-        </article>
+            <p>
+              No pudimos encontrar el himno solicitado.
+            </p>
+          </article>
+        </div>
       </section>
     `;
   }
@@ -186,200 +203,293 @@ export function renderHymnDetail(
       class="hymn-detail"
       data-hymn-id="${safeId}"
     >
-      <a
-        class="hymn-detail__back"
-        href="/?page=himnos"
+      <div
+        class="hymn-detail__backdrop"
+        data-hymn-detail-modal
       >
-        ← Volver a himnos
-      </a>
-
-      <article
-        class="hymn-detail__card"
-      >
-        ${
-          safeCover
-            ? `
-                <div
-                  class="hymn-detail__cover"
-                >
-                  <img
-                    src="${safeCover}"
-                    alt="${safeTitle}"
-                    loading="lazy"
-                    decoding="async"
-                  >
-                </div>
-              `
-            : ''
-        }
-
-        <p
-          class="hymn-detail__category"
-        >
-          ${safeCategory}
-        </p>
-
-        <h1>
-          ${safeTitle}
-        </h1>
-
-        ${
-          safeScripture
-            ? `
-                <p
-                  class="hymn-detail__scripture"
-                >
-                  ${safeScripture}
-                </p>
-              `
-            : ''
-        }
-
-        ${
-          safeDescription
-            ? `
-                <p
-                  class="hymn-detail__description"
-                >
-                  ${safeDescription}
-                </p>
-              `
-            : ''
-        }
-
-        <div
-          class="hymn-detail__actions"
+        <article
+          class="hymn-detail__card"
+          data-hymn-detail-dialog
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="hymnDetailTitle"
         >
           <button
             type="button"
-            data-hymn-play="${safeId}"
+            class="hymn-detail__close"
+            data-hymn-detail-close
+            aria-label="Cerrar"
+            title="Cerrar"
           >
-            ▶ Escuchar
+            ×
           </button>
-
-          <button
-            type="button"
-            data-hymn-copy-link="${safeId}"
-          >
-            📋 Copiar enlace
-          </button>
-
-          <button
-            type="button"
-            data-share-whatsapp="${safeId}"
-          >
-            🟢 WhatsApp
-          </button>
-
-          <button
-            type="button"
-            data-share-facebook="${safeId}"
-          >
-            🔵 Facebook
-          </button>
-
-          <button
-            type="button"
-            data-share-x="${safeId}"
-          >
-            ⚫ X
-          </button>
-
-          <button
-            type="button"
-            data-share-email="${safeId}"
-          >
-            ✉️ Email
-          </button>
-
-          <button
-            type="button"
-            data-share-native="${safeId}"
-            hidden
-          >
-            📤 Compartir
-          </button>
-
-          <button
-            type="button"
-            onclick="window.print()"
-          >
-            🖨 Imprimir
-          </button>
-        </div>
-
-        <div
-          class="hymn-detail__print-meta"
-        >
-          <div
-            class="print-row"
-          >
-            <span
-              class="label"
-            >
-              Artista:
-            </span>
-
-            <span>
-              ${safeArtist}
-            </span>
-          </div>
 
           <div
-            class="print-row"
+            class="hymn-detail__content"
           >
-            <span
-              class="label"
+            ${
+              safeCover
+                ? `
+                    <div
+                      class="hymn-detail__cover"
+                    >
+                      <img
+                        src="${safeCover}"
+                        alt="${safeTitle}"
+                        loading="eager"
+                        decoding="async"
+                      >
+                    </div>
+                  `
+                : ''
+            }
+
+            <div
+              class="hymn-detail__main"
             >
-              Categoría:
-            </span>
+              <p
+                class="hymn-detail__category"
+              >
+                ${safeCategory}
+              </p>
 
-            <span>
-              ${safeCategory}
-            </span>
-          </div>
+              <h1
+                id="hymnDetailTitle"
+              >
+                ${safeTitle}
+              </h1>
 
-          <div
-            class="print-row"
-          >
-            <span
-              class="label"
-            >
-              Referencia:
-            </span>
-
-            <span>
               ${
-                safeScripture ||
-                'Sin referencia'
+                safeScripture
+                  ? `
+                      <p
+                        class="hymn-detail__scripture"
+                      >
+                        ${safeScripture}
+                      </p>
+                    `
+                  : ''
               }
-            </span>
+
+              ${
+                safeDescription
+                  ? `
+                      <p
+                        class="hymn-detail__description"
+                      >
+                        ${safeDescription}
+                      </p>
+                    `
+                  : ''
+              }
+
+              <div
+                class="hymn-detail__actions"
+              >
+                <button
+                  type="button"
+                  data-hymn-play="${safeId}"
+                >
+                  ▶ Escuchar
+                </button>
+
+                <button
+                  type="button"
+                  data-hymn-copy-link="${safeId}"
+                >
+                  📋 Copiar enlace
+                </button>
+
+                <button
+                  type="button"
+                  data-share-whatsapp="${safeId}"
+                >
+                  🟢 WhatsApp
+                </button>
+
+                <button
+                  type="button"
+                  data-share-facebook="${safeId}"
+                >
+                  🔵 Facebook
+                </button>
+
+                <button
+                  type="button"
+                  data-share-x="${safeId}"
+                >
+                  ⚫ X
+                </button>
+
+                <button
+                  type="button"
+                  data-share-email="${safeId}"
+                >
+                  ✉️ Email
+                </button>
+
+                <button
+                  type="button"
+                  data-share-native="${safeId}"
+                  hidden
+                >
+                  📤 Compartir
+                </button>
+
+                <button
+                  type="button"
+                  onclick="window.print()"
+                >
+                  🖨 Imprimir
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-
-        <hr>
-
-        <section
-          class="hymn-detail__lyrics-section"
-        >
-          <h2>
-            Letra
-          </h2>
 
           <div
-            class="hymn-detail__lyrics"
+            class="hymn-detail__print-meta"
           >
-            ${renderLyrics(
-              hymn
-            )}
+            <div
+              class="print-row"
+            >
+              <span
+                class="label"
+              >
+                Artista:
+              </span>
+
+              <span>
+                ${safeArtist}
+              </span>
+            </div>
+
+            <div
+              class="print-row"
+            >
+              <span
+                class="label"
+              >
+                Categoría:
+              </span>
+
+              <span>
+                ${safeCategory}
+              </span>
+            </div>
+
+            <div
+              class="print-row"
+            >
+              <span
+                class="label"
+              >
+                Referencia:
+              </span>
+
+              <span>
+                ${
+                  safeScripture ||
+                  'Sin referencia'
+                }
+              </span>
+            </div>
           </div>
-        </section>
-      </article>
+
+          <section
+            class="hymn-detail__lyrics-section"
+          >
+            <h2>
+              Letra
+            </h2>
+
+            <div
+              class="hymn-detail__lyrics"
+            >
+              ${renderLyrics(
+                hymn
+              )}
+            </div>
+          </section>
+        </article>
+      </div>
     </section>
   `;
 }
 
+export function initHymnDetail() {
+  const modal =
+    document.querySelector(
+      '[data-hymn-detail-modal]'
+    );
+
+  if (!modal) {
+    return false;
+  }
+
+  const closeButton =
+    modal.querySelector(
+      '[data-hymn-detail-close]'
+    );
+
+  closeButton
+    ?.addEventListener(
+      'click',
+      event => {
+        event.preventDefault();
+
+        closeHymnDetail();
+      }
+    );
+
+  modal.addEventListener(
+    'click',
+    event => {
+      if (
+        event.target !==
+        modal
+      ) {
+        return;
+      }
+
+      closeHymnDetail();
+    }
+  );
+
+  if (
+    hymnDetailKeyHandler
+  ) {
+    document.removeEventListener(
+      'keydown',
+      hymnDetailKeyHandler
+    );
+  }
+
+  hymnDetailKeyHandler =
+    event => {
+      if (
+        event.key !==
+        'Escape'
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      closeHymnDetail();
+    };
+
+  document.addEventListener(
+    'keydown',
+    hymnDetailKeyHandler
+  );
+
+  closeButton?.focus();
+
+  return true;
+}
+
 export {
   escapeHtml,
-  renderLyrics
+  renderLyrics,
+  closeHymnDetail
 };
