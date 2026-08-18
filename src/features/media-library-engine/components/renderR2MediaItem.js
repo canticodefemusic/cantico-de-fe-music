@@ -383,7 +383,8 @@ function renderPreview({
 function renderActionMenu({
   safeKey,
   safeName,
-  safeMediaUrl
+  safeMediaUrl,
+  mediaType
 }) {
   return `
     <details
@@ -439,6 +440,28 @@ function renderActionMenu({
           </span>
         </button>
 
+        ${
+          mediaType === 'audio'
+            ? `
+              <button
+                type="button"
+                class="media-library-item__menu-action"
+                data-media-home-feature="${safeKey}"
+              >
+                <span
+                  aria-hidden="true"
+                >
+                  ⭐
+                </span>
+
+                <span>
+                  Mostrar en Inicio
+                </span>
+              </button>
+            `
+            : ''
+        }
+        
         <button
           type="button"
           class="media-library-item__menu-action"
@@ -620,7 +643,8 @@ export function renderR2MediaItem(
         ${renderActionMenu({
           safeKey,
           safeName,
-          safeMediaUrl
+          safeMediaUrl,
+          mediaType
         })}
       </div>
 
