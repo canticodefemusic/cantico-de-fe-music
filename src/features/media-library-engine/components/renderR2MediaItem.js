@@ -384,7 +384,8 @@ function renderActionMenu({
   safeKey,
   safeName,
   safeMediaUrl,
-  mediaType
+  mediaType,
+  featured = false
 }) {
   return `
     <details
@@ -439,28 +440,40 @@ function renderActionMenu({
             Detalles
           </span>
         </button>
+${
+  mediaType === 'audio'
+    ? `
+        <button
+          type="button"
+          class="media-library-item__menu-action"
+          data-media-home-feature="${safeKey}"
+          data-media-home-featured="${
+            featured
+              ? 'true'
+              : 'false'
+          }"
+        >
+          <span
+            aria-hidden="true"
+          >
+            ${
+              featured
+                ? '★'
+                : '⭐'
+            }
+          </span>
 
-        ${
-          mediaType === 'audio'
-            ? `
-              <button
-                type="button"
-                class="media-library-item__menu-action"
-                data-media-home-feature="${safeKey}"
-              >
-                <span
-                  aria-hidden="true"
-                >
-                  ⭐
-                </span>
-
-                <span>
-                  Mostrar en Inicio
-                </span>
-              </button>
-            `
-            : ''
-        }
+          <span>
+            ${
+              featured
+                ? 'Quitar de Inicio'
+                : 'Mostrar en Inicio'
+            }
+          </span>
+        </button>
+      `
+    : ''
+}
         
         <button
           type="button"
@@ -546,6 +559,17 @@ export function renderR2MediaItem(
       object
     );
 
+  const featured =
+  object
+    ?.customMetadata
+    ?.featured === true ||
+  object
+    ?.customMetadata
+    ?.featured === 'true' ||
+  object
+    ?.customMetadata
+    ?.featured === '1';
+  
   const name =
     getOriginalName(
       object
@@ -644,7 +668,8 @@ export function renderR2MediaItem(
           safeKey,
           safeName,
           safeMediaUrl,
-          mediaType
+          mediaType,
+          featured
         })}
       </div>
 
