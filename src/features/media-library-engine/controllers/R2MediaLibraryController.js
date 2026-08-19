@@ -24,6 +24,9 @@
 import r2MediaService
   from '../services/R2MediaService.js';
 
+import r2MediaMetadataService
+  from '../services/R2MediaMetadataService.js';
+
 import {
   renderR2MediaLibrary
 } from '../components/renderR2MediaLibrary.js';
@@ -846,6 +849,7 @@ if (selectionCheckbox) {
           'video',
           '[data-media-menu]',
           '[data-media-preview]',
+          '[data-media-home-feature]',
           '[data-media-copy]',
           '[data-media-download]',
           '[data-media-delete]'
@@ -1030,6 +1034,19 @@ if (selectionCheckbox) {
       return;
     }
 
+    const homeFeatureButton =
+      event.target.closest(
+        '[data-media-home-feature]'
+      );
+
+    if (homeFeatureButton) {
+      await this.setHomeFeaturedMedia(
+        homeFeatureButton
+      );
+
+      return;
+    }
+    
     const copyButton =
       event.target.closest(
         '[data-media-copy]'
