@@ -1516,6 +1516,140 @@ if (selectionCheckbox) {
     );
   }
 
+  async setHomeFeaturedMedia(
+  button
+) {
+  if (
+    this.bulkBusy ||
+    !button
+  ) {
+    return false;
+  }
+
+  const key =
+    String(
+      button.getAttribute(
+        'data-media-home-feature'
+      ) || ''
+    ).trim();
+
+  if (!key) {
+    return false;
+  }
+
+  const object =
+    this.objects.find(
+      item =>
+        item?.key === key
+    );
+
+  if (!object) {
+    window.alert(
+      'No se pudo identificar el archivo.'
+    );
+
+    return false;
+  }
+
+  const mediaType =
+    getObjectMediaType(
+      object
+    );
+
+  if (
+    mediaType !==
+    'audio'
+  ) {
+    window.alert(
+      'Solo los archivos de audio pueden mostrarse como himnos destacados en Inicio.'
+    );
+
+    return false;
+  }
+
+  const currentFeatured =
+    object
+      ?.customMetadata
+      ?.featured === true ||
+    object
+      ?.customMetadata
+      ?.featured === 'true' ||
+    object
+      ?.customMetadata
+      ?.featured === '1';
+
+  const nextFeatured =
+    !currentFeatured;
+
+  const originalText =
+    button.textContent;
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    nextFeatured
+      ? 'Guardando...'
+      : 'Quitando...';
+
+  try {
+    await r2MediaMetadataService
+      .patch(
+        key,
+        {
+          featured:
+            nextFeatured
+        }
+      );
+
+    /*
+     * Recargamos R2 para obtener
+     * los metadatos persistentes
+     * recién actualizados.
+     */
+    await this.refresh();
+
+    window.dispatchEvent(
+      new CustomEvent(
+        'cantico:home-featured-changed',
+        {
+          detail: {
+            key,
+            featured:
+              nextFeatured
+          }
+        }
+      )
+    );
+
+    return true;
+
+  } catch (error) {
+    console.error(
+      '[R2MediaLibraryController] No se pudo actualizar el himno destacado:',
+      error
+    );
+
+    if (
+      button.isConnected
+    ) {
+      button.disabled =
+        false;
+
+      button.textContent =
+        originalText;
+    }
+
+    window.alert(
+      error instanceof Error
+        ? error.message
+        : 'No se pudo actualizar el himno destacado.'
+    );
+
+    return false;
+  }
+}
+  
   async copyMediaLink(
     button
   ) {
