@@ -1,14 +1,10 @@
 import {
-  hymnCatalog
-} from '../../../features/hymn-library-engine/data/hymnCatalog.js';
+  hymnLibraryService
+} from '../../../features/hymn-library-engine/index.js';
 
 import {
   renderHymnCard
 } from '../../../features/hymn-library-engine/components/renderHymnCard.js';
-
-import {
-  RecommendationEngine
-} from '../../../features/recommendation-engine/index.js';
 
 import {
   getFavorites
@@ -207,13 +203,24 @@ function renderPlaylistsSection(playlists = []) {
 }
 
 export function renderHomeView() {
-  const recommendations =
-    RecommendationEngine.getRecommendations(4);
+    const featuredHymns =
+    hymnLibraryService
+      .list()
+      .filter(
+        hymn =>
+          hymn.featured === true
+      )
+      .slice(0, 3);
 
-  const featuredHymns =
-    recommendations.length
-      ? recommendations
-      : hymnCatalog.slice(0, 4);
+  const fallbackHymns =
+    hymnLibraryService
+      .list()
+      .slice(0, 3);
+
+  const homeFeaturedHymns =
+    featuredHymns.length
+      ? featuredHymns
+      : fallbackHymns;
 
   const favoriteIds =
     getFavorites();
@@ -272,14 +279,11 @@ export function renderHomeView() {
     ${renderContinueListening()}
 
     ${renderHymnSection({
-      kicker: 'Selección personalizada',
-      title:
-        recommendations.length
-          ? 'Recomendados para ti'
-          : 'Himnos destacados',
-      hymns: featuredHymns,
-      link: '/?page=recomendados',
-      linkText: 'Ver recomendaciones'
+      kicker: 'Selección destacada',
+      title: 'Himnos destacados',
+      hymns: homeFeaturedHymns,
+      link: '/?page=himnos',
+      linkText: 'Ver todos'
     })}
 
     ${renderHymnSection({
