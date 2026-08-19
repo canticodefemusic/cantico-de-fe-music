@@ -708,6 +708,11 @@ function createDynamicR2Hymn(
 
     tags,
 
+    featured:
+      metadata.featured === true ||
+      metadata.featured === 'true' ||
+      metadata.featured === '1',
+
     copyright:
       getCopyright(
         metadata,
