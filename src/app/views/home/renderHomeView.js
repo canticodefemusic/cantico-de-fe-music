@@ -27,9 +27,12 @@ import {
 } from '../../data/devotionalsData.js';
 
 function findHymnById(id) {
-  return hymnCatalog.find(
-    hymn => hymn.id === id
-  ) || null;
+  return hymnLibraryService
+    .list()
+    .find(
+      hymn =>
+        hymn.id === id
+    ) || null;
 }
 
 function resolveHistoryHymns(history = []) {
