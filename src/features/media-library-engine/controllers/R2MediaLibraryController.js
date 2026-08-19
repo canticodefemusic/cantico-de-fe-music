@@ -1593,21 +1593,54 @@ if (selectionCheckbox) {
       : 'Quitando...';
 
   try {
-    await r2MediaMetadataService
-      .patch(
-        key,
-        {
-          featured:
-            nextFeatured
-        }
-      );
+    const result =
+  await r2MediaMetadataService
+    .patch(
+      key,
+      {
+        featured:
+          nextFeatured
+      }
+    );
 
-    /*
-     * Recargamos R2 para obtener
-     * los metadatos persistentes
-     * recién actualizados.
-     */
-    await this.refresh();
+const objectIndex =
+  this.objects.findIndex(
+    item =>
+      item?.key === key
+  );
+
+if (
+  objectIndex >= 0
+) {
+  const currentObject =
+    this.objects[
+      objectIndex
+    ];
+
+  this.objects[
+    objectIndex
+  ] = {
+    ...currentObject,
+
+    customMetadata: {
+      ...(
+        currentObject
+          ?.customMetadata ||
+        {}
+      ),
+
+      ...(
+        result
+          ?.metadata ||
+        {}
+      )
+    }
+  };
+}
+
+this.applyViewState();
+
+this.render();
 
     window.dispatchEvent(
       new CustomEvent(
