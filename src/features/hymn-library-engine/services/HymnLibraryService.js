@@ -400,6 +400,11 @@ function mergeHymnWithR2Metadata(
       category ||
       hymn.category,
 
+    featured:
+      metadata.featured === true ||
+      metadata.featured === 'true' ||
+      metadata.featured === '1',
+    
     tags:
       metadataTags.length
         ? metadataTags
