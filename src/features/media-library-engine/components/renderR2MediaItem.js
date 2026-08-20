@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V13.7.3 — Render R2 Media Item
+ * V13.15.0 — Render R2 Media Item
  *
  * Funciones:
  * - Vista previa real
@@ -12,6 +12,7 @@
  * - Copiar enlace
  * - Descargar
  * - Eliminar
+ * - Identificación visual de audios destacados en Inicio
  */
 
 function formatFileSize(
@@ -663,6 +664,40 @@ export function renderR2MediaItem(
             Seleccionar
           </span>
         </label>
+
+        ${
+          mediaType === 'audio' &&
+          featured
+            ? `
+                <span
+                  class="media-library-item__featured-badge"
+                  role="status"
+                  aria-label="Destacado en Inicio"
+                  title="Este himno aparece en Inicio"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 6px;
+                    margin-left: auto;
+                    margin-right: 8px;
+                    padding: 7px 10px;
+                    border: 1px solid rgba(245, 197, 24, 0.55);
+                    border-radius: 999px;
+                    background: rgba(245, 197, 24, 0.14);
+                    color: #f6cf4f;
+                    font-size: 12px;
+                    font-weight: 700;
+                    line-height: 1;
+                    white-space: nowrap;
+                  "
+                >
+                  <span aria-hidden="true">★</span>
+                  <span>Destacado en Inicio</span>
+                </span>
+              `
+            : ''
+        }
 
         ${renderActionMenu({
           safeKey,
