@@ -1726,6 +1726,7 @@ if (
 
   return false;
 }
+}
     
   const originalText =
     button.textContent;
