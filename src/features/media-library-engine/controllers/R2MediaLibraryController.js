@@ -1526,6 +1526,119 @@ if (selectionCheckbox) {
     return false;
   }
 
+    showNotification(
+    message,
+    {
+      type = 'info',
+      duration = 3500
+    } = {}
+  ) {
+    const existing =
+      document.querySelector(
+        '[data-cantico-notification]'
+      );
+
+    if (existing) {
+      existing.remove();
+    }
+
+    const notification =
+      document.createElement(
+        'div'
+      );
+
+    notification.setAttribute(
+      'data-cantico-notification',
+      ''
+    );
+
+    notification.setAttribute(
+      'data-notification-type',
+      type
+    );
+
+    notification.setAttribute(
+      'role',
+      'status'
+    );
+
+    notification.textContent =
+      String(
+        message || ''
+      );
+
+    Object.assign(
+      notification.style,
+      {
+        position:
+          'fixed',
+
+        top:
+          '24px',
+
+        left:
+          '50%',
+
+        transform:
+          'translateX(-50%)',
+
+        zIndex:
+          '99999',
+
+        maxWidth:
+          'min(92vw, 520px)',
+
+        padding:
+          '14px 18px',
+
+        borderRadius:
+          '14px',
+
+        border:
+          '1px solid rgba(255, 255, 255, 0.14)',
+
+        background:
+          '#111820',
+
+        color:
+          '#ffffff',
+
+        boxShadow:
+          '0 16px 40px rgba(0, 0, 0, 0.35)',
+
+        fontSize:
+          '14px',
+
+        fontWeight:
+          '600',
+
+        lineHeight:
+          '1.45',
+
+        textAlign:
+          'center'
+      }
+    );
+
+    document.body.appendChild(
+      notification
+    );
+
+    window.setTimeout(
+      () => {
+        if (
+          notification
+            .isConnected
+        ) {
+          notification.remove();
+        }
+      },
+      duration
+    );
+
+    return notification;
+  }
+    
   const key =
     String(
       button.getAttribute(
