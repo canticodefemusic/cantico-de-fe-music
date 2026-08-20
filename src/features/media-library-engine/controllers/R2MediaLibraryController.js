@@ -1581,6 +1581,36 @@ if (selectionCheckbox) {
   const nextFeatured =
     !currentFeatured;
 
+  if (
+  nextFeatured
+) {
+  const featuredCount =
+    this.objects.filter(
+      item => {
+        const value =
+          item
+            ?.customMetadata
+            ?.featured;
+
+        return (
+          value === true ||
+          value === 'true' ||
+          value === '1'
+        );
+      }
+    ).length;
+
+  if (
+    featuredCount >= 3
+  ) {
+    window.alert(
+      'Ya tienes 3 himnos destacados en Inicio. Quita uno antes de agregar otro.'
+    );
+
+    return false;
+  }
+}
+    
   const originalText =
     button.textContent;
 
