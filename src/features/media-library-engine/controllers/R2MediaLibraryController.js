@@ -1516,17 +1516,7 @@ if (selectionCheckbox) {
     );
   }
 
-  async setHomeFeaturedMedia(
-  button
-) {
-  if (
-    this.bulkBusy ||
-    !button
-  ) {
-    return false;
-  }
-
-    showNotification(
+  showNotification(
     message,
     {
       type = 'info',
@@ -1638,7 +1628,17 @@ if (selectionCheckbox) {
 
     return notification;
   }
-    
+  
+  async setHomeFeaturedMedia(
+    button
+  ) {
+    if (
+      this.bulkBusy ||
+      !button
+    ) {
+      return false;
+    }
+
   const key =
     String(
       button.getAttribute(
