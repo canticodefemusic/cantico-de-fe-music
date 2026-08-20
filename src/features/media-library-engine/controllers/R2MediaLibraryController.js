@@ -1713,15 +1713,18 @@ if (selectionCheckbox) {
       }
     ).length;
 
-  if (
-    featuredCount >= 3
-  ) {
-    window.alert(
-      'Ya tienes 3 himnos destacados en Inicio. Quita uno antes de agregar otro.'
-    );
+if (
+  featuredCount >= 3
+) {
+  this.showNotification(
+    'Ya tienes 3 himnos destacados en Inicio. Quita uno antes de agregar otro.',
+    {
+      type: 'warning',
+      duration: 4200
+    }
+  );
 
-    return false;
-  }
+  return false;
 }
     
   const originalText =
