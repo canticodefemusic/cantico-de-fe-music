@@ -1,6 +1,6 @@
 /**
  * Cántico de Fe Music
- * V13.15.0 — Render R2 Media Item
+ * V13.15.1 — Render R2 Media Item
  *
  * Funciones:
  * - Vista previa real
@@ -678,22 +678,22 @@ export function renderR2MediaItem(
                     display: inline-flex;
                     align-items: center;
                     justify-content: center;
-                    gap: 6px;
+                    gap: 4px;
                     margin-left: auto;
-                    margin-right: 8px;
-                    padding: 7px 10px;
+                    margin-right: 6px;
+                    padding: 7px 8px;
                     border: 1px solid rgba(245, 197, 24, 0.55);
                     border-radius: 999px;
                     background: rgba(245, 197, 24, 0.14);
                     color: #f6cf4f;
-                    font-size: 12px;
+                    font-size: 11px;
                     font-weight: 700;
                     line-height: 1;
                     white-space: nowrap;
                   "
                 >
                   <span aria-hidden="true">★</span>
-                  <span>Destacado en Inicio</span>
+                  <span>En Inicio</span>
                 </span>
               `
             : ''
